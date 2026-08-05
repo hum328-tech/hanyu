@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Curso de Chino · Lección 1</title>
+  <style>
+    :root{
+      --bg:#f4f8ff;
+      --panel:#ffffff;
+      --primary:#2563eb;
+      --primary-2:#60a5fa;
+      --accent:#f59e0b;
+      --ok:#16a34a;
+      --danger:#dc2626;
+      --text:#172033;
+      --muted:#667085;
+      --line:#dbe7ff;
+      --shadow:0 12px 28px rgba(37,99,235,.12);
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:var(--text);
+      background:linear-gradient(180deg,#eef5ff 0%,#f9fbff 100%);
+      min-height:100vh;
+    }
+    button{font:inherit}
+    .app{max-width:1180px;margin:auto;min-height:100vh;padding:20px}
+    .topbar{
+      display:flex;justify-content:space-between;align-items:center;gap:14px;
+      background:rgba(255,255,255,.9);backdrop-filter:blur(12px);
+      border:1px solid var(--line);padding:14px 18px;border-radius:18px;box-shadow:var(--shadow);
+      position:sticky;top:10px;z-index:10;
+    }
+    .brand{display:flex;align-items:center;gap:12px;font-weight:800}
+    .brand-badge{
+      width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--primary),var(--primary-2));
+      display:grid;place-items:center;color:white;font-size:22px;
+    }
+    .stars{background:#fff7dc;color:#8a5a00;border:1px solid #f8dc86;padding:9px 12px;border-radius:999px;font-weight:800}
+    .screen{display:none}
+    .screen.active{display:block}
+    .hero{text-align:center;padding:52px 10px 28px}
+    .hero h1{font-size:clamp(32px,6vw,64px);margin:0 0 12px}
+    .hero p{color:var(--muted);font-size:18px;margin:0}
+    .lesson-grid{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;margin:22px 0 50px;
+    }
+    .lesson-card{
+      min-height:150px;border:0;border-radius:var(--radius);background:var(--panel);
+      box-shadow:var(--shadow);padding:20px;text-align:left;position:relative;cursor:pointer;
+      border:2px solid transparent;transition:.2s transform,.2s border;
+    }
+    .lesson-card:not(.locked):hover{transform:translateY(-4px);border-color:var(--primary-2)}
+    .lesson-number{font-size:14px;color:var(--muted);font-weight:700}
+    .lesson-title{font-size:24px;font-weight:900;margin-top:10px}
+    .lesson-card.locked{opacity:.6;cursor:not-allowed;background:#edf1f8}
+    .lock{position:absolute;right:16px;top:14px;font-size:22px}
+    .open-chip{display:inline-block;margin-top:14px;padding:6px 10px;border-radius:999px;background:#e7efff;color:var(--primary);font-weight:800;font-size:13px}
+    .lesson-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:24px 2px 12px}
+    .back-btn,.small-btn{
+      border:1px solid var(--line);background:white;border-radius:14px;padding:11px 14px;font-weight:800;cursor:pointer;
+    }
+    .lesson-head h2{margin:0;font-size:clamp(26px,4vw,40px)}
+    .main-tabs,.subtabs{
+      display:flex;gap:10px;overflow-x:auto;padding:10px 0 14px;scrollbar-width:none;
+    }
+    .tab-btn{
+      flex:0 0 auto;border:1px solid var(--line);background:white;padding:12px 18px;border-radius:14px;
+      font-weight:800;cursor:pointer;color:var(--muted);
+    }
+    .tab-btn.active{background:var(--primary);color:white;border-color:var(--primary)}
+    .panel{
+      background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);
+      padding:20px;margin-bottom:28px;
+    }
+    .tab-content,.subtab-content{display:none}
+    .tab-content.active,.subtab-content.active{display:block}
+    .section-title{margin:0 0 6px;font-size:26px}
+    .section-subtitle{margin:0 0 18px;color:var(--muted)}
+    .vocab-list{display:grid;gap:12px}
+    .vocab-row{
+      display:grid;grid-template-columns:80px 1.1fr 1.2fr 1.5fr;gap:12px;align-items:center;
+      border:1px solid var(--line);border-radius:16px;padding:12px;background:#fbfdff;
+    }
+    .speak-btn{
+      width:48px;height:48px;border-radius:14px;border:0;background:#e7efff;color:var(--primary);
+      font-size:22px;cursor:pointer;
+    }
+    .hanzi{font-size:30px;font-weight:900}
+    .pinyin{color:var(--primary);font-weight:800}
+    .meaning{font-weight:700}
+    .pron-card{
+      max-width:620px;margin:auto;text-align:center;border:1px solid var(--line);border-radius:24px;padding:28px;
+      background:linear-gradient(180deg,#fff,#f7fbff);
+    }
+    .pron-hanzi{font-size:72px;font-weight:900}
+    .pron-pinyin{font-size:24px;color:var(--primary);font-weight:800}
+    .pron-meaning{font-size:20px;margin:8px 0 20px}
+    .action-row{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+    .primary-btn{
+      border:0;background:var(--primary);color:white;border-radius:16px;padding:14px 20px;font-weight:900;cursor:pointer;
+    }
+    .secondary-btn{
+      border:1px solid var(--line);background:white;color:var(--text);border-radius:16px;padding:14px 20px;font-weight:900;cursor:pointer;
+    }
+    .feedback{min-height:28px;margin-top:14px;font-weight:800}
+    .flash-wrap{display:grid;place-items:center;gap:18px}
+    .flashcard{
+      width:min(92vw,560px);height:320px;perspective:1000px;cursor:pointer;
+    }
+    .flash-inner{
+      width:100%;height:100%;position:relative;transition:transform .55s;transform-style:preserve-3d;
+    }
+    .flashcard.flipped .flash-inner{transform:rotateY(180deg)}
+    .flash-face{
+      position:absolute;inset:0;border-radius:28px;backface-visibility:hidden;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      box-shadow:var(--shadow);border:2px solid var(--line);padding:24px;
+      background:white;
+    }
+    .flash-back{transform:rotateY(180deg);background:linear-gradient(135deg,#2563eb,#60a5fa);color:white}
+    .flash-hanzi{font-size:76px;font-weight:900}
+    .flash-pinyin{font-size:26px;color:var(--primary);font-weight:800;margin-top:8px}
+    .flash-back .flash-pinyin{color:white}
+    .switch-row{display:flex;align-items:center;gap:10px;font-weight:800}
+    .writing-grid{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;
+    }
+    .writer-card{border:1px solid var(--line);border-radius:20px;padding:16px;background:#fbfdff}
+    .writer-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+    .writer-char{font-size:34px;font-weight:900}
+    .writer-stage{
+      width:220px;height:220px;margin:auto;background:
+      linear-gradient(to right, transparent 49.5%, #d7e3f8 49.5%, #d7e3f8 50.5%, transparent 50.5%),
+      linear-gradient(to bottom, transparent 49.5%, #d7e3f8 49.5%, #d7e3f8 50.5%, transparent 50.5%),
+      linear-gradient(45deg, transparent 49.7%, #edf2fa 49.7%, #edf2fa 50.3%, transparent 50.3%),
+      linear-gradient(-45deg, transparent 49.7%, #edf2fa 49.7%, #edf2fa 50.3%, transparent 50.3%),
+      white;
+      border:2px solid #bfd0ee;border-radius:12px;touch-action:none;
+    }
+    .writer-actions{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+    .placeholder{
+      min-height:340px;display:grid;place-items:center;text-align:center;color:var(--muted);
+    }
+    .placeholder .icon{font-size:58px}
+    
+    .category-bar,.quiz-controls{
+      display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:0 0 18px;
+    }
+    .category-btn{
+      border:1px solid var(--line);background:white;padding:9px 13px;border-radius:999px;
+      font-weight:800;cursor:pointer;color:var(--muted);
+    }
+    .category-btn.active{background:#e7efff;color:var(--primary);border-color:#9dbaf8}
+    .category-heading{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      margin:22px 0 10px;padding-bottom:8px;border-bottom:2px solid #edf3ff;
+    }
+    .category-heading h4{margin:0;font-size:21px}
+    .category-count{font-size:13px;color:var(--muted);font-weight:800}
+    .quiz-box{
+      max-width:720px;margin:auto;border:1px solid var(--line);border-radius:24px;padding:24px;
+      background:linear-gradient(180deg,#fff,#f7fbff);
+    }
+    .quiz-prompt{text-align:center;margin:18px 0 24px}
+    .quiz-main{font-size:clamp(34px,7vw,64px);font-weight:900}
+    .quiz-sub{font-size:22px;color:var(--primary);font-weight:800;margin-top:8px}
+    .quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .quiz-option{
+      min-height:64px;border:2px solid var(--line);background:white;border-radius:16px;
+      padding:12px;font-weight:850;cursor:pointer;text-align:left;
+    }
+    .quiz-option.correct{border-color:#70c78b;background:#ebfff1}
+    .quiz-option.wrong{border-color:#f1a5a5;background:#fff0f0}
+    .select-control{
+      border:1px solid var(--line);background:white;border-radius:12px;padding:10px 12px;
+      font-weight:750;color:var(--text);
+    }
+
+    
+    .radical-toolbar{
+      display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:18px;
+    }
+    .radical-grid{display:grid;gap:18px}
+    .radical-group{
+      border:1px solid var(--line);border-radius:22px;background:#fbfdff;padding:16px;
+    }
+    .radical-header{
+      display:grid;grid-template-columns:76px 1fr auto;gap:14px;align-items:center;
+      margin-bottom:14px;
+    }
+    .radical-symbol{
+      width:68px;height:68px;border-radius:18px;background:linear-gradient(135deg,#e7efff,#ffffff);
+      border:2px solid #bfd0ee;display:grid;place-items:center;font-size:40px;font-weight:900;color:var(--primary);
+    }
+    .radical-name{font-size:21px;font-weight:900}
+    .radical-desc{color:var(--muted);margin-top:3px}
+    .radical-count{
+      padding:7px 10px;border-radius:999px;background:#edf4ff;color:var(--primary);font-weight:900;font-size:13px;
+    }
+    .radical-charline{
+      margin:0 0 12px;color:var(--muted);font-size:14px;
+    }
+    .radical-word-grid{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;
+    }
+    .radical-word-card{
+      border:1px solid var(--line);border-radius:16px;background:white;padding:12px;
+      display:grid;grid-template-columns:46px 1fr;gap:10px;align-items:center;
+    }
+    .radical-word-main{font-size:26px;font-weight:900}
+    .radical-word-meta{font-size:14px}
+    .radical-word-meta .pinyin{font-size:14px}
+
+    
+    .component-breakdown{
+      display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px;
+    }
+    .component-chip{
+      padding:6px 10px;border-radius:999px;background:#edf4ff;color:var(--primary);
+      border:1px solid #cfe0ff;font-weight:800;font-size:13px;
+    }
+    .character-explanation{
+      margin-top:8px;color:var(--muted);font-size:14px;line-height:1.45;
+    }
+
+    @media (max-width:700px){
+      .app{padding:10px}
+      .topbar{top:6px}
+      .vocab-row{grid-template-columns:58px 1fr}
+      .vocab-row .meaning{grid-column:2}
+      .vocab-row .pinyin{grid-column:2}
+      .pron-hanzi{font-size:58px}
+      .flashcard{height:280px}
+      .lesson-head{align-items:flex-start}
+      .quiz-options{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-badge">汉</div>
+      <div>
+        <div>Chino interactivo</div>
+        <small style="color:var(--muted)">Curso inicial</small>
+      </div>
+    </div>
+    <div class="stars">⭐ 0</div>
+  </header>
+
+  <main>
+    <section id="homeScreen" class="screen active">
+      <div class="hero">
+        <h1>Elige una lección</h1>
+        <p>Completa cada lección para desbloquear la siguiente.</p>
+      </div>
+      <div class="lesson-grid" id="lessonGrid"></div>
+    </section>
+
+    <section id="lessonScreen" class="screen">
+      <div class="lesson-head">
+        <button class="back-btn" onclick="goHome()">← Lecciones</button>
+        <div>
+          <div style="color:var(--primary);font-weight:900">第一课 · Dì-yī kè</div>
+          <h2>Lección 1: saludos y presentaciones</h2>
+        </div>
+      </div>
+
+      <nav class="main-tabs">
+        <button class="tab-btn active" data-main="vocabulario">Vocabulario</button>
+        <button class="tab-btn" data-main="gramatica">Gramática</button>
+        <button class="tab-btn" data-main="ejercicios">Ejercicios</button>
+        <button class="tab-btn" data-main="pruebas">Pruebas</button>
+      </nav>
+
+      <section id="vocabulario" class="tab-content active">
+        <div class="panel">
+          <nav class="subtabs">
+            <button class="tab-btn active" data-sub="lista">Lista completa</button>
+            <button class="tab-btn" data-sub="pronunciacion">Pronunciación</button>
+            <button class="tab-btn" data-sub="tarjetas">Tarjetas</button>
+            <button class="tab-btn" data-sub="opcionMultiple">Opción múltiple</button>
+            <button class="tab-btn" data-sub="escritura">Escritura</button>
+          </nav>
+
+          <div id="lista" class="subtab-content active">
+            <h3 class="section-title">Vocabulario de la lección</h3>
+            <p class="section-subtitle">Escucha, observa el hanzi, consulta el pinyin y revisa el significado.</p>
+            <div class="category-bar" id="categoryBar"></div>
+            <div id="vocabList" class="vocab-list"></div>
+          </div>
+
+
+          <div id="radicales" class="subtab-content">
+            <h3 class="section-title">Radicales y componentes</h3>
+            <p class="section-subtitle">
+              Aprende qué significa cada radical y descubre en qué caracteres de esta lección aparece.
+            </p>
+
+            <div class="radical-toolbar">
+              <label><strong>Selecciona un radical:</strong>
+                <select id="radicalFilter" class="select-control">
+                  <option value="todos">Todos los radicales</option>
+                </select>
+              </label>
+            </div>
+
+            <div id="radicalGrid" class="radical-grid"></div>
+          </div>
+
+          <div id="pronunciacion" class="subtab-content">
+            <h3 class="section-title">Prueba de pronunciación</h3>
+            <p class="section-subtitle">Solo aparecen palabras de dos sílabas. Escucha, repite y recibe retroalimentación.</p>
+            <div class="pron-card">
+              <div class="pron-hanzi" id="pronHanzi">你好</div>
+              <div class="pron-pinyin" id="pronPinyin">nǐ hǎo</div>
+              <div class="pron-meaning" id="pronMeaning">hola</div>
+              <div class="action-row">
+                <button class="secondary-btn" onclick="speakCurrentPron()">🔊 Escuchar</button>
+                <button class="primary-btn" onclick="startRecognition()">🎙️ Pronunciar</button>
+                <button class="secondary-btn" onclick="nextPron()">Siguiente →</button>
+              </div>
+              <div class="feedback" id="pronFeedback"></div>
+            </div>
+          </div>
+
+          <div id="tarjetas" class="subtab-content">
+            <h3 class="section-title">Tarjetas de memoria</h3>
+            <p class="section-subtitle">Toca la tarjeta para voltearla. Puedes ocultar o mostrar el pinyin.</p>
+            <div class="flash-wrap">
+              <label class="switch-row">
+                <input type="checkbox" id="pinyinToggle" checked />
+                Mostrar pinyin
+              </label>
+              <div class="flashcard" id="flashcard" onclick="this.classList.toggle('flipped')">
+                <div class="flash-inner">
+                  <div class="flash-face">
+                    <div class="flash-hanzi" id="flashHanzi">你好</div>
+                    <div class="flash-pinyin" id="flashPinyin">nǐ hǎo</div>
+                    <small style="margin-top:18px;color:var(--muted)">Toca para ver el significado</small>
+                  </div>
+                  <div class="flash-face flash-back">
+                    <div style="font-size:34px;font-weight:900" id="flashMeaning">hola</div>
+                    <div class="flash-pinyin" id="flashBackPinyin">nǐ hǎo</div>
+                  </div>
+                </div>
+              </div>
+              <div class="action-row">
+                <button class="secondary-btn" onclick="speakFlash()">🔊 Escuchar</button>
+                <button class="primary-btn" onclick="nextFlash()">Siguiente tarjeta →</button>
+              </div>
+            </div>
+          </div>
+
+
+          <div id="opcionMultiple" class="subtab-content">
+            <h3 class="section-title">Opción múltiple</h3>
+            <p class="section-subtitle">Elige qué vocabulario practicar y si la pregunta aparece en chino o en español.</p>
+
+            <div class="quiz-controls">
+              <label><strong>Vocabulario:</strong>
+                <select id="quizCategory" class="select-control"></select>
+              </label>
+              <label><strong>Pregunta:</strong>
+                <select id="quizDirection" class="select-control">
+                  <option value="zh-es">Chino → Español</option>
+                  <option value="es-zh">Español → Chino</option>
+                </select>
+              </label>
+              <label class="switch-row">
+                <input type="checkbox" id="quizPinyinToggle" checked />
+                Mostrar pinyin
+              </label>
+            </div>
+
+            <div class="quiz-box">
+              <div class="quiz-prompt">
+                <div class="quiz-main" id="quizMain">你好</div>
+                <div class="quiz-sub" id="quizPinyin">nǐ hǎo</div>
+              </div>
+              <div class="quiz-options" id="quizOptions"></div>
+              <div class="feedback" id="quizFeedback"></div>
+              <div class="action-row" style="margin-top:12px">
+                <button class="secondary-btn" onclick="speakQuiz()">🔊 Escuchar</button>
+                <button class="primary-btn" onclick="nextQuiz()">Siguiente →</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="escritura" class="subtab-content">
+            <h3 class="section-title">Práctica de escritura</h3>
+            <p class="section-subtitle">Primero observa el orden de trazos, después escribe sobre la guía y finalmente de memoria.</p>
+            <div id="writingGrid" class="writing-grid"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="gramatica" class="tab-content">
+        <div class="panel placeholder">
+          <div><div class="icon">🧩</div><h3>Gramática</h3><p>Aquí agregaremos explicaciones, ejemplos y práctica guiada.</p></div>
+        </div>
+      </section>
+
+      <section id="ejercicios" class="tab-content">
+        <div class="panel placeholder">
+          <div><div class="icon">🎯</div><h3>Ejercicios</h3><p>Aquí irán actividades de escuchar, relacionar, ordenar y completar.</p></div>
+        </div>
+      </section>
+
+      <section id="pruebas" class="tab-content">
+        <div class="panel placeholder">
+          <div><div class="icon">🏆</div><h3>Pruebas</h3><p>Aquí se integrarán evaluaciones de vocabulario, comprensión y producción oral.</p></div>
+        </div>
+      </section>
+    </section>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.7/dist/hanzi-writer.min.js"></script>
+<script>
+const vocab = [
+  {hanzi:"早上好", pinyin:"zǎoshang hǎo", es:"buenos días", cat:"saludos"},
+  {hanzi:"晚安", pinyin:"wǎn’ān", es:"buenas noches", cat:"saludos"},
+  {hanzi:"你好", pinyin:"nǐ hǎo", es:"hola", cat:"saludos"},
+  {hanzi:"你们好", pinyin:"nǐmen hǎo", es:"hola a todos", cat:"saludos"},
+  {hanzi:"周末好", pinyin:"zhōumò hǎo", es:"buen fin de semana", cat:"saludos"},
+  {hanzi:"再见", pinyin:"zàijiàn", es:"adiós", cat:"saludos"},
+  {hanzi:"明天见", pinyin:"míngtiān jiàn", es:"hasta mañana", cat:"saludos"},
+
+  {hanzi:"我", pinyin:"wǒ", es:"yo", cat:"pronombres"},
+  {hanzi:"你", pinyin:"nǐ", es:"tú", cat:"pronombres"},
+  {hanzi:"您", pinyin:"nín", es:"usted", cat:"pronombres"},
+  {hanzi:"他", pinyin:"tā", es:"él", cat:"pronombres"},
+  {hanzi:"她", pinyin:"tā", es:"ella", cat:"pronombres"},
+  {hanzi:"它", pinyin:"tā", es:"ello; eso", cat:"pronombres"},
+  {hanzi:"我们", pinyin:"wǒmen", es:"nosotros", cat:"pronombres"},
+  {hanzi:"咱们", pinyin:"zánmen", es:"nosotros, incluyéndote", cat:"pronombres"},
+  {hanzi:"你们", pinyin:"nǐmen", es:"ustedes", cat:"pronombres"},
+  {hanzi:"他们", pinyin:"tāmen", es:"ellos", cat:"pronombres"},
+  {hanzi:"她们", pinyin:"tāmen", es:"ellas", cat:"pronombres"},
+
+  {hanzi:"叫", pinyin:"jiào", es:"llamarse", cat:"verbos"},
+  {hanzi:"姓", pinyin:"xìng", es:"apellidarse", cat:"verbos"},
+  {hanzi:"是", pinyin:"shì", es:"ser", cat:"verbos"},
+  {hanzi:"学", pinyin:"xué", es:"estudiar; aprender", cat:"verbos"},
+  {hanzi:"学习", pinyin:"xuéxí", es:"estudiar; aprender", cat:"verbos"},
+  {hanzi:"会", pinyin:"huì", es:"saber; poder por habilidad", cat:"verbos"},
+  {hanzi:"说", pinyin:"shuō", es:"hablar; decir", cat:"verbos"},
+  {hanzi:"来", pinyin:"lái", es:"venir", cat:"verbos"},
+  {hanzi:"见", pinyin:"jiàn", es:"ver; encontrarse", cat:"verbos"},
+  {hanzi:"有", pinyin:"yǒu", es:"tener; haber", cat:"verbos"},
+  {hanzi:"知道", pinyin:"zhīdào", es:"saber; conocer", cat:"verbos"},
+
+  {hanzi:"身体", pinyin:"shēntǐ", es:"cuerpo; salud", cat:"estado"},
+  {hanzi:"怎么样", pinyin:"zěnmeyàng", es:"cómo está; qué tal", cat:"estado"},
+  {hanzi:"很好", pinyin:"hěn hǎo", es:"muy bien", cat:"estado"},
+  {hanzi:"不错", pinyin:"búcuò", es:"bastante bien", cat:"estado"},
+  {hanzi:"可以", pinyin:"kěyǐ", es:"poder; estar aceptable", cat:"estado"},
+  {hanzi:"谢谢", pinyin:"xièxie", es:"gracias", cat:"estado"},
+  {hanzi:"忙", pinyin:"máng", es:"ocupado", cat:"estado"},
+
+  {hanzi:"名字", pinyin:"míngzi", es:"nombre", cat:"presentacion"},
+  {hanzi:"姓名", pinyin:"xìngmíng", es:"nombre completo", cat:"presentacion"},
+  {hanzi:"贵姓", pinyin:"guìxìng", es:"cuál es su apellido", cat:"presentacion"},
+  {hanzi:"国籍", pinyin:"guójí", es:"nacionalidad", cat:"presentacion"},
+  {hanzi:"学生", pinyin:"xuésheng", es:"estudiante", cat:"presentacion"},
+  {hanzi:"老师", pinyin:"lǎoshī", es:"maestro; profesor", cat:"presentacion"},
+  {hanzi:"留学生", pinyin:"liúxuésheng", es:"estudiante extranjero", cat:"presentacion"},
+
+  {hanzi:"汉语", pinyin:"Hànyǔ", es:"idioma chino", cat:"idiomas"},
+  {hanzi:"中文", pinyin:"Zhōngwén", es:"chino", cat:"idiomas"},
+  {hanzi:"英语", pinyin:"Yīngyǔ", es:"inglés", cat:"idiomas"},
+  {hanzi:"法语", pinyin:"Fǎyǔ", es:"francés", cat:"idiomas"},
+  {hanzi:"德语", pinyin:"Déyǔ", es:"alemán", cat:"idiomas"},
+  {hanzi:"俄语", pinyin:"Éyǔ", es:"ruso", cat:"idiomas"},
+  {hanzi:"日语", pinyin:"Rìyǔ", es:"japonés", cat:"idiomas"},
+  {hanzi:"西班牙语", pinyin:"Xībānyáyǔ", es:"español", cat:"idiomas"},
+  {hanzi:"意大利语", pinyin:"Yìdàlìyǔ", es:"italiano", cat:"idiomas"},
+  {hanzi:"韩语", pinyin:"Hányǔ", es:"coreano", cat:"idiomas"},
+
+  {hanzi:"中国", pinyin:"Zhōngguó", es:"China", cat:"paises"},
+  {hanzi:"西班牙", pinyin:"Xībānyá", es:"España", cat:"paises"},
+  {hanzi:"俄罗斯", pinyin:"Éluósī", es:"Rusia", cat:"paises"},
+  {hanzi:"英国", pinyin:"Yīngguó", es:"Reino Unido", cat:"paises"},
+  {hanzi:"法国", pinyin:"Fǎguó", es:"Francia", cat:"paises"},
+  {hanzi:"意大利", pinyin:"Yìdàlì", es:"Italia", cat:"paises"},
+  {hanzi:"德国", pinyin:"Déguó", es:"Alemania", cat:"paises"},
+  {hanzi:"日本", pinyin:"Rìběn", es:"Japón", cat:"paises"},
+  {hanzi:"美国", pinyin:"Měiguó", es:"Estados Unidos", cat:"paises"},
+  {hanzi:"墨西哥", pinyin:"Mòxīgē", es:"México", cat:"paises"},
+  {hanzi:"韩国", pinyin:"Hánguó", es:"Corea del Sur", cat:"paises"},
+  {hanzi:"加拿大", pinyin:"Jiānádà", es:"Canadá", cat:"paises"},
+  {hanzi:"泰国", pinyin:"Tàiguó", es:"Tailandia", cat:"paises"},
+
+  {hanzi:"吗", pinyin:"ma", es:"partícula de pregunta sí/no", cat:"gramaticales"},
+  {hanzi:"呢", pinyin:"ne", es:"partícula para devolver una pregunta", cat:"gramaticales"},
+  {hanzi:"的", pinyin:"de", es:"partícula posesiva o descriptiva", cat:"gramaticales"},
+  {hanzi:"也", pinyin:"yě", es:"también", cat:"gramaticales"},
+  {hanzi:"不", pinyin:"bù", es:"no", cat:"gramaticales"},
+  {hanzi:"们", pinyin:"men", es:"sufijo plural para personas", cat:"gramaticales"},
+  {hanzi:"哪", pinyin:"nǎ", es:"cuál", cat:"gramaticales"},
+  {hanzi:"谁", pinyin:"shéi", es:"quién", cat:"gramaticales"},
+  {hanzi:"什么", pinyin:"shénme", es:"qué", cat:"gramaticales"},
+
+  {hanzi:"你好吗？", pinyin:"Nǐ hǎo ma?", es:"¿Cómo estás?", cat:"frases"},
+  {hanzi:"你叫什么名字？", pinyin:"Nǐ jiào shénme míngzi?", es:"¿Cómo te llamas?", cat:"frases"},
+  {hanzi:"你姓什么？", pinyin:"Nǐ xìng shénme?", es:"¿Cuál es tu apellido?", cat:"frases"},
+  {hanzi:"您贵姓？", pinyin:"Nín guìxìng?", es:"¿Cuál es su apellido?", cat:"frases"},
+  {hanzi:"我叫……", pinyin:"Wǒ jiào…", es:"Me llamo…", cat:"frases"},
+  {hanzi:"你是哪国人？", pinyin:"Nǐ shì nǎ guó rén?", es:"¿De qué país eres?", cat:"frases"},
+  {hanzi:"我是中国人。", pinyin:"Wǒ shì Zhōngguórén.", es:"Soy chino.", cat:"frases"},
+  {hanzi:"你会说汉语吗？", pinyin:"Nǐ huì shuō Hànyǔ ma?", es:"¿Sabes hablar chino?", cat:"frases"},
+  {hanzi:"我会说一点儿。", pinyin:"Wǒ huì shuō yìdiǎnr.", es:"Sé hablar un poco.", cat:"frases"},
+  {hanzi:"我不会说。", pinyin:"Wǒ bú huì shuō.", es:"No sé hablarlo.", cat:"frases"},
+  {hanzi:"他是谁？", pinyin:"Tā shì shéi?", es:"¿Quién es él?", cat:"frases"},
+  {hanzi:"她是谁？", pinyin:"Tā shì shéi?", es:"¿Quién es ella?", cat:"frases"}
+];
+
+const pronWords = vocab.filter(v => v.pinyin.trim().split(/\s+/).length === 2 || [...v.hanzi].length === 2);
+let pronIndex = 0;
+let flashIndex = 0;
+
+function renderLessons(){
+  const grid = document.getElementById("lessonGrid");
+  grid.innerHTML = "";
+  for(let i=1;i<=10;i++){
+    const unlocked = i===1;
+    const btn = document.createElement("button");
+    btn.className = "lesson-card" + (unlocked ? "" : " locked");
+    btn.innerHTML = `
+      <div class="lesson-number">LECCIÓN ${i}</div>
+      <div class="lesson-title">${i===1 ? "Saludos y presentaciones" : "Próximamente"}</div>
+      ${unlocked ? '<span class="open-chip">Disponible</span>' : '<span class="lock">🔒</span>'}
+    `;
+    if(unlocked) btn.onclick = openLesson;
+    grid.appendChild(btn);
+  }
+}
+
+function openLesson(){
+  document.getElementById("homeScreen").classList.remove("active");
+  document.getElementById("lessonScreen").classList.add("active");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function goHome(){
+  document.getElementById("lessonScreen").classList.remove("active");
+  document.getElementById("homeScreen").classList.add("active");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+
+const categoryLabels = {
+  saludos:"Saludos y despedidas",
+  pronombres:"Pronombres",
+  verbos:"Verbos",
+  estado:"Estado y bienestar",
+  presentacion:"Presentación personal",
+  idiomas:"Idiomas",
+  paises:"Países y nacionalidades",
+  gramaticales:"Palabras gramaticales",
+  frases:"Frases completas"
+};
+let activeListCategory = "todos";
+
+function renderCategoryBar(){
+  const bar = document.getElementById("categoryBar");
+  const cats = ["todos", ...Object.keys(categoryLabels)];
+  bar.innerHTML = cats.map(cat=>`
+    <button class="category-btn ${cat===activeListCategory ? "active":""}" onclick="setListCategory('${cat}')">
+      ${cat==="todos" ? "Todos" : categoryLabels[cat]}
+    </button>
+  `).join("");
+}
+
+function setListCategory(cat){
+  activeListCategory = cat;
+  renderCategoryBar();
+  renderVocab();
+}
+
+function renderVocab(){
+  const list = document.getElementById("vocabList");
+  const cats = activeListCategory==="todos" ? Object.keys(categoryLabels) : [activeListCategory];
+  list.innerHTML = cats.map(cat=>{
+    const items = vocab.filter(v=>v.cat===cat);
+    if(!items.length) return "";
+    return `
+      <section>
+        <div class="category-heading">
+          <h4>${categoryLabels[cat]}</h4>
+          <span class="category-count">${items.length} elementos</span>
+        </div>
+        ${items.map(v=>`
+          <div class="vocab-row">
+            <button class="speak-btn" onclick="speak('${escapeQuotes(v.hanzi)}')">🔊</button>
+            <div class="hanzi">${v.hanzi}</div>
+            <div class="pinyin">${v.pinyin}</div>
+            <div class="meaning">${v.es}</div>
+          </div>
+        `).join("")}
+      </section>
+    `;
+  }).join("");
+}
+
+
+function speak(text){
+  if(!("speechSynthesis" in window)){ alert("Este navegador no admite lectura en voz alta."); return; }
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "zh-CN";
+  u.rate = .8;
+  speechSynthesis.speak(u);
+}
+
+function escapeQuotes(s){ return s.replace(/'/g,"\\'"); }
+
+document.querySelectorAll("[data-main]").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll("[data-main]").forEach(b=>b.classList.remove("active"));
+    document.querySelectorAll(".tab-content").forEach(p=>p.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById(btn.dataset.main).classList.add("active");
+  });
+});
+document.querySelectorAll("[data-sub]").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll("[data-sub]").forEach(b=>b.classList.remove("active"));
+    document.querySelectorAll(".subtab-content").forEach(p=>p.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById(btn.dataset.sub).classList.add("active");
+    if(btn.dataset.sub==="escritura") setTimeout(initWriters,100);
+    if(btn.dataset.sub==="radicales") setTimeout(renderRadicals,50);
+  });
+});
+
+function updatePron(){
+  const v = pronWords[pronIndex % pronWords.length];
+  pronHanzi.textContent = v.hanzi;
+  pronPinyin.textContent = v.pinyin;
+  pronMeaning.textContent = v.es;
+  pronFeedback.textContent = "";
+}
+function speakCurrentPron(){ speak(pronWords[pronIndex % pronWords.length].hanzi); }
+function nextPron(){ pronIndex=(pronIndex+1)%pronWords.length; updatePron(); }
+
+function startRecognition(){
+  const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!Recognition){
+    pronFeedback.textContent = "El reconocimiento de voz funciona mejor en Chrome para Android o computadora.";
+    pronFeedback.style.color = "var(--danger)";
+    return;
+  }
+  const rec = new Recognition();
+  rec.lang = "zh-CN";
+  rec.interimResults = false;
+  rec.maxAlternatives = 3;
+  pronFeedback.textContent = "Escuchando…";
+  pronFeedback.style.color = "var(--primary)";
+  rec.onresult = e=>{
+    const heard = Array.from(e.results[0]).map(x=>x.transcript.replace(/[。，！？\s]/g,""));
+    const target = pronWords[pronIndex % pronWords.length].hanzi.replace(/\s/g,"");
+    const ok = heard.some(t=>t.includes(target) || target.includes(t));
+    pronFeedback.textContent = ok ? "✅ ¡Muy bien! La pronunciación fue reconocida." : `🔁 Intenta otra vez. Se reconoció: ${heard[0]}`;
+    pronFeedback.style.color = ok ? "var(--ok)" : "var(--danger)";
+  };
+  rec.onerror = ()=> {
+    pronFeedback.textContent = "No pude escucharte con claridad. Intenta nuevamente.";
+    pronFeedback.style.color = "var(--danger)";
+  };
+  rec.start();
+}
+
+function updateFlash(){
+  const v = vocab[flashIndex % vocab.length];
+  flashHanzi.textContent = v.hanzi;
+  flashPinyin.textContent = v.pinyin;
+  flashBackPinyin.textContent = v.pinyin;
+  flashMeaning.textContent = v.es;
+  flashcard.classList.remove("flipped");
+  applyPinyinToggle();
+}
+function nextFlash(){ flashIndex=(flashIndex+1)%vocab.length; updateFlash();
+initQuizControls();
+nextQuiz();
+initRadicalControls();
+renderRadicals(); }
+function speakFlash(){ speak(vocab[flashIndex % vocab.length].hanzi); }
+function applyPinyinToggle(){
+  const show = document.getElementById("pinyinToggle").checked;
+  document.getElementById("flashPinyin").style.display = show ? "block" : "none";
+  document.getElementById("flashBackPinyin").style.display = show ? "block" : "none";
+}
+document.getElementById("pinyinToggle").addEventListener("change",applyPinyinToggle);
+
+
+
+const radicalGroups = [
+  {
+    id:"persona",
+    radical:"亻",
+    name:"Persona",
+    meaning:"Se relaciona con personas, identidad o acciones humanas.",
+    examples:[
+      {char:"你", pinyin:"nǐ", meaning:"tú", parts:["亻 persona","尔 componente fonético"], note:"El radical 亻 indica que el carácter se relaciona con una persona."},
+      {char:"他", pinyin:"tā", meaning:"él", parts:["亻 persona","也 componente fonético"], note:"El radical 亻 muestra que hablamos de una persona."},
+      {char:"们", pinyin:"men", meaning:"sufijo plural", parts:["亻 persona","门 puerta"], note:"Se usa para formar el plural de pronombres y personas."},
+      {char:"体", pinyin:"tǐ", meaning:"cuerpo", parts:["亻 persona","本 raíz"], note:"El componente de persona ayuda a relacionarlo con el cuerpo humano."}
+    ]
+  },
+  {
+    id:"mujer",
+    radical:"女",
+    name:"Mujer",
+    meaning:"Aparece en caracteres vinculados históricamente con mujer, familia o identidad.",
+    examples:[
+      {char:"她", pinyin:"tā", meaning:"ella", parts:["女 mujer","也 componente fonético"], note:"El radical 女 indica que se refiere a una persona femenina."},
+      {char:"姓", pinyin:"xìng", meaning:"apellido", parts:["女 mujer","生 nacer"], note:"El carácter se relaciona históricamente con el linaje familiar."},
+      {char:"好", pinyin:"hǎo", meaning:"bueno; bien", parts:["女 mujer","子 niño"], note:"Una asociación tradicional une mujer y niño con la idea de algo bueno."},
+      {char:"安", pinyin:"ān", meaning:"paz; tranquilidad", parts:["宀 techo","女 mujer"], note:"La composición tradicional representa tranquilidad dentro del hogar."}
+    ]
+  },
+  {
+    id:"boca",
+    radical:"口",
+    name:"Boca",
+    meaning:"Se relaciona con hablar, llamar, preguntar o acciones realizadas con la boca.",
+    examples:[
+      {char:"叫", pinyin:"jiào", meaning:"llamarse; llamar", parts:["口 boca","丩 componente fonético"], note:"El radical 口 indica una acción relacionada con la voz."},
+      {char:"吗", pinyin:"ma", meaning:"partícula interrogativa", parts:["口 boca","马 componente fonético"], note:"Se usa al final de preguntas de sí o no."},
+      {char:"呢", pinyin:"ne", meaning:"partícula interrogativa", parts:["口 boca","尼 componente fonético"], note:"Se usa para devolver o continuar una pregunta."},
+      {char:"国", pinyin:"guó", meaning:"país", parts:["囗 recinto","玉 jade"], note:"Aquí aparece 囗, que no es exactamente 口; representa un territorio cerrado."}
+    ]
+  },
+  {
+    id:"habla",
+    radical:"讠",
+    name:"Habla o lenguaje",
+    meaning:"Forma simplificada del radical de palabra; aparece en caracteres relacionados con hablar y comunicar.",
+    examples:[
+      {char:"说", pinyin:"shuō", meaning:"hablar; decir", parts:["讠 habla","兑 componente fonético"], note:"El radical 讠 indica que el significado está relacionado con el habla."},
+      {char:"语", pinyin:"yǔ", meaning:"idioma; lengua", parts:["讠 habla","吾 componente fonético"], note:"Se usa en nombres de idiomas como 汉语, 英语 y 法语."},
+      {char:"谁", pinyin:"shéi", meaning:"quién", parts:["讠 habla","隹 componente fonético"], note:"Es una palabra interrogativa vinculada con el lenguaje."},
+      {char:"谢", pinyin:"xiè", meaning:"agradecer", parts:["讠 habla","射 componente fonético"], note:"Aparece en 谢谢, que significa gracias."}
+    ]
+  },
+  {
+    id:"corazon",
+    radical:"心 / 忄",
+    name:"Corazón o emoción",
+    meaning:"Se relaciona con emociones, pensamientos o estados internos.",
+    examples:[
+      {char:"忙", pinyin:"máng", meaning:"ocupado", parts:["忄 corazón","亡 componente fonético"], note:"El radical 忄 sugiere un estado interno o mental."},
+      {char:"您", pinyin:"nín", meaning:"usted", parts:["你 tú","心 corazón"], note:"Es una forma respetuosa de 你 y contiene 心 en la parte inferior."}
+    ]
+  },
+  {
+    id:"techo",
+    radical:"宀",
+    name:"Techo",
+    meaning:"Suele relacionarse con casa, interior, protección o un espacio cubierto.",
+    examples:[
+      {char:"安", pinyin:"ān", meaning:"paz; tranquilidad", parts:["宀 techo","女 mujer"], note:"La parte superior representa un techo."},
+      {char:"字", pinyin:"zì", meaning:"carácter; letra", parts:["宀 techo","子 niño"], note:"Tradicionalmente se asocia con aprendizaje dentro de la casa."},
+      {char:"室", pinyin:"shì", meaning:"habitación", parts:["宀 techo","至 llegar"], note:"Aparece en 教室, salón de clases."}
+    ]
+  },
+  {
+    id:"nino",
+    radical:"子",
+    name:"Niño",
+    meaning:"Representa a un niño y aparece en algunos caracteres relacionados con aprendizaje o familia.",
+    examples:[
+      {char:"字", pinyin:"zì", meaning:"carácter; letra", parts:["宀 techo","子 niño"], note:"El componente 子 forma parte del carácter 字."},
+      {char:"学", pinyin:"xué", meaning:"estudiar; aprender", parts:["⺍ parte superior","子 niño"], note:"El carácter se asocia con un niño aprendiendo."},
+      {char:"好", pinyin:"hǎo", meaning:"bueno; bien", parts:["女 mujer","子 niño"], note:"子 aparece como segundo componente."}
+    ]
+  },
+  {
+    id:"sol",
+    radical:"日",
+    name:"Sol o día",
+    meaning:"Se relaciona con el día, la luz o el tiempo.",
+    examples:[
+      {char:"早", pinyin:"zǎo", meaning:"temprano; mañana", parts:["日 sol","十 diez"], note:"El radical 日 se relaciona con el momento del día."},
+      {char:"明", pinyin:"míng", meaning:"brillante; mañana en 明天", parts:["日 sol","月 luna"], note:"Sol y luna juntos transmiten la idea de brillo."},
+      {char:"晚", pinyin:"wǎn", meaning:"tarde; noche", parts:["日 sol","免 componente fonético"], note:"日 indica relación con una parte del día."},
+      {char:"日", pinyin:"rì", meaning:"sol; día", parts:["日 radical completo"], note:"También aparece en 日本 y 日语."}
+    ]
+  },
+  {
+    id:"agua",
+    radical:"氵",
+    name:"Agua",
+    meaning:"Se relaciona con agua, líquidos o movimiento fluido.",
+    examples:[
+      {char:"汉", pinyin:"hàn", meaning:"chino; Han", parts:["氵 agua","又 componente"], note:"Aparece en 汉语."},
+      {char:"法", pinyin:"fǎ", meaning:"ley; método; Francia en 法国", parts:["氵 agua","去 componente fonético"], note:"Aparece en 法国 y 法语."},
+      {char:"没", pinyin:"méi", meaning:"no tener; no haber", parts:["氵 agua","殳 componente"], note:"Se usa en 没有."}
+    ]
+  },
+  {
+    id:"caminar",
+    radical:"辶",
+    name:"Caminar o movimiento",
+    meaning:"Se relaciona con desplazamiento, camino o avance.",
+    examples:[
+      {char:"还", pinyin:"hái", meaning:"todavía; bastante", parts:["辶 movimiento","不 componente fonético"], note:"El radical aparece en la parte inferior y lateral."},
+      {char:"过", pinyin:"guo", meaning:"partícula de experiencia; pasar", parts:["辶 movimiento","寸 componente"], note:"La idea original está relacionada con pasar o atravesar."},
+      {char:"道", pinyin:"dào", meaning:"camino; saber en 知道", parts:["辶 movimiento","首 cabeza"], note:"Aparece en 知道."}
+    ]
+  },
+  {
+    id:"recinto",
+    radical:"囗",
+    name:"Recinto o territorio",
+    meaning:"Representa un límite exterior, territorio o espacio cerrado.",
+    examples:[
+      {char:"国", pinyin:"guó", meaning:"país", parts:["囗 recinto","玉 jade"], note:"Es el componente principal de nombres de países como 中国, 美国 y 英国."}
+    ]
+  },
+  {
+    id:"madera",
+    radical:"木",
+    name:"Madera o árbol",
+    meaning:"Se relaciona con madera, árboles o elementos construidos.",
+    examples:[
+      {char:"本", pinyin:"běn", meaning:"raíz; origen", parts:["木 árbol","一 marca de raíz"], note:"Aparece en 日本."},
+      {char:"来", pinyin:"lái", meaning:"venir", parts:["componente histórico de cereal"], note:"Su forma moderna conserva rasgos similares a 木."}
+    ]
+  }
+];
+
+function initRadicalControls(){
+  const select = document.getElementById("radicalFilter");
+  select.innerHTML = `
+    <option value="todos">Todos los radicales</option>
+    ${radicalGroups.map(g=>`<option value="${g.id}">${g.radical} · ${g.name}</option>`).join("")}
+  `;
+  select.addEventListener("change", renderRadicals);
+}
+
+function renderRadicals(){
+  const grid = document.getElementById("radicalGrid");
+  const selected = document.getElementById("radicalFilter")?.value || "todos";
+  const groups = selected==="todos" ? radicalGroups : radicalGroups.filter(g=>g.id===selected);
+
+  grid.innerHTML = groups.map(group=>`
+    <section class="radical-group">
+      <div class="radical-header">
+        <div class="radical-symbol">${group.radical}</div>
+        <div>
+          <div class="radical-name">${group.name}</div>
+          <div class="radical-desc">${group.meaning}</div>
+        </div>
+        <div class="radical-count">${group.examples.length} caracteres</div>
+      </div>
+
+      <div class="radical-word-grid">
+        ${group.examples.map(item=>`
+          <article class="radical-word-card">
+            <button class="speak-btn" onclick="speak('${escapeQuotes(item.char)}')">🔊</button>
+            <div>
+              <div class="radical-word-main">${item.char}</div>
+              <div class="radical-word-meta">
+                <div class="pinyin">${item.pinyin}</div>
+                <div><strong>${item.meaning}</strong></div>
+                <div class="component-breakdown">
+                  ${item.parts.map(part=>`<span class="component-chip">${part}</span>`).join("")}
+                </div>
+                <div class="character-explanation">${item.note}</div>
+              </div>
+            </div>
+          </article>
+        `).join("")}
+      </div>
+    </section>
+  `).join("");
+}
+
+const quizCategory = document.getElementById("quizCategory");
+const quizDirection = document.getElementById("quizDirection");
+const quizPinyinToggle = document.getElementById("quizPinyinToggle");
+let quizItem = null;
+let quizAnswered = false;
+
+function initQuizControls(){
+  quizCategory.innerHTML = `
+    <option value="todos">Todo el vocabulario</option>
+    ${Object.entries(categoryLabels).map(([k,v])=>`<option value="${k}">${v}</option>`).join("")}
+  `;
+  quizCategory.addEventListener("change", nextQuiz);
+  quizDirection.addEventListener("change", nextQuiz);
+  quizPinyinToggle.addEventListener("change", updateQuizPinyin);
+}
+
+function getQuizPool(){
+  const cat = quizCategory.value || "todos";
+  return cat==="todos" ? vocab : vocab.filter(v=>v.cat===cat);
+}
+
+function shuffle(arr){
+  return [...arr].sort(()=>Math.random()-.5);
+}
+
+function nextQuiz(){
+  const pool = getQuizPool();
+  if(pool.length < 4){
+    quizFeedback.textContent = "Esta categoría necesita al menos cuatro elementos.";
+    return;
+  }
+  quizAnswered = false;
+  quizFeedback.textContent = "";
+  quizItem = pool[Math.floor(Math.random()*pool.length)];
+  const direction = quizDirection.value;
+  quizMain.textContent = direction==="zh-es" ? quizItem.hanzi : quizItem.es;
+  quizPinyin.textContent = quizItem.pinyin;
+  updateQuizPinyin();
+
+  const others = shuffle(pool.filter(v=>v!==quizItem)).slice(0,3);
+  const options = shuffle([quizItem,...others]);
+  quizOptions.innerHTML = options.map((v,i)=>`
+    <button class="quiz-option" data-correct="${v===quizItem}" onclick="answerQuiz(this)">
+      ${direction==="zh-es" ? v.es : v.hanzi}
+      ${direction==="es-zh" && quizPinyinToggle.checked ? `<div class="pinyin" style="font-size:14px;margin-top:4px">${v.pinyin}</div>` : ""}
+    </button>
+  `).join("");
+}
+
+function updateQuizPinyin(){
+  if(!quizItem) return;
+  const direction = quizDirection.value;
+  quizPinyin.style.display = quizPinyinToggle.checked ? "block" : "none";
+  if(direction==="es-zh") nextQuiz();
+}
+
+function answerQuiz(btn){
+  if(quizAnswered) return;
+  quizAnswered = true;
+  const correct = btn.dataset.correct==="true";
+  document.querySelectorAll(".quiz-option").forEach(b=>{
+    if(b.dataset.correct==="true") b.classList.add("correct");
+  });
+  if(!correct) btn.classList.add("wrong");
+  quizFeedback.textContent = correct ? "✅ Correcto" : "❌ No es correcto. Revisa la respuesta marcada.";
+  quizFeedback.style.color = correct ? "var(--ok)" : "var(--danger)";
+}
+
+function speakQuiz(){
+  if(!quizItem) return;
+  speak(quizItem.hanzi);
+}
+
+
+const writingChars = [...new Set("你好早上晚安再见明天身体名字姓名国学生老师学习汉语中文英语法国德国日本美国西班牙俄罗斯意大利墨西哥韩国")].slice(0,28);
+let writersInitialized = false;
+const writers = {};
+
+function initWriters(){
+  if(writersInitialized) return;
+  writersInitialized = true;
+  const grid = document.getElementById("writingGrid");
+  grid.innerHTML = writingChars.map((ch,i)=>`
+    <div class="writer-card">
+      <div class="writer-title">
+        <div class="writer-char">${ch}</div>
+        <small>Paso ${i+1}</small>
+      </div>
+      <div id="writer-${i}" class="writer-stage"></div>
+      <div class="writer-actions">
+        <button class="small-btn" onclick="animateWriter(${i})">▶ Ver trazos</button>
+        <button class="small-btn" onclick="quizWriter(${i})">✍ Practicar</button>
+        <button class="small-btn" onclick="clearWriter(${i})">↺ Limpiar</button>
+      </div>
+    </div>
+  `).join("");
+
+  writingChars.forEach((ch,i)=>{
+    if(window.HanziWriter){
+      writers[i] = HanziWriter.create(`writer-${i}`, ch, {
+        width:220,height:220,padding:12,
+        showOutline:true,showCharacter:false,
+        strokeAnimationSpeed:1,delayBetweenStrokes:250,
+        radicalColor:"#2563eb"
+      });
+    }else{
+      document.getElementById(`writer-${i}`).innerHTML =
+        `<div style="font-size:120px;display:grid;place-items:center;height:100%;opacity:.18">${ch}</div>`;
+    }
+  });
+}
+function animateWriter(i){ writers[i]?.animateCharacter(); }
+function quizWriter(i){ writers[i]?.quiz({showHintAfterMisses:2, highlightOnComplete:true}); }
+function clearWriter(i){
+  const ch = writingChars[i];
+  const box = document.getElementById(`writer-${i}`);
+  box.innerHTML = "";
+  writers[i] = HanziWriter.create(`writer-${i}`, ch, {
+    width:220,height:220,padding:12,showOutline:true,showCharacter:false
+  });
+}
+
+renderLessons();
+renderCategoryBar();
+renderVocab();
+updatePron();
+updateFlash();
+initQuizControls();
+nextQuiz();
+initRadicalControls();
+renderRadicals();
+</script>
+</body>
+</html>
