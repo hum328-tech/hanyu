@@ -375,6 +375,40 @@
   .auth-box{padding:22px 18px;border-radius:22px}
 }
 
+
+/* ===== SEGUIMIENTO DE ALUMNAS / PANEL DOCENTE ===== */
+.teacher-btn{
+  display:none;border:1px solid var(--line);background:white;border-radius:12px;
+  padding:8px 10px;font-weight:850;cursor:pointer
+}
+#teacherPanel{
+  position:fixed;inset:0;z-index:2147483000;background:rgba(15,23,42,.55);
+  display:none;align-items:flex-start;justify-content:center;padding:22px;overflow:auto
+}
+#teacherPanel.open{display:flex}
+.teacher-card{
+  width:min(1180px,96vw);background:white;border-radius:24px;padding:22px;
+  box-shadow:0 24px 70px rgba(0,0,0,.22);margin:auto
+}
+.teacher-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+.teacher-head h2{margin:0}.teacher-close{
+  border:1px solid var(--line);background:white;border-radius:12px;padding:9px 12px;font-weight:900;cursor:pointer
+}
+.teacher-summary{color:var(--muted);font-size:13px;margin:5px 0 14px}
+.teacher-table-wrap{overflow:auto;border:1px solid var(--line);border-radius:16px}
+.teacher-table{width:100%;border-collapse:collapse;min-width:970px}
+.teacher-table th,.teacher-table td{padding:11px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.teacher-table th{background:#f8fbff;font-size:13px;position:sticky;top:0}
+.teacher-progress{font-weight:900;color:var(--primary)}
+.teacher-status{display:inline-block;padding:5px 8px;border-radius:999px;background:#eef5ff;color:var(--primary);font-weight:900;font-size:12px}
+.teacher-detail{
+  margin-top:10px;padding:12px;border:1px solid var(--line);border-radius:14px;background:#fbfdff
+}
+.teacher-detail summary{cursor:pointer;font-weight:900}
+.config-warning{
+  padding:10px 12px;margin:10px 0;border-radius:12px;background:#fff7dc;border:1px solid #f8dc86;color:#7a5300;font-size:13px
+}
+
 </style>
 </head>
 <body>
@@ -409,7 +443,37 @@
     <button type="button" id="forgotPassword" class="auth-forgot">Olvidé mi contraseña</button>
 
     <div id="authStatus"></div>
-    <div class="auth-help">La contraseña corresponde únicamente a esta plataforma. No necesitas usar la misma contraseña de tu correo institucional.</div>
+    <div class="auth-help">Usa el correo que te indique tu profesor. La contraseña corresponde únicamente a esta plataforma.</div>
+  </div>
+</div>
+
+
+<div id="teacherPanel">
+  <div class="teacher-card">
+    <div class="teacher-head">
+      <div>
+        <h2>Panel docente</h2>
+        <div class="teacher-summary" id="teacherSummary">Seguimiento del grupo</div>
+      </div>
+      <button class="teacher-close" id="teacherCloseBtn" type="button">Cerrar ✕</button>
+    </div>
+    <div id="teacherPanelMessage" class="feedback"></div>
+    <div class="teacher-table-wrap">
+      <table class="teacher-table">
+        <thead>
+          <tr>
+            <th>Alumna</th>
+            <th>Conexiones</th>
+            <th>Última conexión</th>
+            <th>Lección actual</th>
+            <th>Progreso</th>
+            <th>Última actividad</th>
+            <th>Calificaciones</th>
+          </tr>
+        </thead>
+        <tbody id="teacherUsersBody"></tbody>
+      </table>
+    </div>
   </div>
 </div>
 
@@ -422,7 +486,7 @@
         <small style="color:var(--muted)">Curso inicial</small>
       </div>
     </div>
-    <div class="user-session"><div><div class="stars">⭐ 0</div><div id="sessionEmail"></div></div><button id="signOutButton" type="button" style="display:none">Salir</button></div>
+    <div class="user-session"><div><div class="stars">⭐ 0</div><div id="sessionEmail"></div></div><button id="teacherPanelBtn" class="teacher-btn" type="button">Panel docente</button><button id="signOutButton" type="button" style="display:none">Salir</button></div>
   </header>
 
   <main>
@@ -776,6 +840,24 @@
     appId: "1:600762030142:web:1b4a5d2f63a2473a55596f"
   };
 
+
+  /* =========================================================
+     ACCESO DOCENTE
+     No se publica ningún correo en el HTML.
+     La cuenta docente se marca manualmente en Firestore:
+     admins/{UID_DEL_PROFESOR}
+     ========================================================= */
+  async function currentUserIsTeacher(user){
+    if(!user) return false;
+    try{
+      const snap = await db.collection("admins").doc(user.uid).get();
+      return snap.exists;
+    }catch(e){
+      console.error("Admin check:", e);
+      return false;
+    }
+  }
+
   const gate = document.getElementById("authGate");
   const appShell = document.getElementById("appShell");
   const tabLogin = document.getElementById("tabLogin");
@@ -789,6 +871,12 @@
   const status = document.getElementById("authStatus");
   const sessionEmail = document.getElementById("sessionEmail");
   const signOutButton = document.getElementById("signOutButton");
+  const teacherPanelBtn = document.getElementById("teacherPanelBtn");
+  const teacherPanel = document.getElementById("teacherPanel");
+  const teacherCloseBtn = document.getElementById("teacherCloseBtn");
+  const teacherUsersBody = document.getElementById("teacherUsersBody");
+  const teacherPanelMessage = document.getElementById("teacherPanelMessage");
+  const teacherSummary = document.getElementById("teacherSummary");
 
   let mode = "login";
 
@@ -898,12 +986,111 @@
     auth.signOut();
   });
 
+
+  function formatFirestoreDate(value){
+    try{
+      if(!value) return "—";
+      const d = value.toDate ? value.toDate() : new Date(value);
+      return d.toLocaleString("es-MX");
+    }catch(e){ return "—"; }
+  }
+
+  window.trackStudentActivity = async function(type, detail, progress){
+    const user = auth.currentUser;
+    if(!user) return;
+    detail = detail || {};
+    progress = progress || {};
+    const payload = {
+      email:user.email || "",
+      lastActivity:{
+        type:type,
+        detail:detail,
+        at:firebase.firestore.FieldValue.serverTimestamp()
+      },
+      updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+    };
+    Object.keys(progress).forEach(function(k){
+      payload["progress."+k] = progress[k];
+    });
+    try{
+      await db.collection("users").doc(user.uid).set(payload,{merge:true});
+    }catch(e){ console.error("Activity tracking:",e); }
+  };
+
+  async function countLoginOnce(user){
+    const sessionKey = "hanyu_login_counted_" + user.uid;
+    if(sessionStorage.getItem(sessionKey)) return;
+    sessionStorage.setItem(sessionKey,"1");
+    try{
+      await db.collection("users").doc(user.uid).set({
+        loginCount:firebase.firestore.FieldValue.increment(1),
+        lastLoginAt:firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+      },{merge:true});
+    }catch(e){ console.error("Login count:",e); }
+  }
+
+  async function loadTeacherPanel(){
+    teacherPanelMessage.textContent = "Cargando alumnas…";
+    teacherUsersBody.innerHTML = "";
+    try{
+      const snap = await db.collection("users").get();
+      const rows = [];
+      snap.forEach(function(ds){
+        const d = ds.data() || {};
+        
+        const p = d.progress || {};
+        const l1 = p.lesson1 || {};
+        const l2 = p.lesson2 || {};
+        const l1p = Number(l1.progress || (l1.completed ? 100 : 0));
+        const l2p = Number(l2.progress || (l2.completed ? 100 : 0));
+        const overall = Math.round((l1p + l2p) / 2);
+        const currentLesson = p.currentLesson || 1;
+        const act = d.lastActivity || {};
+        const det = act.detail || {};
+        const activity = [act.type,det.label||det.topic||det.section||det.exercise].filter(Boolean).join(" · ") || "—";
+        const scores = [
+          l1.score !== undefined && l1.score !== null ? "L1: "+l1.score : null,
+          l2.score !== undefined && l2.score !== null ? "L2: "+l2.score : null
+        ].filter(Boolean).join(" · ") || "—";
+        const status = l2.completed ? "L2 terminada" : (l1.completed ? "L2 en progreso" : "L1 en progreso");
+
+        rows.push(`
+          <tr>
+            <td><strong>${d.email || "—"}</strong><br><span class="teacher-status">${status}</span></td>
+            <td>${d.loginCount || 0}</td>
+            <td>${formatFirestoreDate(d.lastLoginAt)}</td>
+            <td>Lección ${currentLesson}</td>
+            <td><span class="teacher-progress">${overall}%</span><br>L1 ${l1p}% · L2 ${l2p}%</td>
+            <td>${activity}<br><small>${formatFirestoreDate(act.at)}</small></td>
+            <td>${scores}</td>
+          </tr>
+        `);
+      });
+      teacherUsersBody.innerHTML = rows.join("") || '<tr><td colspan="7">Todavía no hay alumnas registradas.</td></tr>';
+      teacherSummary.textContent = rows.length + " alumna(s) registrada(s)";
+      teacherPanelMessage.textContent = "";
+    }catch(e){
+      console.error("Teacher panel:",e);
+      teacherPanelMessage.textContent = "No se pudo leer el grupo. Falta habilitar el acceso del profesor en las reglas de Firestore.";
+      teacherPanelMessage.style.color = "#dc2626";
+    }
+  }
+
+  teacherPanelBtn.addEventListener("click",function(){
+    if(!window.currentUserIsTeacher) return;
+    teacherPanel.classList.add("open");
+    loadTeacherPanel();
+  });
+  teacherCloseBtn.addEventListener("click",function(){ teacherPanel.classList.remove("open"); });
+
   auth.onAuthStateChanged(async function(user){
     if(!user){
       gate.classList.remove("is-hidden");
       appShell.classList.add("auth-locked");
       sessionEmail.textContent = "";
       signOutButton.style.display = "none";
+      teacherPanelBtn.style.display = "none";
       return;
     }
 
@@ -929,6 +1116,7 @@
         }, {merge:true});
       }
       window.currentFirebaseUser = user;
+      await countLoginOnce(user);
     }catch(err){
       // Authentication still works even if a Firestore write has a problem.
       console.error("Firestore:", err);
@@ -937,6 +1125,14 @@
 
     sessionEmail.textContent = user.email || "";
     signOutButton.style.display = "inline-block";
+    try{
+      const isTeacher = await currentUserIsTeacher(user);
+      teacherPanelBtn.style.display = isTeacher ? "inline-block" : "none";
+      window.currentUserIsTeacher = isTeacher;
+    }catch(e){
+      teacherPanelBtn.style.display = "none";
+      window.currentUserIsTeacher = false;
+    }
     gate.classList.add("is-hidden");
     appShell.classList.remove("auth-locked");
   });
@@ -1149,6 +1345,7 @@ function renderLessons(){
 
 function openLesson(lesson=1){
   currentLesson = lesson;
+  if(window.trackStudentActivity) window.trackStudentActivity("lesson_opened",{lesson:lesson,label:"Lección "+lesson},{"currentLesson":lesson});
   const meta = lessonMeta[lesson];
   lessonKicker.textContent = meta.kicker;
   lessonTitle.textContent = meta.title;
@@ -1245,6 +1442,7 @@ document.querySelectorAll("[data-main]").forEach(btn=>{
     document.querySelectorAll(".tab-content").forEach(p=>p.classList.remove("active"));
     btn.classList.add("active");
     document.getElementById(btn.dataset.main).classList.add("active");
+    if(window.trackStudentActivity) window.trackStudentActivity("section_opened",{lesson:currentLesson,section:btn.dataset.main,label:btn.textContent.trim()});
   });
 });
 document.querySelectorAll("[data-sub]").forEach(btn=>{
@@ -1253,6 +1451,7 @@ document.querySelectorAll("[data-sub]").forEach(btn=>{
     document.querySelectorAll(".subtab-content").forEach(p=>p.classList.remove("active"));
     btn.classList.add("active");
     document.getElementById(btn.dataset.sub).classList.add("active");
+    if(window.trackStudentActivity) window.trackStudentActivity("activity_opened",{lesson:currentLesson,section:btn.dataset.sub,label:btn.textContent.trim()});
     if(btn.dataset.sub==="escritura") setTimeout(initWriters,100);
     if(btn.dataset.sub==="radicales") setTimeout(renderRadicals,50);
   });
@@ -1714,6 +1913,7 @@ let exerciseIndex=0, exerciseSelected=null, exerciseBuilt=[];
 
 function openExerciseTopic(topic){
   currentExerciseTopic=topic;
+  if(window.trackStudentActivity) window.trackStudentActivity("exercise_topic_started",{lesson:1,topic:topic,label:exerciseTopics[topic]?.title||topic});
   grammarExercises=exerciseTopics[topic].items;
   exerciseIndex=0;
   document.getElementById("exerciseIndexView").style.display="none";
@@ -1779,6 +1979,7 @@ function checkExercise(){
   const ok=accepted.includes(normalized(ans));
   exerciseFeedback.textContent=ok ? "✅ Correcto. Muy bien." : `❌ Revisa la estructura. Respuesta: ${ex.answer}`;
   exerciseFeedback.style.color=ok ? "var(--ok)" : "var(--danger)";
+  if(window.trackStudentActivity) window.trackStudentActivity("exercise_answered",{lesson:1,topic:currentExerciseTopic,exercise:exerciseIndex+1,correct:ok,label:exerciseTopics[currentExerciseTopic]?.title||currentExerciseTopic});
   exerciseNextBtn.style.display="inline-block"; exerciseCheckBtn.style.display="none";
   exerciseProgressBar.style.width=`${((exerciseIndex+1)/grammarExercises.length)*100}%`;
 }
@@ -1794,6 +1995,7 @@ function nextExercise(){
   }else{
     exerciseFeedback.textContent="✅ Tema completado.";
     exerciseFeedback.style.color="var(--ok)";
+    if(window.trackStudentActivity) window.trackStudentActivity("exercise_topic_completed",{lesson:1,topic:currentExerciseTopic,label:exerciseTopics[currentExerciseTopic]?.title||currentExerciseTopic});
     exerciseNextBtn.textContent="Volver al índice";
     exerciseNextBtn.onclick=()=>{
       exerciseNextBtn.textContent="Siguiente →";
@@ -1863,6 +2065,7 @@ function finishFinalTest(){
     const score=arr.length ? Math.round(arr.filter(x=>x.ok).length/arr.length*100) : 0;
     return `<div class="score-box"><strong>${cat}</strong><div>${score}%</div></div>`;
   }).join("");
+  if(window.trackStudentActivity) window.trackStudentActivity("test_finished",{lesson:1,percent:pct,score:Number(grade),label:"Prueba final L1"},{"lesson1.score":Number(grade),"lesson1.progress":pct>=80?100:Math.max(70,pct),"lesson1.completed":pct>=80});
   testResult.innerHTML=`<div class="test-badge">${pct>=80?"🏆":"📘"}</div><div class="score-big">${pct}%</div><h3>${correct} / ${testAnswers.length} correctas</h3><div class="score-grid">${details}</div><h3>Calificación final: ${grade} / 10</h3><p>${pct>=80?"✅ Lección aprobada.":"🔁 Conviene repasar antes de continuar."}</p><button class="primary-btn" onclick="startFinalTest()">Intentar otra vez</button>`;
   testResult.style.display="block";
 }
@@ -2171,6 +2374,7 @@ let exerciseIndex2=0, exerciseSelected2=null;
 
 function openExerciseTopic2(topic){
   currentExerciseTopic2=topic;
+  if(window.trackStudentActivity) window.trackStudentActivity("exercise_topic_started",{lesson:2,topic:topic,label:exerciseTopics2[topic]?.title||topic});
   grammarExercises2=exerciseTopics2[topic].items;
   exerciseIndex2=0;
   document.getElementById("exerciseIndexView2").style.display="none";
@@ -2209,6 +2413,7 @@ function checkExercise2(){
   const ok=exerciseSelected2===ex.answer;
   exerciseFeedback2.textContent=ok ? "✅ Correcto. Muy bien." : `❌ Revisa la estructura. Respuesta: ${ex.answer}`;
   exerciseFeedback2.style.color=ok ? "var(--ok)" : "var(--danger)";
+  if(window.trackStudentActivity) window.trackStudentActivity("exercise_answered",{lesson:2,topic:currentExerciseTopic2,exercise:exerciseIndex2+1,correct:ok,label:exerciseTopics2[currentExerciseTopic2]?.title||currentExerciseTopic2});
   exerciseNextBtn2.style.display="inline-block";
   exerciseCheckBtn2.style.display="none";
   exerciseProgressBar2.style.width=`${((exerciseIndex2+1)/grammarExercises2.length)*100}%`;
@@ -2225,6 +2430,7 @@ function nextExercise2(){
   }else{
     exerciseFeedback2.textContent="✅ Tema completado.";
     exerciseFeedback2.style.color="var(--ok)";
+    if(window.trackStudentActivity) window.trackStudentActivity("exercise_topic_completed",{lesson:2,topic:currentExerciseTopic2,label:exerciseTopics2[currentExerciseTopic2]?.title||currentExerciseTopic2});
     exerciseNextBtn2.textContent="Volver al índice";
     exerciseNextBtn2.onclick=()=>{
       exerciseNextBtn2.textContent="Siguiente →";
@@ -2299,6 +2505,7 @@ function finishFinalTest2(){
     const score=arr.length ? Math.round(arr.filter(x=>x.ok).length/arr.length*100) : 0;
     return `<div class="score-box"><strong>${cat}</strong><div>${score}%</div></div>`;
   }).join("");
+  if(window.trackStudentActivity) window.trackStudentActivity("test_finished",{lesson:2,percent:pct,score:Number(grade),label:"Prueba final L2"},{"lesson2.score":Number(grade),"lesson2.progress":pct>=80?100:Math.max(70,pct),"lesson2.completed":pct>=80});
   testResult2.innerHTML=`<div class="test-badge">${pct>=80?"🏆":"📘"}</div>
     <div class="score-big">${pct}%</div>
     <h3>${correct} / ${testAnswers2.length} correctas</h3>
