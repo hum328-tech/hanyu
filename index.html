@@ -394,7 +394,7 @@
 .teacher-head h2{margin:0}.teacher-close{
   border:1px solid var(--line);background:white;border-radius:12px;padding:9px 12px;font-weight:900;cursor:pointer
 }
-.teacher-summary{color:var(--muted);font-size:13px;margin:5px 0 14px}
+.teacher-summary{color:var(--muted);font-size:13px;margin:5px 0 6px}.admin-setup-note{font-size:12px;color:var(--muted);margin-bottom:14px}
 .teacher-table-wrap{overflow:auto;border:1px solid var(--line);border-radius:16px}
 .teacher-table{width:100%;border-collapse:collapse;min-width:970px}
 .teacher-table th,.teacher-table td{padding:11px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
@@ -417,7 +417,7 @@
   <div class="auth-box">
     <div class="auth-symbol">汉</div>
     <h1>Chino interactivo</h1>
-    <p class="auth-intro">Inicia sesión o crea una cuenta para guardar tu progreso.</p>
+    <p class="auth-intro">Inicia sesión o crea una cuenta para guardar tu progreso. Tu usuario se tomará automáticamente de tu correo.</p>
 
     <div class="auth-tabs">
       <button type="button" id="tabLogin" class="active">Iniciar sesión</button>
@@ -443,7 +443,7 @@
     <button type="button" id="forgotPassword" class="auth-forgot">Olvidé mi contraseña</button>
 
     <div id="authStatus"></div>
-    <div class="auth-help">Usa el correo que te indique tu profesor. La contraseña corresponde únicamente a esta plataforma.</div>
+    <div class="auth-help">Tu nombre de usuario será todo lo que aparezca antes de la @ en tu correo. La contraseña corresponde únicamente a esta plataforma.</div>
   </div>
 </div>
 
@@ -453,7 +453,7 @@
     <div class="teacher-head">
       <div>
         <h2>Panel docente</h2>
-        <div class="teacher-summary" id="teacherSummary">Seguimiento del grupo</div>
+        <div class="teacher-summary" id="teacherSummary">Seguimiento del grupo</div><div class="admin-setup-note">El botón solo aparece si tu UID existe en la colección <strong>admins</strong> de Firestore.</div>
       </div>
       <button class="teacher-close" id="teacherCloseBtn" type="button">Cerrar ✕</button>
     </div>
@@ -858,6 +858,10 @@
     }
   }
 
+  function usernameFromEmail(email){
+    return (email || "").split("@")[0].trim();
+  }
+
   const gate = document.getElementById("authGate");
   const appShell = document.getElementById("appShell");
   const tabLogin = document.getElementById("tabLogin");
@@ -1002,6 +1006,7 @@
     progress = progress || {};
     const payload = {
       email:user.email || "",
+      username:usernameFromEmail(user.email),
       lastActivity:{
         type:type,
         detail:detail,
@@ -1057,7 +1062,7 @@
 
         rows.push(`
           <tr>
-            <td><strong>${d.email || "—"}</strong><br><span class="teacher-status">${status}</span></td>
+            <td><strong>${d.username || usernameFromEmail(d.email) || "—"}</strong><br><small>${d.email || ""}</small><br><span class="teacher-status">${status}</span></td>
             <td>${d.loginCount || 0}</td>
             <td>${formatFirestoreDate(d.lastLoginAt)}</td>
             <td>Lección ${currentLesson}</td>
@@ -1112,6 +1117,7 @@
       }else{
         await ref.set({
           email: user.email || "",
+          username: usernameFromEmail(user.email),
           updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         }, {merge:true});
       }
@@ -1123,12 +1129,16 @@
       window.currentFirebaseUser = user;
     }
 
-    sessionEmail.textContent = user.email || "";
+    sessionEmail.textContent = usernameFromEmail(user.email);
+    sessionEmail.title = user.email || "";
     signOutButton.style.display = "inline-block";
     try{
       const isTeacher = await currentUserIsTeacher(user);
-      teacherPanelBtn.style.display = isTeacher ? "inline-block" : "none";
       window.currentUserIsTeacher = isTeacher;
+      if(teacherPanelBtn){
+        teacherPanelBtn.style.display = isTeacher ? "inline-block" : "none";
+      }
+      console.log("Teacher access:", {uid:user.uid,email:user.email,isTeacher:isTeacher});
     }catch(e){
       teacherPanelBtn.style.display = "none";
       window.currentUserIsTeacher = false;
