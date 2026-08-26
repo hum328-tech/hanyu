@@ -453,7 +453,7 @@
     <div class="teacher-head">
       <div>
         <h2>Panel docente</h2>
-        <div class="teacher-summary" id="teacherSummary">Seguimiento del grupo</div><div class="admin-setup-note">El botón solo aparece si tu UID existe en la colección <strong>admins</strong> de Firestore.</div>
+        <div class="teacher-summary" id="teacherSummary">Seguimiento del grupo</div><div class="admin-setup-note">El botón aparece al iniciar sesión. Si la cuenta aún no es docente, mostrará el UID exacto que debes registrar en Firestore.</div>
       </div>
       <button class="teacher-close" id="teacherCloseBtn" type="button">Cerrar ✕</button>
     </div>
@@ -1083,9 +1083,20 @@
   }
 
   teacherPanelBtn.addEventListener("click",function(){
-    if(!window.currentUserIsTeacher) return;
     teacherPanel.classList.add("open");
-    loadTeacherPanel();
+    if(window.currentUserIsTeacher){
+      loadTeacherPanel();
+    }else{
+      const u = auth.currentUser;
+      teacherUsersBody.innerHTML = "";
+      teacherSummary.textContent = "Configuración del acceso docente";
+      teacherPanelMessage.style.color = "#7a5300";
+      teacherPanelMessage.innerHTML =
+        "El botón ya funciona, pero esta cuenta todavía no está marcada como docente en Firestore.<br><br>" +
+        "<strong>UID de esta cuenta:</strong><br><code style='word-break:break-all'>" + (u ? u.uid : "—") + "</code><br><br>" +
+        "En Firestore crea la colección <strong>admins</strong> y dentro un documento cuyo ID sea exactamente ese UID. " +
+        "Después cierra sesión y vuelve a entrar.";
+    }
   });
   teacherCloseBtn.addEventListener("click",function(){ teacherPanel.classList.remove("open"); });
 
@@ -1106,6 +1117,7 @@
       if(!snap.exists){
         await ref.set({
           email: user.email || "",
+          username: usernameFromEmail(user.email),
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
           updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
           progress: {
@@ -1136,7 +1148,8 @@
       const isTeacher = await currentUserIsTeacher(user);
       window.currentUserIsTeacher = isTeacher;
       if(teacherPanelBtn){
-        teacherPanelBtn.style.display = isTeacher ? "inline-block" : "none";
+        teacherPanelBtn.style.display = "inline-block";
+        teacherPanelBtn.textContent = isTeacher ? "Panel docente" : "Panel docente ⚙";
       }
       console.log("Teacher access:", {uid:user.uid,email:user.email,isTeacher:isTeacher});
     }catch(e){
