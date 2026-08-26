@@ -409,6 +409,23 @@
   padding:10px 12px;margin:10px 0;border-radius:12px;background:#fff7dc;border:1px solid #f8dc86;color:#7a5300;font-size:13px
 }
 
+
+#teacherFloating{
+  position:fixed;
+  right:18px;
+  bottom:18px;
+  z-index:2147482500;
+  display:none;
+  border:0;
+  border-radius:999px;
+  padding:14px 18px;
+  background:#172033;
+  color:white;
+  font-weight:950;
+  box-shadow:0 12px 32px rgba(0,0,0,.24);
+  cursor:pointer;
+}
+
 </style>
 </head>
 <body>
@@ -448,6 +465,7 @@
 </div>
 
 
+<button id="teacherFloating" type="button">👨‍🏫 Panel docente</button>
 <div id="teacherPanel">
   <div class="teacher-card">
     <div class="teacher-head">
@@ -847,15 +865,9 @@
      La cuenta docente se marca manualmente en Firestore:
      admins/{UID_DEL_PROFESOR}
      ========================================================= */
+  const TEACHER_UID = "jf14LeIrCpdKFCaFbyBmDzJMi812";
   async function currentUserIsTeacher(user){
-    if(!user) return false;
-    try{
-      const snap = await db.collection("admins").doc(user.uid).get();
-      return snap.exists;
-    }catch(e){
-      console.error("Admin check:", e);
-      return false;
-    }
+    return !!user && user.uid === TEACHER_UID;
   }
 
   function usernameFromEmail(email){
@@ -876,6 +888,7 @@
   const sessionEmail = document.getElementById("sessionEmail");
   const signOutButton = document.getElementById("signOutButton");
   const teacherPanelBtn = document.getElementById("teacherPanelBtn");
+  const teacherFloating = document.getElementById("teacherFloating");
   const teacherPanel = document.getElementById("teacherPanel");
   const teacherCloseBtn = document.getElementById("teacherCloseBtn");
   const teacherUsersBody = document.getElementById("teacherUsersBody");
@@ -1098,6 +1111,10 @@
         "Después cierra sesión y vuelve a entrar.";
     }
   });
+  teacherFloating.addEventListener("click",function(){
+    teacherPanel.classList.add("open");
+    loadTeacherPanel();
+  });
   teacherCloseBtn.addEventListener("click",function(){ teacherPanel.classList.remove("open"); });
 
   auth.onAuthStateChanged(async function(user){
@@ -1107,6 +1124,7 @@
       sessionEmail.textContent = "";
       signOutButton.style.display = "none";
       teacherPanelBtn.style.display = "none";
+      if(teacherFloating) teacherFloating.style.display = "none";
       return;
     }
 
@@ -1148,10 +1166,13 @@
       const isTeacher = await currentUserIsTeacher(user);
       window.currentUserIsTeacher = isTeacher;
       if(teacherPanelBtn){
-        teacherPanelBtn.style.display = "inline-block";
-        teacherPanelBtn.textContent = isTeacher ? "Panel docente" : "Panel docente ⚙";
+        teacherPanelBtn.style.display = isTeacher ? "inline-block" : "none";
+        teacherPanelBtn.textContent = "Panel docente";
       }
-      console.log("Teacher access:", {uid:user.uid,email:user.email,isTeacher:isTeacher});
+      if(teacherFloating){
+        teacherFloating.style.display = isTeacher ? "block" : "none";
+      }
+      console.log("Teacher access:", {uid:user.uid,email:user.email,isTeacher:isTeacher,expectedUid:TEACHER_UID});
     }catch(e){
       teacherPanelBtn.style.display = "none";
       window.currentUserIsTeacher = false;
