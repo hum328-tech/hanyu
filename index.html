@@ -332,8 +332,8 @@
       <div class="lesson-head">
         <button class="back-btn" onclick="goHome()">← Lecciones</button>
         <div>
-          <div style="color:var(--primary);font-weight:900">第一课 · Dì-yī kè</div>
-          <h2>Lección 1: saludos y presentaciones</h2>
+          <div id="lessonKicker" style="color:var(--primary);font-weight:900">第一课 · Dì-yī kè</div>
+          <h2 id="lessonTitle">Lección 1: saludos y presentaciones</h2>
         </div>
       </div>
 
@@ -752,7 +752,69 @@ const vocab = [
   {hanzi:"她是谁？", pinyin:"Tā shì shéi?", es:"¿Quién es ella?", cat:"frases"}
 ];
 
-const pronWords = vocab.filter(v => v.pinyin.trim().split(/\s+/).length === 2 || [...v.hanzi].length === 2);
+const lesson2Vocab = [
+  {hanzi:"护士", pinyin:"hùshi", es:"enfermero/a", cat:"profesiones"},
+  {hanzi:"工人", pinyin:"gōngrén", es:"obrero/a; trabajador", cat:"profesiones"},
+  {hanzi:"售货员", pinyin:"shòuhuòyuán", es:"vendedor/a", cat:"profesiones"},
+  {hanzi:"医生", pinyin:"yīshēng", es:"médico/a", cat:"profesiones"},
+  {hanzi:"职员", pinyin:"zhíyuán", es:"empleado/a", cat:"profesiones"},
+  {hanzi:"家庭主妇", pinyin:"jiātíng zhǔfù", es:"ama de casa", cat:"profesiones"},
+  {hanzi:"秘书", pinyin:"mìshū", es:"secretario/a", cat:"profesiones"},
+  {hanzi:"商人", pinyin:"shāngrén", es:"comerciante; empresario", cat:"profesiones"},
+  {hanzi:"工程师", pinyin:"gōngchéngshī", es:"ingeniero/a", cat:"profesiones"},
+  {hanzi:"建筑师", pinyin:"jiànzhùshī", es:"arquitecto/a", cat:"profesiones"},
+  {hanzi:"记者", pinyin:"jìzhě", es:"periodista", cat:"profesiones"},
+  {hanzi:"律师", pinyin:"lǜshī", es:"abogado/a", cat:"profesiones"},
+  {hanzi:"作家", pinyin:"zuòjiā", es:"escritor/a", cat:"profesiones"},
+  {hanzi:"服务员", pinyin:"fúwùyuán", es:"camarero/a; personal de servicio", cat:"profesiones"},
+  {hanzi:"设计师", pinyin:"shèjìshī", es:"diseñador/a", cat:"profesiones"},
+
+  {hanzi:"办公室", pinyin:"bàngōngshì", es:"oficina", cat:"lugares"},
+  {hanzi:"商店", pinyin:"shāngdiàn", es:"tienda", cat:"lugares"},
+  {hanzi:"公司", pinyin:"gōngsī", es:"empresa", cat:"lugares"},
+  {hanzi:"书房", pinyin:"shūfáng", es:"estudio; despacho", cat:"lugares"},
+  {hanzi:"学校", pinyin:"xuéxiào", es:"escuela", cat:"lugares"},
+  {hanzi:"法院", pinyin:"fǎyuàn", es:"tribunal", cat:"lugares"},
+  {hanzi:"医院", pinyin:"yīyuàn", es:"hospital", cat:"lugares"},
+  {hanzi:"工厂", pinyin:"gōngchǎng", es:"fábrica", cat:"lugares"},
+  {hanzi:"家", pinyin:"jiā", es:"casa; hogar", cat:"lugares"},
+  {hanzi:"饭馆", pinyin:"fànguǎn", es:"restaurante", cat:"lugares"},
+
+  {hanzi:"工作", pinyin:"gōngzuò", es:"trabajar; trabajo", cat:"trabajo"},
+  {hanzi:"正式场合", pinyin:"zhèngshì chǎnghé", es:"situación formal", cat:"trabajo"},
+  {hanzi:"非正式场合", pinyin:"fēi zhèngshì chǎnghé", es:"situación informal", cat:"trabajo"},
+  {hanzi:"先生", pinyin:"xiānsheng", es:"señor", cat:"trabajo"},
+  {hanzi:"小姐", pinyin:"xiǎojiě", es:"señorita", cat:"trabajo"},
+  {hanzi:"经理", pinyin:"jīnglǐ", es:"gerente", cat:"trabajo"},
+  {hanzi:"高兴", pinyin:"gāoxìng", es:"contento; alegre", cat:"trabajo"},
+  {hanzi:"认识", pinyin:"rènshi", es:"conocer a alguien", cat:"trabajo"},
+  {hanzi:"同学", pinyin:"tóngxué", es:"compañero/a de estudios", cat:"trabajo"},
+
+  {hanzi:"这", pinyin:"zhè", es:"este; esta; esto", cat:"demostrativos"},
+  {hanzi:"那", pinyin:"nà", es:"ese; esa; aquello", cat:"demostrativos"},
+  {hanzi:"这里", pinyin:"zhèlǐ", es:"aquí", cat:"demostrativos"},
+  {hanzi:"这儿", pinyin:"zhèr", es:"aquí", cat:"demostrativos"},
+  {hanzi:"那里", pinyin:"nàlǐ", es:"allí", cat:"demostrativos"},
+  {hanzi:"那儿", pinyin:"nàr", es:"allí", cat:"demostrativos"},
+
+  {hanzi:"都", pinyin:"dōu", es:"todos; ambos", cat:"funcionales"},
+  {hanzi:"在", pinyin:"zài", es:"estar en; en", cat:"funcionales"},
+  {hanzi:"哪儿", pinyin:"nǎr", es:"dónde", cat:"funcionales"},
+  {hanzi:"什么地方", pinyin:"shénme dìfang", es:"qué lugar; dónde", cat:"funcionales"},
+  {hanzi:"地方", pinyin:"dìfang", es:"lugar", cat:"funcionales"}
+];
+
+const lessonMeta = {
+  1:{kicker:"第一课 · Dì-yī kè", title:"Lección 1: saludos y presentaciones"},
+  2:{kicker:"第二课 · Dì-èr kè", title:"Lección 2: profesiones y lugares de trabajo"}
+};
+let currentLesson = 1;
+
+function currentVocab(){
+  return currentLesson===2 ? lesson2Vocab : vocab;
+}
+
+let pronWords = currentVocab().filter(v => v.pinyin.trim().split(/\s+/).length === 2 || [...v.hanzi].length === 2);(v => v.pinyin.trim().split(/\s+/).length === 2 || [...v.hanzi].length === 2);
 let pronIndex = 0;
 let flashIndex = 0;
 
@@ -760,20 +822,27 @@ function renderLessons(){
   const grid = document.getElementById("lessonGrid");
   grid.innerHTML = "";
   for(let i=1;i<=10;i++){
-    const unlocked = i===1;
+    const unlocked = i===1 || i===2;
     const btn = document.createElement("button");
     btn.className = "lesson-card" + (unlocked ? "" : " locked");
+    const title = i===1 ? "Saludos y presentaciones" : (i===2 ? "Profesiones y lugares de trabajo" : "Próximamente");
     btn.innerHTML = `
       <div class="lesson-number">LECCIÓN ${i}</div>
-      <div class="lesson-title">${i===1 ? "Saludos y presentaciones" : "Próximamente"}</div>
+      <div class="lesson-title">${title}</div>
       ${unlocked ? '<span class="open-chip">Disponible</span>' : '<span class="lock">🔒</span>'}
     `;
-    if(unlocked) btn.onclick = openLesson;
+    if(unlocked) btn.onclick = ()=>openLesson(i);
     grid.appendChild(btn);
   }
 }
 
-function openLesson(){
+function openLesson(lesson=1){
+  currentLesson = lesson;
+  const meta = lessonMeta[lesson];
+  lessonKicker.textContent = meta.kicker;
+  lessonTitle.textContent = meta.title;
+  activeListCategory = "todos";
+  refreshLessonData();
   document.getElementById("homeScreen").classList.remove("active");
   document.getElementById("lessonScreen").classList.add("active");
   window.scrollTo({top:0,behavior:"smooth"});
@@ -785,7 +854,7 @@ function goHome(){
 }
 
 
-const categoryLabels = {
+const categoryLabels1 = {
   saludos:"Saludos y despedidas",
   pronombres:"Pronombres",
   verbos:"Verbos",
@@ -796,14 +865,22 @@ const categoryLabels = {
   gramaticales:"Palabras gramaticales",
   frases:"Frases completas"
 };
+const categoryLabels2 = {
+  profesiones:"Profesiones",
+  lugares:"Lugares de trabajo",
+  trabajo:"Trabajo y presentación",
+  demostrativos:"Demostrativos",
+  funcionales:"Lugar y palabras funcionales"
+};
+function currentCategoryLabels(){ return currentLesson===2 ? categoryLabels2 : categoryLabels1; }
 let activeListCategory = "todos";
 
 function renderCategoryBar(){
   const bar = document.getElementById("categoryBar");
-  const cats = ["todos", ...Object.keys(categoryLabels)];
+  const cats = ["todos", ...Object.keys(currentCategoryLabels())];
   bar.innerHTML = cats.map(cat=>`
     <button class="category-btn ${cat===activeListCategory ? "active":""}" onclick="setListCategory('${cat}')">
-      ${cat==="todos" ? "Todos" : categoryLabels[cat]}
+      ${cat==="todos" ? "Todos" : currentCategoryLabels()[cat]}
     </button>
   `).join("");
 }
@@ -816,14 +893,14 @@ function setListCategory(cat){
 
 function renderVocab(){
   const list = document.getElementById("vocabList");
-  const cats = activeListCategory==="todos" ? Object.keys(categoryLabels) : [activeListCategory];
+  const cats = activeListCategory==="todos" ? Object.keys(currentCategoryLabels()) : [activeListCategory];
   list.innerHTML = cats.map(cat=>{
-    const items = vocab.filter(v=>v.cat===cat);
+    const items = currentVocab().filter(v=>v.cat===cat);
     if(!items.length) return "";
     return `
       <section>
         <div class="category-heading">
-          <h4>${categoryLabels[cat]}</h4>
+          <h4>${currentCategoryLabels()[cat]}</h4>
           <span class="category-count">${items.length} elementos</span>
         </div>
         ${items.map(v=>`
@@ -908,7 +985,7 @@ function startRecognition(){
 }
 
 function updateFlash(){
-  const v = vocab[flashIndex % vocab.length];
+  const data=currentVocab(); const v = data[flashIndex % data.length];
   flashHanzi.textContent = v.hanzi;
   flashPinyin.textContent = v.pinyin;
   flashBackPinyin.textContent = v.pinyin;
@@ -916,12 +993,12 @@ function updateFlash(){
   flashcard.classList.remove("flipped");
   applyPinyinToggle();
 }
-function nextFlash(){ flashIndex=(flashIndex+1)%vocab.length; updateFlash();
+function nextFlash(){ const data=currentVocab(); flashIndex=(flashIndex+1)%data.length; updateFlash();
 initQuizControls();
 nextQuiz();
 initRadicalControls();
 renderRadicals(); }
-function speakFlash(){ speak(vocab[flashIndex % vocab.length].hanzi); }
+function speakFlash(){ const data=currentVocab(); speak(data[flashIndex % data.length].hanzi); }
 function applyPinyinToggle(){
   const show = document.getElementById("pinyinToggle").checked;
   document.getElementById("flashPinyin").style.display = show ? "block" : "none";
@@ -1123,7 +1200,7 @@ let quizAnswered = false;
 function initQuizControls(){
   quizCategory.innerHTML = `
     <option value="todos">Todo el vocabulario</option>
-    ${Object.entries(categoryLabels).map(([k,v])=>`<option value="${k}">${v}</option>`).join("")}
+    ${Object.entries(currentCategoryLabels()).map(([k,v])=>`<option value="${k}">${v}</option>`).join("")}
   `;
   quizCategory.addEventListener("change", nextQuiz);
   quizDirection.addEventListener("change", nextQuiz);
@@ -1132,7 +1209,7 @@ function initQuizControls(){
 
 function getQuizPool(){
   const cat = quizCategory.value || "todos";
-  return cat==="todos" ? vocab : vocab.filter(v=>v.cat===cat);
+  return cat==="todos" ? vocab : currentVocab().filter(v=>v.cat===cat);
 }
 
 function shuffle(arr){
@@ -1188,13 +1265,19 @@ function speakQuiz(){
 }
 
 
-const writingChars = [...new Set("你好早上晚安再见明天身体名字姓名国学生老师学习汉语中文英语法国德国日本美国西班牙俄罗斯意大利墨西哥韩国")].slice(0,28);
+let writingChars = [];
+function getWritingChars(){
+  const source = currentLesson===2
+    ? "护士工人售货员医生职员家庭主妇秘书商人工程师建筑师记者律师作家服务员设计师办公室商店公司书房学校法院医院工厂家饭馆工作正式场合非正式先生小姐经理高兴认识同学这那里儿都在哪地方"
+    : "你好早上晚安再见明天身体名字姓名国学生老师学习汉语中文英语法国德国日本美国西班牙俄罗斯意大利墨西哥韩国";
+  return [...new Set(source)].slice(0,28);
+}
 let writersInitialized = false;
 const writers = {};
 
 function initWriters(){
-  if(writersInitialized) return;
   writersInitialized = true;
+  writingChars = getWritingChars();
   const grid = document.getElementById("writingGrid");
   grid.innerHTML = writingChars.map((ch,i)=>`
     <div class="writer-card">
@@ -1471,6 +1554,448 @@ function finishFinalTest(){
   }).join("");
   testResult.innerHTML=`<div class="test-badge">${pct>=80?"🏆":"📘"}</div><div class="score-big">${pct}%</div><h3>${correct} / ${testAnswers.length} correctas</h3><div class="score-grid">${details}</div><h3>Calificación final: ${grade} / 10</h3><p>${pct>=80?"✅ Lección aprobada.":"🔁 Conviene repasar antes de continuar."}</p><button class="primary-btn" onclick="startFinalTest()">Intentar otra vez</button>`;
   testResult.style.display="block";
+}
+
+
+function refreshLessonData(){
+  pronWords = currentVocab().filter(v => v.pinyin.trim().split(/\s+/).length === 2 || [...v.hanzi].length === 2);
+  pronIndex=0; flashIndex=0; writersInitialized=false;
+  renderCategoryBar();
+  renderVocab();
+  updatePron();
+  updateFlash();
+  initQuizControls();
+  nextQuiz();
+  const grammar = document.getElementById("gramatica");
+  const exercises = document.getElementById("ejercicios");
+  const tests = document.getElementById("pruebas");
+
+  if(currentLesson===2){
+    grammar.innerHTML = lesson2GrammarHTML;
+    exercises.innerHTML = lesson2ExercisesHTML;
+    tests.innerHTML = lesson2TestsHTML;
+  } else {
+    if(window.originalGrammarHTML) grammar.innerHTML = window.originalGrammarHTML;
+    if(window.originalExercisesHTML) exercises.innerHTML = window.originalExercisesHTML;
+    if(window.originalTestsHTML) tests.innerHTML = window.originalTestsHTML;
+    bindTabSensitiveEvents();
+  }
+}
+
+window.originalGrammarHTML = document.getElementById("gramatica").innerHTML;
+window.originalExercisesHTML = document.getElementById("ejercicios").innerHTML;
+window.originalTestsHTML = document.getElementById("pruebas").innerHTML;
+
+function bindTabSensitiveEvents(){
+  // no-op for now; buttons use inline handlers
+}
+
+const lesson2GrammarHTML = `
+  <div class="panel">
+    <h3 class="section-title">Gramática de la lección 2</h3>
+    <p class="section-subtitle">Aprende cada estructura con ejemplos cortos usando solamente vocabulario de las lecciones 1 y 2.</p>
+
+    <div class="grammar-grid">
+      <article class="grammar-card">
+        <div class="grammar-step">1</div>
+        <h4>这 / 那 · este, ese</h4>
+        <div class="formula">这 = cerca · 那 = lejos</div>
+        <p class="grammar-tip">Se usan para señalar personas u objetos.</p>
+        <div class="grammar-examples">
+          <button onclick="speak('这是中文书')"><span>这是中文书。</span><small>Zhè shì Zhōngwén shū. · Este es un libro de chino.</small></button>
+          <button onclick="speak('那是我的')"><span>那是我的。</span><small>Nà shì wǒ de. · Ese es mío.</small></button>
+        </div>
+        <div class="mini-examples">
+          <div><strong>这里 / 这儿</strong> = aquí</div>
+          <div><strong>那里 / 那儿</strong> = allí</div>
+        </div>
+      </article>
+
+      <article class="grammar-card">
+        <div class="grammar-step">2</div>
+        <h4>也 · también</h4>
+        <div class="formula">Sujeto + 也 + Verbo...</div>
+        <p class="grammar-tip">也 va antes del verbo.</p>
+        <div class="grammar-examples">
+          <button onclick="speak('他是西班牙人，我也是西班牙人')"><span>他是西班牙人，我也是西班牙人。</span><small>Él es español; yo también soy español.</small></button>
+          <button onclick="speak('他不是中国人，我也不是中国人')"><span>他不是中国人，我也不是中国人。</span><small>Él no es chino; yo tampoco soy chino.</small></button>
+        </div>
+      </article>
+
+      <article class="grammar-card">
+        <div class="grammar-step">3</div>
+        <h4>都 · todos / ambos</h4>
+        <div class="formula">Sujeto plural + 都 + Verbo...</div>
+        <div class="grammar-examples">
+          <button onclick="speak('他们都是学生')"><span>他们都是学生。</span><small>Todos ellos son estudiantes.</small></button>
+          <button onclick="speak('他们都不是学生')"><span>他们都不是学生。</span><small>Ninguno de ellos es estudiante.</small></button>
+        </div>
+        <div class="rule-note"><strong>Orden:</strong> cuando 也 y 都 aparecen juntos, 也 va antes de 都: <strong>也都</strong>.</div>
+      </article>
+
+      <article class="grammar-card">
+        <div class="grammar-step">4</div>
+        <h4>的 · posesión</h4>
+        <div class="formula">Poseedor + 的 + Sustantivo</div>
+        <div class="grammar-examples">
+          <button onclick="speak('这是我的书')"><span>这是我的书。</span><small>Este es mi libro.</small></button>
+          <button onclick="speak('他的朋友')"><span>他的朋友</span><small>su amigo / el amigo de él</small></button>
+        </div>
+        <div class="mini-examples">
+          <div>我 + 的 → 我的</div>
+          <div>你 + 的 → 你的</div>
+          <div>他 + 的 → 他的</div>
+          <div>我们 + 的 → 我们的</div>
+        </div>
+      </article>
+
+      <article class="grammar-card">
+        <div class="grammar-step">5</div>
+        <h4>的 · describir un sustantivo</h4>
+        <div class="formula">Nombre / sustantivo / adjetivo + 的 + sustantivo</div>
+        <p class="grammar-tip">的 conecta el elemento que describe o posee con el sustantivo principal.</p>
+        <div class="question-pairs">
+          <div><strong>我的朋友</strong><span>mi amigo</span></div>
+          <div><strong>安娜的书包</strong><span>la mochila de Anna</span></div>
+          <div><strong>我朋友的中文书</strong><span>el libro de chino de mi amigo</span></div>
+        </div>
+      </article>
+
+      <article class="grammar-card">
+        <div class="grammar-step">6</div>
+        <h4>在 · estar en / en</h4>
+        <div class="formula">Sujeto + 在 + lugar (+ verbo)</div>
+        <p class="grammar-tip">在 puede funcionar como verbo “estar” o como preposición “en”.</p>
+        <div class="grammar-examples">
+          <button onclick="speak('他在中国')"><span>他在中国。</span><small>Él está en China.</small></button>
+          <button onclick="speak('他们在银行工作')"><span>他们在银行工作。</span><small>Ellos trabajan en el banco.</small></button>
+          <button onclick="speak('她在大学学习')"><span>她在大学学习。</span><small>Ella estudia en la universidad.</small></button>
+        </div>
+        <div class="mini-examples">
+          <div>否定: <strong>不在</strong></div>
+          <div>疑问: <strong>在……吗？</strong></div>
+        </div>
+      </article>
+
+      <article class="grammar-card">
+        <div class="grammar-step">7</div>
+        <h4>哪儿 / 什么地方 · dónde</h4>
+        <div class="formula">在哪儿？ · 在什么地方？</div>
+        <p class="grammar-tip">Sirven para preguntar por un lugar.</p>
+        <div class="question-pairs">
+          <div><strong>你在哪儿学习汉语？</strong><span>我在学校学习汉语。</span></div>
+          <div><strong>你是哪儿的人？</strong><span>我是墨西哥人。</span></div>
+          <div><strong>你在什么地方工作？</strong><span>我在公司工作。</span></div>
+        </div>
+      </article>
+    </div>
+  </div>
+`;
+
+const lesson2ExercisesHTML = `
+  <div class="panel">
+    <div id="exerciseIndexView2">
+      <h3 class="section-title">Ejercicios de gramática · Lección 2</h3>
+      <p class="section-subtitle">Elige un tema. Cada bloque practica una sola estructura.</p>
+
+      <div class="agenda-index">
+        <div class="agenda-title">Lección 2 · Gramática</div>
+        <div class="agenda-subtitle">Ejercicios por tema</div>
+
+        <button class="agenda-link" onclick="openExerciseTopic2('demonstratives')">
+          <span>1.</span><span>这 / 那 · Demostrativos</span><small>5 ejercicios</small>
+        </button>
+        <button class="agenda-link" onclick="openExerciseTopic2('ye')">
+          <span>2.</span><span>也 · También / tampoco</span><small>5 ejercicios</small>
+        </button>
+        <button class="agenda-link" onclick="openExerciseTopic2('dou')">
+          <span>3.</span><span>都 · Todos / ambos</span><small>5 ejercicios</small>
+        </button>
+        <button class="agenda-link" onclick="openExerciseTopic2('de')">
+          <span>4.</span><span>的 · Posesión y relación</span><small>5 ejercicios</small>
+        </button>
+        <button class="agenda-link" onclick="openExerciseTopic2('zai')">
+          <span>5.</span><span>在 · Estar en / trabajar en</span><small>5 ejercicios</small>
+        </button>
+        <button class="agenda-link" onclick="openExerciseTopic2('where')">
+          <span>6.</span><span>哪儿 / 什么地方 · Dónde</span><small>5 ejercicios</small>
+        </button>
+        <button class="agenda-link" onclick="openExerciseTopic2('mixed')">
+          <span>7.</span><span>Repaso mixto</span><small>8 ejercicios</small>
+        </button>
+      </div>
+    </div>
+
+    <div id="exerciseTopicView2" style="display:none">
+      <div class="exercise-topic-head">
+        <button class="back-btn" onclick="backToExerciseIndex2()">← Índice</button>
+        <div>
+          <div class="exercise-topic-kicker">GRAMÁTICA · LECCIÓN 2</div>
+          <h3 id="exerciseTopicTitle2">Tema</h3>
+        </div>
+      </div>
+      <div class="exercise-progress"><div id="exerciseProgressBar2"></div></div>
+      <div class="exercise-card">
+        <div class="exercise-count" id="exerciseCount2"></div>
+        <div class="exercise-type" id="exerciseType2"></div>
+        <div class="exercise-question" id="exerciseQuestion2"></div>
+        <div id="exerciseAnswerArea2"></div>
+        <div class="feedback" id="exerciseFeedback2"></div>
+        <div class="action-row">
+          <button class="secondary-btn" onclick="exerciseHint2()">💡 Pista</button>
+          <button class="primary-btn" id="exerciseCheckBtn2" onclick="checkExercise2()">Comprobar</button>
+          <button class="secondary-btn" id="exerciseNextBtn2" onclick="nextExercise2()" style="display:none">Siguiente →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+`;
+
+const lesson2TestsHTML = `
+  <div class="panel">
+    <h3 class="section-title">Prueba final · Lección 2</h3>
+    <p class="section-subtitle">20 preguntas de vocabulario y gramática. La calificación aparece al finalizar.</p>
+    <div id="testIntro2" class="test-intro">
+      <div class="test-badge">🏆</div>
+      <h4>20 preguntas</h4>
+      <p>Profesiones, lugares de trabajo, demostrativos, 也, 都, 的, 在 y preguntas de lugar.</p>
+      <button class="primary-btn" onclick="startFinalTest2()">Comenzar prueba</button>
+    </div>
+    <div id="testArea2" style="display:none">
+      <div class="exercise-progress"><div id="testProgressBar2"></div></div>
+      <div class="exercise-card">
+        <div class="exercise-count" id="testCount2"></div>
+        <div class="exercise-type" id="testType2"></div>
+        <div class="exercise-question" id="testQuestion2"></div>
+        <div id="testAnswerArea2"></div>
+        <div class="action-row" style="margin-top:18px">
+          <button class="primary-btn" onclick="submitTestAnswer2()">Guardar respuesta →</button>
+        </div>
+      </div>
+    </div>
+    <div id="testResult2" class="test-result" style="display:none"></div>
+  </div>
+`;
+
+
+const exerciseTopics2 = {
+  demonstratives:{
+    title:"这 / 那 · Demostrativos",
+    items:[
+      {type:"Elige",q:"Señalas un objeto que está cerca de ti. ¿Qué usas?",kind:"choice",options:["那","这","都","在"],answer:"这",hint:"这 se usa para algo cercano."},
+      {type:"Elige",q:"Señalas un objeto que está lejos de ti. ¿Qué usas?",kind:"choice",options:["也","在","那","的"],answer:"那",hint:"那 se usa para algo lejano."},
+      {type:"Significado",q:"这里",kind:"choice",options:["allí","dónde","aquí","lugar"],answer:"aquí",hint:"这里 significa aquí."},
+      {type:"Significado",q:"那儿",kind:"choice",options:["aquí","allí","empresa","escuela"],answer:"allí",hint:"那儿 indica un lugar alejado."},
+      {type:"Elige",q:"¿Cuál significa “Este es mi libro”?",kind:"choice",options:["那是我的书。","这是我的书。","这是你的书吗？","他在学校。"],answer:"这是我的书。",hint:"“Este” = 这."}
+    ]
+  },
+  ye:{
+    title:"也 · También / tampoco",
+    items:[
+      {type:"Completa",q:"他是学生，我 ___ 是学生。",kind:"choice",options:["都","也","在","那"],answer:"也",hint:"La idea es “yo también”."},
+      {type:"Completa",q:"他不是老师，我 ___ 不是老师。",kind:"choice",options:["也","的","这","哪儿"],answer:"也",hint:"也 también se usa en frases negativas."},
+      {type:"Orden",q:"¿Dónde va 也?",kind:"choice",options:["Después del verbo","Antes del verbo","Al final","Antes del sujeto"],answer:"Antes del verbo",hint:"Sujeto + 也 + verbo."},
+      {type:"Elige",q:"¿Cuál significa “Yo también soy mexicano”?",kind:"choice",options:["我都是墨西哥人。","我也是墨西哥人。","我在墨西哥人。","我不是墨西哥人。"],answer:"我也是墨西哥人。",hint:"También = 也."},
+      {type:"Elige",q:"¿Cuál significa “Yo tampoco soy chino”?",kind:"choice",options:["我也不是中国人。","我都是中国人。","我在中国人。","我是中国人吗？"],answer:"我也不是中国人。",hint:"也 + 不是 expresa “tampoco soy”."}
+    ]
+  },
+  dou:{
+    title:"都 · Todos / ambos",
+    items:[
+      {type:"Completa",q:"他们 ___ 是学生。",kind:"choice",options:["在","都","也","的"],answer:"都",hint:"El sujeto es plural y significa “todos”."},
+      {type:"Completa",q:"我们 ___ 是墨西哥人。",kind:"choice",options:["哪儿","都","那","这"],answer:"都",hint:"都 = todos / ambos."},
+      {type:"Elige",q:"¿Cuál significa “Ninguno de ellos es estudiante”?",kind:"choice",options:["他们也都是学生。","他们都不是学生。","他们是学生吗？","他们在学校。"],answer:"他们都不是学生。",hint:"都 + 不是."},
+      {type:"Orden",q:"Cuando 也 y 都 aparecen juntos, ¿cuál va primero?",kind:"choice",options:["都","也","是","在"],answer:"也",hint:"El libro indica 也都."},
+      {type:"Elige",q:"¿Cuál tiene el orden correcto?",kind:"choice",options:["我们都也学生。","我们也都是学生。","我们是也都学生。","我们学生也都。"],answer:"我们也都是学生。",hint:"Sujeto + 也 + 都 + 是..."}
+    ]
+  },
+  de:{
+    title:"的 · Posesión y relación",
+    items:[
+      {type:"Completa",q:"我 ___ 书",kind:"choice",options:["在","的","都","也"],answer:"的",hint:"Mi libro = 我的书."},
+      {type:"Completa",q:"安娜 ___ 书包",kind:"choice",options:["也","哪儿","的","在"],answer:"的",hint:"La mochila de Anna = 安娜的书包."},
+      {type:"Elige",q:"¿Cuál significa “mi amigo”?",kind:"choice",options:["我的朋友","朋友的我","我在朋友","我都朋友"],answer:"我的朋友",hint:"Poseedor + 的 + sustantivo."},
+      {type:"Elige",q:"¿Cuál significa “el libro de chino de mi amigo”?",kind:"choice",options:["我朋友的中文书","中文书我的朋友","我的中文朋友书","朋友我中文的书"],answer:"我朋友的中文书",hint:"El elemento que posee o describe va antes de 的."},
+      {type:"Regla",q:"¿Qué estructura expresa posesión?",kind:"choice",options:["Poseedor + 的 + Sustantivo","Sustantivo + 在 + Lugar","Sujeto + 都 + Verbo","这 + 吗"],answer:"Poseedor + 的 + Sustantivo",hint:"的 conecta poseedor y objeto."}
+    ]
+  },
+  zai:{
+    title:"在 · Estar en / trabajar en",
+    items:[
+      {type:"Completa",q:"他 ___ 中国。",kind:"choice",options:["都","的","在","那"],answer:"在",hint:"La frase significa “Él está en China”."},
+      {type:"Completa",q:"他们 ___ 公司工作。",kind:"choice",options:["在","谁","这","都不"],answer:"在",hint:"Trabajar en un lugar = 在 + lugar + 工作."},
+      {type:"Negativo",q:"他 ___ 中国。 = Él no está en China.",kind:"choice",options:["不是","不在","也都","没有"],answer:"不在",hint:"La negación de 在 es 不在."},
+      {type:"Pregunta",q:"¿Cuál significa “¿Ellos trabajan en la empresa?”",kind:"choice",options:["他们在公司工作吗？","他们公司工作在。","他们都是公司。","公司是谁？"],answer:"他们在公司工作吗？",hint:"Sujeto + 在 + lugar + 工作 + 吗."},
+      {type:"Elige",q:"¿Cuál significa “Ella estudia en la escuela”?",kind:"choice",options:["她学校是学习。","她在学校学习。","她都学校学习。","她的学校学习。"],answer:"她在学校学习。",hint:"在 introduce el lugar."}
+    ]
+  },
+  where:{
+    title:"哪儿 / 什么地方 · Dónde",
+    items:[
+      {type:"Completa",q:"你在 ___ 工作？",kind:"choice",options:["谁","哪儿","都","的"],answer:"哪儿",hint:"La pregunta pide un lugar."},
+      {type:"Completa",q:"你在 ___ 学习汉语？",kind:"choice",options:["什么地方","也","那","都"],answer:"什么地方",hint:"什么地方 = qué lugar / dónde."},
+      {type:"Elige",q:"¿Cuál pregunta “¿Dónde trabajas?”",kind:"choice",options:["你叫什么名字？","你在什么地方工作？","你是谁？","你是学生吗？"],answer:"你在什么地方工作？",hint:"Busca 在 + 什么地方 + 工作."},
+      {type:"Elige",q:"Respuesta adecuada a 你在哪儿工作？",kind:"choice",options:["我是医生。","我在公司工作。","我是墨西哥人。","我叫安娜。"],answer:"我在公司工作。",hint:"La pregunta pide un lugar de trabajo."},
+      {type:"Elige",q:"¿Cuál pregunta por origen/procedencia?",kind:"choice",options:["你是哪儿的人？","你在公司吗？","你是老师吗？","你叫什么名字？"],answer:"你是哪儿的人？",hint:"哪儿的人 pregunta de dónde es alguien."}
+    ]
+  },
+  mixed:{
+    title:"Repaso mixto",
+    items:[
+      {type:"Completa",q:"___ 是我的书。 = Este es mi libro.",kind:"choice",options:["都","这","在","谁"],answer:"这",hint:"Este = 这."},
+      {type:"Completa",q:"他们 ___ 是学生。 = Todos son estudiantes.",kind:"choice",options:["都","的","哪儿","那"],answer:"都",hint:"Todos = 都."},
+      {type:"Completa",q:"我 ___ 是老师。 = Yo también soy profesor.",kind:"choice",options:["在","也","都不","那"],answer:"也",hint:"También = 也."},
+      {type:"Completa",q:"这是我 ___ 书。",kind:"choice",options:["在","也","的","都"],answer:"的",hint:"Mi libro = 我的书."},
+      {type:"Completa",q:"她 ___ 医院工作。",kind:"choice",options:["在","这","都","谁"],answer:"在",hint:"Trabajar en = 在 + lugar + 工作."},
+      {type:"Pregunta",q:"你在 ___ 工作？",kind:"choice",options:["老师","哪儿","这","都"],answer:"哪儿",hint:"Se pregunta por lugar."},
+      {type:"Vocabulario",q:"律师",kind:"choice",options:["periodista","abogado/a","ingeniero/a","médico/a"],answer:"abogado/a",hint:"Es una profesión."},
+      {type:"Vocabulario",q:"医院",kind:"choice",options:["empresa","hospital","fábrica","escuela"],answer:"hospital",hint:"Es un lugar de trabajo."}
+    ]
+  }
+};
+
+let currentExerciseTopic2="demonstratives";
+let grammarExercises2=[];
+let exerciseIndex2=0, exerciseSelected2=null;
+
+function openExerciseTopic2(topic){
+  currentExerciseTopic2=topic;
+  grammarExercises2=exerciseTopics2[topic].items;
+  exerciseIndex2=0;
+  document.getElementById("exerciseIndexView2").style.display="none";
+  document.getElementById("exerciseTopicView2").style.display="block";
+  document.getElementById("exerciseTopicTitle2").textContent=exerciseTopics2[topic].title;
+  renderExercise2();
+}
+function backToExerciseIndex2(){
+  document.getElementById("exerciseTopicView2").style.display="none";
+  document.getElementById("exerciseIndexView2").style.display="block";
+}
+function renderExercise2(){
+  const ex=grammarExercises2[exerciseIndex2];
+  exerciseSelected2=null;
+  exerciseCount2.textContent=`Ejercicio ${exerciseIndex2+1} de ${grammarExercises2.length}`;
+  exerciseType2.textContent=ex.type;
+  exerciseQuestion2.textContent=ex.q;
+  exerciseFeedback2.textContent="";
+  exerciseNextBtn2.style.display="none";
+  exerciseCheckBtn2.style.display="inline-block";
+  exerciseProgressBar2.style.width=`${(exerciseIndex2/grammarExercises2.length)*100}%`;
+  exerciseAnswerArea2.innerHTML=`<div class="exercise-options">${ex.options.map(o=>`<button class="exercise-option" onclick="selectExerciseOption2(this,'${escapeQuotes(o)}')">${o}</button>`).join("")}</div>`;
+}
+function selectExerciseOption2(btn,val){
+  document.querySelectorAll("#exerciseAnswerArea2 .exercise-option").forEach(b=>b.classList.remove("selected"));
+  btn.classList.add("selected");
+  exerciseSelected2=val;
+}
+function checkExercise2(){
+  const ex=grammarExercises2[exerciseIndex2];
+  if(!exerciseSelected2){
+    exerciseFeedback2.textContent="Selecciona una respuesta.";
+    exerciseFeedback2.style.color="var(--danger)";
+    return;
+  }
+  const ok=exerciseSelected2===ex.answer;
+  exerciseFeedback2.textContent=ok ? "✅ Correcto. Muy bien." : `❌ Revisa la estructura. Respuesta: ${ex.answer}`;
+  exerciseFeedback2.style.color=ok ? "var(--ok)" : "var(--danger)";
+  exerciseNextBtn2.style.display="inline-block";
+  exerciseCheckBtn2.style.display="none";
+  exerciseProgressBar2.style.width=`${((exerciseIndex2+1)/grammarExercises2.length)*100}%`;
+}
+function exerciseHint2(){
+  const ex=grammarExercises2[exerciseIndex2];
+  exerciseFeedback2.textContent="💡 "+ex.hint;
+  exerciseFeedback2.style.color="var(--primary)";
+}
+function nextExercise2(){
+  if(exerciseIndex2 < grammarExercises2.length-1){
+    exerciseIndex2++;
+    renderExercise2();
+  }else{
+    exerciseFeedback2.textContent="✅ Tema completado.";
+    exerciseFeedback2.style.color="var(--ok)";
+    exerciseNextBtn2.textContent="Volver al índice";
+    exerciseNextBtn2.onclick=()=>{
+      exerciseNextBtn2.textContent="Siguiente →";
+      exerciseNextBtn2.onclick=nextExercise2;
+      backToExerciseIndex2();
+    };
+  }
+}
+
+const finalTestBank2 = [
+  {cat:"Gramática",type:"Demostrativos",q:"“Este” se expresa con:",options:["那","这","都","在"],answer:"这"},
+  {cat:"Gramática",type:"Demostrativos",q:"“Allí” se expresa con:",options:["这里","那儿","哪儿","地方"],answer:"那儿"},
+  {cat:"Gramática",type:"也",q:"他是学生，我 ___ 是学生。",options:["也","都","在","的"],answer:"也"},
+  {cat:"Gramática",type:"都",q:"他们 ___ 是学生。",options:["的","都","那","在"],answer:"都"},
+  {cat:"Gramática",type:"都",q:"Orden correcto de 也 + 都:",options:["都也","也都","都是也","也在都"],answer:"也都"},
+  {cat:"Gramática",type:"的",q:"“mi libro”",options:["书的我","我的书","我在书","我都书"],answer:"我的书"},
+  {cat:"Gramática",type:"的",q:"安娜 ___ 书包",options:["的","也","都","在"],answer:"的"},
+  {cat:"Gramática",type:"在",q:"他 ___ 中国。",options:["在","也","都","的"],answer:"在"},
+  {cat:"Gramática",type:"在",q:"Negación de 在:",options:["不是","不在","没有","都不"],answer:"不在"},
+  {cat:"Gramática",type:"Lugar",q:"你在 ___ 工作？",options:["哪儿","谁","什么","都"],answer:"哪儿"},
+  {cat:"Vocabulario",type:"Profesión",q:"医生",options:["médico/a","abogado/a","periodista","ingeniero/a"],answer:"médico/a"},
+  {cat:"Vocabulario",type:"Profesión",q:"护士",options:["enfermero/a","diseñador/a","comerciante","secretario/a"],answer:"enfermero/a"},
+  {cat:"Vocabulario",type:"Profesión",q:"工程师",options:["arquitecto/a","ingeniero/a","escritor/a","empleado/a"],answer:"ingeniero/a"},
+  {cat:"Vocabulario",type:"Profesión",q:"律师",options:["periodista","abogado/a","médico/a","vendedor/a"],answer:"abogado/a"},
+  {cat:"Vocabulario",type:"Lugar",q:"公司",options:["empresa","hospital","fábrica","tribunal"],answer:"empresa"},
+  {cat:"Vocabulario",type:"Lugar",q:"医院",options:["escuela","hospital","restaurante","oficina"],answer:"hospital"},
+  {cat:"Vocabulario",type:"Lugar",q:"工厂",options:["fábrica","tienda","casa","empresa"],answer:"fábrica"},
+  {cat:"Comprensión",type:"Lugar",q:"你在哪儿工作？",options:["我在公司工作。","我是医生。","我叫安娜。","我是墨西哥人。"],answer:"我在公司工作。"},
+  {cat:"Comprensión",type:"Posesión",q:"这是谁的书？",options:["这是我的书。","我在学校。","我是学生。","那是公司。"],answer:"这是我的书。"},
+  {cat:"Comprensión",type:"Trabajo",q:"她在医院工作。",options:["Ella trabaja en un hospital.","Ella estudia en la escuela.","Ella es enfermera.","Ella está en México."],answer:"Ella trabaja en un hospital."}
+];
+
+let testItems2=[],testIndex2=0,testAnswers2=[],currentTestSelection2="";
+
+function startFinalTest2(){
+  testItems2=shuffle(finalTestBank2).slice(0,20);
+  testIndex2=0; testAnswers2=[];
+  testIntro2.style.display="none";
+  testResult2.style.display="none";
+  testArea2.style.display="block";
+  renderTestQuestion2();
+}
+function renderTestQuestion2(){
+  const q=testItems2[testIndex2];
+  currentTestSelection2="";
+  testCount2.textContent=`Pregunta ${testIndex2+1} de ${testItems2.length}`;
+  testType2.textContent=`${q.cat} · ${q.type}`;
+  testQuestion2.textContent=q.q;
+  testProgressBar2.style.width=`${(testIndex2/testItems2.length)*100}%`;
+  testAnswerArea2.innerHTML=`<div class="exercise-options">${shuffle(q.options).map(o=>`<button class="exercise-option" onclick="selectTestOption2(this,'${escapeQuotes(o)}')">${o}</button>`).join("")}</div>`;
+}
+function selectTestOption2(btn,val){
+  document.querySelectorAll("#testAnswerArea2 .exercise-option").forEach(b=>b.classList.remove("selected"));
+  btn.classList.add("selected");
+  currentTestSelection2=val;
+}
+function submitTestAnswer2(){
+  if(!currentTestSelection2){ alert("Selecciona una respuesta."); return; }
+  const q=testItems2[testIndex2];
+  testAnswers2.push({q,ans:currentTestSelection2,ok:currentTestSelection2===q.answer});
+  testIndex2++;
+  if(testIndex2>=testItems2.length) finishFinalTest2(); else renderTestQuestion2();
+}
+function finishFinalTest2(){
+  testArea2.style.display="none";
+  const correct=testAnswers2.filter(x=>x.ok).length;
+  const pct=Math.round(correct/testAnswers2.length*100);
+  const grade=(pct/10).toFixed(1);
+  const cats=["Vocabulario","Gramática","Comprensión"];
+  const details=cats.map(cat=>{
+    const arr=testAnswers2.filter(x=>x.q.cat===cat);
+    const score=arr.length ? Math.round(arr.filter(x=>x.ok).length/arr.length*100) : 0;
+    return `<div class="score-box"><strong>${cat}</strong><div>${score}%</div></div>`;
+  }).join("");
+  testResult2.innerHTML=`<div class="test-badge">${pct>=80?"🏆":"📘"}</div>
+    <div class="score-big">${pct}%</div>
+    <h3>${correct} / ${testAnswers2.length} correctas</h3>
+    <div class="score-grid">${details}</div>
+    <h3>Calificación final: ${grade} / 10</h3>
+    <p>${pct>=80?"✅ Lección 2 aprobada.":"🔁 Conviene repasar la lección 2 antes de continuar."}</p>
+    <button class="primary-btn" onclick="startFinalTest2()">Intentar otra vez</button>`;
+  testResult2.style.display="block";
 }
 
 renderLessons();
