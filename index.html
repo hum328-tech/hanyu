@@ -304,9 +304,44 @@
       .exercise-options{grid-template-columns:1fr}
     }
 
-  </style>
+  
+.auth-screen{position:fixed;inset:0;z-index:9999;background:linear-gradient(180deg,#eef5ff 0%,#f9fbff 100%);display:grid;place-items:center;padding:20px}
+.auth-screen.hidden{display:none}
+.auth-card{width:min(94vw,460px);background:white;border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);padding:28px}
+.auth-logo{width:64px;height:64px;border-radius:20px;margin:0 auto 14px;background:linear-gradient(135deg,var(--primary),var(--primary-2));display:grid;place-items:center;color:white;font-size:34px;font-weight:900}
+.auth-title{text-align:center;margin:0;font-size:30px;font-weight:950}.auth-subtitle{text-align:center;color:var(--muted);margin:8px 0 22px;line-height:1.45}
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:18px}.auth-tab{border:1px solid var(--line);background:white;border-radius:14px;padding:11px;font-weight:900;cursor:pointer;color:var(--muted)}
+.auth-tab.active{background:var(--primary);color:white;border-color:var(--primary)}.auth-form{display:grid;gap:12px}.auth-field label{display:block;font-weight:850;margin-bottom:6px}
+.auth-input{width:100%;border:2px solid var(--line);border-radius:14px;padding:13px 14px;font-size:16px;outline:none}.auth-main-btn{border:0;background:var(--primary);color:white;border-radius:15px;padding:14px;font-weight:950;cursor:pointer;font-size:16px}
+.auth-link-btn{border:0;background:transparent;color:var(--primary);font-weight:850;cursor:pointer;padding:4px;text-decoration:underline}.auth-message{min-height:24px;font-weight:800;text-align:center;margin-top:8px}
+.auth-user{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}.auth-user-email{font-size:13px;color:var(--muted);font-weight:800}.auth-logout{border:1px solid var(--line);background:white;border-radius:12px;padding:8px 10px;font-weight:850;cursor:pointer}
+.firebase-note{margin-top:18px;padding:12px;border:1px dashed #f59e0b;border-radius:14px;background:#fff9e8;color:#7a5300;font-size:13px;line-height:1.45}
+
+</style>
 </head>
 <body>
+
+<div id="authScreen" class="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">汉</div>
+    <h1 class="auth-title">Chino interactivo</h1>
+    <p class="auth-subtitle">Crea tu cuenta para guardar tu progreso y continuar desde cualquier dispositivo.</p>
+    <div class="auth-tabs">
+      <button id="loginTab" class="auth-tab active" onclick="showAuthMode('login')">Iniciar sesión</button>
+      <button id="registerTab" class="auth-tab" onclick="showAuthMode('register')">Registrarme</button>
+    </div>
+    <div class="auth-form">
+      <div class="auth-field"><label>Correo electrónico</label><input id="authEmail" class="auth-input" type="email" autocomplete="email" placeholder="ejemplo@correo.com"></div>
+      <div class="auth-field"><label>Contraseña</label><input id="authPassword" class="auth-input" type="password" autocomplete="current-password" placeholder="Mínimo 6 caracteres"></div>
+      <div id="authConfirmWrap" class="auth-field" style="display:none"><label>Confirma tu contraseña</label><input id="authPasswordConfirm" class="auth-input" type="password" autocomplete="new-password" placeholder="Repite tu contraseña"></div>
+      <button id="authSubmitBtn" class="auth-main-btn" onclick="submitAuth()">Iniciar sesión</button>
+      <div style="text-align:center"><button class="auth-link-btn" onclick="resetPassword()">Olvidé mi contraseña</button></div>
+      <div id="authMessage" class="auth-message"></div>
+    </div>
+    <div class="firebase-note"><strong>Configuración pendiente:</strong> busca en el código <strong>FIREBASE CONFIG — PEGA AQUÍ</strong> y reemplaza únicamente esos valores.</div>
+  </div>
+</div>
+
 <div class="app">
   <header class="topbar">
     <div class="brand">
@@ -316,7 +351,7 @@
         <small style="color:var(--muted)">Curso inicial</small>
       </div>
     </div>
-    <div class="stars">⭐ 0</div>
+    <div class="auth-user"><div><div class="stars">⭐ 0</div><div id="loggedUserEmail" class="auth-user-email"></div></div><button id="logoutBtn" class="auth-logout" onclick="logoutUser()" style="display:none">Salir</button></div>
   </header>
 
   <main>
@@ -1998,6 +2033,52 @@ function finishFinalTest2(){
   testResult2.style.display="block";
 }
 
+
+let authMode="login";
+function showAuthMode(mode){
+  authMode=mode;
+  loginTab.classList.toggle("active",mode==="login");
+  registerTab.classList.toggle("active",mode==="register");
+  authConfirmWrap.style.display=mode==="register"?"block":"none";
+  authSubmitBtn.textContent=mode==="register"?"Crear cuenta":"Iniciar sesión";
+  authMessage.textContent="";
+}
+function friendlyAuthError(code){
+  const m={"auth/email-already-in-use":"Ese correo ya está registrado.","auth/invalid-email":"Escribe un correo válido.","auth/weak-password":"La contraseña debe tener al menos 6 caracteres.","auth/invalid-credential":"Correo o contraseña incorrectos.","auth/too-many-requests":"Demasiados intentos. Intenta más tarde.","auth/network-request-failed":"Revisa tu conexión a internet."};
+  return m[code]||"No se pudo completar la operación.";
+}
+async function waitForFirebase(){for(let i=0;i<50;i++){if(window.firebaseReady)return true;await new Promise(r=>setTimeout(r,100));}return false;}
+async function submitAuth(){
+  const email=authEmail.value.trim(), password=authPassword.value, confirm=authPasswordConfirm.value;
+  if(!email||!password){authMessage.textContent="Escribe tu correo y contraseña.";authMessage.style.color="var(--danger)";return;}
+  if(authMode==="register"&&password!==confirm){authMessage.textContent="Las contraseñas no coinciden.";authMessage.style.color="var(--danger)";return;}
+  if(!(await waitForFirebase())){authMessage.textContent="Falta configurar Firebase.";authMessage.style.color="var(--danger)";return;}
+  try{
+    authMessage.textContent=authMode==="register"?"Creando cuenta...":"Iniciando sesión...";
+    authMessage.style.color="var(--primary)";
+    if(authMode==="register") await window.fbCreateUser(window.firebaseAuth,email,password);
+    else await window.fbSignIn(window.firebaseAuth,email,password);
+  }catch(e){authMessage.textContent=friendlyAuthError(e.code);authMessage.style.color="var(--danger)";}
+}
+async function resetPassword(){
+  const email=authEmail.value.trim();
+  if(!email){authMessage.textContent="Primero escribe tu correo.";authMessage.style.color="var(--danger)";return;}
+  if(!(await waitForFirebase())){authMessage.textContent="Falta configurar Firebase.";authMessage.style.color="var(--danger)";return;}
+  try{await window.fbResetPassword(window.firebaseAuth,email);authMessage.textContent="✅ Te enviamos un enlace para cambiar tu contraseña.";authMessage.style.color="var(--ok)";}
+  catch(e){authMessage.textContent=friendlyAuthError(e.code);authMessage.style.color="var(--danger)";}
+}
+async function logoutUser(){if(window.firebaseReady)await window.fbSignOut(window.firebaseAuth);}
+async function saveLessonProgress(lessonNumber,data){
+  if(!window.currentFirebaseUser||!window.firebaseDb)return;
+  const ref=window.fbDoc(window.firebaseDb,"users",window.currentFirebaseUser.uid);
+  await window.fbSetDoc(ref,{progress:{["lesson"+lessonNumber]:data,currentLesson:lessonNumber},updatedAt:window.fbServerTimestamp()},{merge:true});
+}
+async function loadUserProgress(){
+  if(!window.currentFirebaseUser||!window.firebaseDb)return null;
+  const snap=await window.fbGetDoc(window.fbDoc(window.firebaseDb,"users",window.currentFirebaseUser.uid));
+  return snap.exists()?(snap.data().progress||null):null;
+}
+
 renderLessons();
 renderCategoryBar();
 renderVocab();
@@ -2008,5 +2089,59 @@ nextQuiz();
 initRadicalControls();
 renderRadicals();
 </script>
+
+<script type="module">
+/* =========================================================
+   FIREBASE CONFIG — PEGA AQUÍ
+   Firebase Console > Project settings > Your apps > Web app
+   Reemplaza SOLO estos 6 valores.
+   ========================================================= */
+const firebaseConfig = {
+  apiKey: "AIzaSyB2rqwvXD91aI2I036yscV-_aJ9oJ0t0Sc",
+  authDomain: "clases-d23c1.firebaseapp.com",
+  projectId: "clases-d23c1",
+  storageBucket: "clases-d23c1.firebasestorage.app",
+  messagingSenderId: "600762030142",
+  appId: "1:600762030142:web:1b4a5d2f63a2473a55596f"
+};
+
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import {getAuth,onAuthStateChanged,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,sendPasswordResetEmail}
+from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import {getFirestore,doc,getDoc,setDoc,serverTimestamp}
+from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+const app=initializeApp(firebaseConfig), auth=getAuth(app), db=getFirestore(app);
+Object.assign(window,{
+  firebaseReady:true,firebaseAuth:auth,firebaseDb:db,
+  fbCreateUser:createUserWithEmailAndPassword,fbSignIn:signInWithEmailAndPassword,
+  fbSignOut:signOut,fbResetPassword:sendPasswordResetEmail,
+  fbDoc:doc,fbGetDoc:getDoc,fbSetDoc:setDoc,fbServerTimestamp:serverTimestamp
+});
+
+onAuthStateChanged(auth,async user=>{
+  if(user){
+    authScreen.classList.add("hidden");
+    loggedUserEmail.textContent=user.email||"";
+    logoutBtn.style.display="inline-block";
+    window.currentFirebaseUser=user;
+    const ref=doc(db,"users",user.uid), snap=await getDoc(ref);
+    if(!snap.exists()){
+      await setDoc(ref,{
+        email:user.email||"",
+        createdAt:serverTimestamp(),
+        updatedAt:serverTimestamp(),
+        progress:{currentLesson:1,lesson1:{completed:false,score:null},lesson2:{completed:false,score:null}}
+      });
+    }
+  }else{
+    authScreen.classList.remove("hidden");
+    loggedUserEmail.textContent="";
+    logoutBtn.style.display="none";
+    window.currentFirebaseUser=null;
+  }
+});
+</script>
+
 </body>
 </html>
