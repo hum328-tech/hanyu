@@ -304,10 +304,116 @@
       .exercise-options{grid-template-columns:1fr}
     }
 
-  </style>
+  
+/* ===== ACCESO FIREBASE ===== */
+#authGate{
+  position:fixed;
+  inset:0;
+  z-index:2147483647;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  overflow:auto;
+  padding:28px 16px;
+  background:linear-gradient(180deg,#eef5ff 0%,#f9fbff 100%);
+}
+#authGate.is-hidden{display:none!important}
+.auth-box{
+  width:min(100%,460px);
+  margin:auto;
+  background:#fff;
+  border:1px solid #dbe7ff;
+  border-radius:28px;
+  box-shadow:0 18px 48px rgba(37,99,235,.15);
+  padding:28px;
+}
+.auth-symbol{
+  width:64px;height:64px;margin:0 auto 14px;border-radius:20px;
+  display:grid;place-items:center;
+  background:linear-gradient(135deg,#2563eb,#60a5fa);
+  color:#fff;font-size:34px;font-weight:900;
+}
+.auth-box h1{text-align:center;margin:0;font-size:30px}
+.auth-intro{text-align:center;color:#667085;line-height:1.5;margin:8px 0 22px}
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:18px}
+.auth-tabs button{
+  border:1px solid #dbe7ff;background:#fff;border-radius:14px;
+  padding:12px;font-weight:900;cursor:pointer;color:#667085
+}
+.auth-tabs button.active{background:#2563eb;color:white;border-color:#2563eb}
+.auth-field{margin-bottom:13px}
+.auth-field label{display:block;font-weight:850;margin-bottom:6px}
+.auth-field input{
+  width:100%;box-sizing:border-box;border:2px solid #dbe7ff;border-radius:14px;
+  padding:13px 14px;font:inherit;outline:none;background:white
+}
+.auth-field input:focus{border-color:#60a5fa}
+#authPrimary{
+  width:100%;border:0;background:#2563eb;color:white;border-radius:15px;
+  padding:14px 16px;font-weight:950;font-size:16px;cursor:pointer
+}
+#authPrimary:disabled{opacity:.6;cursor:wait}
+.auth-forgot{
+  display:block;margin:14px auto 0;border:0;background:transparent;
+  color:#2563eb;font-weight:850;text-decoration:underline;cursor:pointer
+}
+#authStatus{min-height:26px;text-align:center;font-weight:850;margin-top:12px;line-height:1.4}
+.auth-help{
+  margin-top:16px;padding:11px 12px;border-radius:13px;
+  background:#f8fbff;border:1px solid #dbe7ff;color:#667085;
+  font-size:13px;line-height:1.45
+}
+#appShell.auth-locked{display:none!important}
+.user-session{display:flex;align-items:center;gap:10px}
+#sessionEmail{font-size:12px;color:#667085;font-weight:750;max-width:210px;overflow:hidden;text-overflow:ellipsis}
+#signOutButton{
+  border:1px solid #dbe7ff;background:white;border-radius:12px;
+  padding:8px 10px;font-weight:850;cursor:pointer
+}
+@media(max-width:520px){
+  #authGate{padding:14px 10px}
+  .auth-box{padding:22px 18px;border-radius:22px}
+}
+
+</style>
 </head>
 <body>
-<div class="app">
+
+<div id="authGate">
+  <div class="auth-box">
+    <div class="auth-symbol">汉</div>
+    <h1>Chino interactivo</h1>
+    <p class="auth-intro">Inicia sesión o crea una cuenta para guardar tu progreso.</p>
+
+    <div class="auth-tabs">
+      <button type="button" id="tabLogin" class="active">Iniciar sesión</button>
+      <button type="button" id="tabRegister">Registrarme</button>
+    </div>
+
+    <div class="auth-field">
+      <label for="loginEmail">Correo electrónico</label>
+      <input id="loginEmail" type="email" autocomplete="email" placeholder="alumno@escuela.com">
+    </div>
+
+    <div class="auth-field">
+      <label for="loginPassword">Contraseña</label>
+      <input id="loginPassword" type="password" autocomplete="current-password" placeholder="Mínimo 6 caracteres">
+    </div>
+
+    <div class="auth-field" id="confirmField" style="display:none">
+      <label for="loginConfirm">Confirma tu contraseña</label>
+      <input id="loginConfirm" type="password" autocomplete="new-password" placeholder="Repite tu contraseña">
+    </div>
+
+    <button type="button" id="authPrimary">Iniciar sesión</button>
+    <button type="button" id="forgotPassword" class="auth-forgot">Olvidé mi contraseña</button>
+
+    <div id="authStatus"></div>
+    <div class="auth-help">La contraseña corresponde únicamente a esta plataforma. No necesitas usar la misma contraseña de tu correo institucional.</div>
+  </div>
+</div>
+
+<div class="app auth-locked" id="appShell">
   <header class="topbar">
     <div class="brand">
       <div class="brand-badge">汉</div>
@@ -316,7 +422,7 @@
         <small style="color:var(--muted)">Curso inicial</small>
       </div>
     </div>
-    <div class="stars">⭐ 0</div>
+    <div class="user-session"><div><div class="stars">⭐ 0</div><div id="sessionEmail"></div></div><button id="signOutButton" type="button" style="display:none">Salir</button></div>
   </header>
 
   <main>
@@ -651,6 +757,211 @@
     </section>
   </main>
 </div>
+
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+<script>
+(function(){
+  "use strict";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB2rqwvXD91aI2I036yscV-_aJ9oJ0t0Sc",
+    authDomain: "clases-d23c1.firebaseapp.com",
+    projectId: "clases-d23c1",
+    storageBucket: "clases-d23c1.firebasestorage.app",
+    messagingSenderId: "600762030142",
+    appId: "1:600762030142:web:1b4a5d2f63a2473a55596f"
+  };
+
+  const gate = document.getElementById("authGate");
+  const appShell = document.getElementById("appShell");
+  const tabLogin = document.getElementById("tabLogin");
+  const tabRegister = document.getElementById("tabRegister");
+  const emailInput = document.getElementById("loginEmail");
+  const passwordInput = document.getElementById("loginPassword");
+  const confirmInput = document.getElementById("loginConfirm");
+  const confirmField = document.getElementById("confirmField");
+  const primary = document.getElementById("authPrimary");
+  const forgot = document.getElementById("forgotPassword");
+  const status = document.getElementById("authStatus");
+  const sessionEmail = document.getElementById("sessionEmail");
+  const signOutButton = document.getElementById("signOutButton");
+
+  let mode = "login";
+
+  function showStatus(text, ok){
+    status.textContent = text || "";
+    status.style.color = ok ? "#16a34a" : "#dc2626";
+  }
+
+  function setMode(next){
+    mode = next;
+    const registering = mode === "register";
+    tabLogin.classList.toggle("active", !registering);
+    tabRegister.classList.toggle("active", registering);
+    confirmField.style.display = registering ? "block" : "none";
+    primary.textContent = registering ? "Crear cuenta" : "Iniciar sesión";
+    passwordInput.autocomplete = registering ? "new-password" : "current-password";
+    showStatus("", false);
+  }
+
+  function friendlyError(error){
+    const code = error && error.code ? error.code : "";
+    const errors = {
+      "auth/email-already-in-use": "Ese correo ya tiene una cuenta. Usa Iniciar sesión.",
+      "auth/invalid-email": "Escribe un correo electrónico válido.",
+      "auth/weak-password": "La contraseña debe tener al menos 6 caracteres.",
+      "auth/invalid-credential": "Correo o contraseña incorrectos.",
+      "auth/user-not-found": "No existe una cuenta con ese correo.",
+      "auth/wrong-password": "La contraseña es incorrecta.",
+      "auth/too-many-requests": "Hubo demasiados intentos. Espera un momento.",
+      "auth/network-request-failed": "No se pudo conectar. Revisa tu conexión a internet.",
+      "auth/operation-not-allowed": "El acceso con correo y contraseña no está habilitado en Firebase."
+    };
+    return errors[code] || ("No se pudo completar la operación" + (code ? " (" + code + ")" : "") + ".");
+  }
+
+  tabLogin.addEventListener("click", function(){ setMode("login"); });
+  tabRegister.addEventListener("click", function(){ setMode("register"); });
+
+  let auth, db;
+  try{
+    if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    auth = firebase.auth();
+    db = firebase.firestore();
+
+    // Keep users signed in when they reload GitHub Pages.
+    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function(){});
+
+    window.firebaseDb = db;
+    window.firebaseAuth = auth;
+  }catch(err){
+    console.error(err);
+    showStatus("No se pudo iniciar Firebase. Abre la consola del navegador para ver el error.", false);
+    return;
+  }
+
+  primary.addEventListener("click", async function(){
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+    const confirm = confirmInput.value;
+
+    if(!email || !password){
+      showStatus("Escribe tu correo y contraseña.", false);
+      return;
+    }
+    if(password.length < 6){
+      showStatus("La contraseña debe tener al menos 6 caracteres.", false);
+      return;
+    }
+    if(mode === "register" && password !== confirm){
+      showStatus("Las contraseñas no coinciden.", false);
+      return;
+    }
+
+    primary.disabled = true;
+    showStatus(mode === "register" ? "Creando cuenta..." : "Iniciando sesión...", true);
+
+    try{
+      if(mode === "register"){
+        await auth.createUserWithEmailAndPassword(email, password);
+      }else{
+        await auth.signInWithEmailAndPassword(email, password);
+      }
+    }catch(err){
+      console.error(err);
+      showStatus(friendlyError(err), false);
+    }finally{
+      primary.disabled = false;
+    }
+  });
+
+  forgot.addEventListener("click", async function(){
+    const email = emailInput.value.trim();
+    if(!email){
+      showStatus("Escribe primero tu correo electrónico.", false);
+      return;
+    }
+    try{
+      await auth.sendPasswordResetEmail(email);
+      showStatus("Revisa tu correo. Te enviamos el enlace para cambiar la contraseña.", true);
+    }catch(err){
+      console.error(err);
+      showStatus(friendlyError(err), false);
+    }
+  });
+
+  signOutButton.addEventListener("click", function(){
+    auth.signOut();
+  });
+
+  auth.onAuthStateChanged(async function(user){
+    if(!user){
+      gate.classList.remove("is-hidden");
+      appShell.classList.add("auth-locked");
+      sessionEmail.textContent = "";
+      signOutButton.style.display = "none";
+      return;
+    }
+
+    // Create/update each user's own Firestore profile.
+    try{
+      const ref = db.collection("users").doc(user.uid);
+      const snap = await ref.get();
+      if(!snap.exists){
+        await ref.set({
+          email: user.email || "",
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+          progress: {
+            currentLesson: 1,
+            lesson1: {completed:false, score:null},
+            lesson2: {completed:false, score:null}
+          }
+        });
+      }else{
+        await ref.set({
+          email: user.email || "",
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, {merge:true});
+      }
+      window.currentFirebaseUser = user;
+    }catch(err){
+      // Authentication still works even if a Firestore write has a problem.
+      console.error("Firestore:", err);
+      window.currentFirebaseUser = user;
+    }
+
+    sessionEmail.textContent = user.email || "";
+    signOutButton.style.display = "inline-block";
+    gate.classList.add("is-hidden");
+    appShell.classList.remove("auth-locked");
+  });
+
+  // Expose simple progress helpers for the course.
+  window.saveLessonProgress = async function(lessonNumber, data){
+    const user = auth.currentUser;
+    if(!user) return;
+    const update = {};
+    update["progress.lesson" + lessonNumber] = data;
+    update["progress.currentLesson"] = lessonNumber;
+    update.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+    await db.collection("users").doc(user.uid).set(update, {merge:true});
+  };
+
+  window.loadUserProgress = async function(){
+    const user = auth.currentUser;
+    if(!user) return null;
+    const snap = await db.collection("users").doc(user.uid).get();
+    return snap.exists ? (snap.data().progress || null) : null;
+  };
+
+  setMode("login");
+})();
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.7/dist/hanzi-writer.min.js"></script>
 <script>
