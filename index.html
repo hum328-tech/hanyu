@@ -305,8 +305,8 @@
     }
 
   
-.auth-screen{position:fixed;inset:0;z-index:9999;background:linear-gradient(180deg,#eef5ff 0%,#f9fbff 100%);display:grid;place-items:center;padding:20px}
-.auth-screen.hidden{display:none}
+.auth-screen{position:fixed!important;inset:0!important;z-index:2147483647!important;background:linear-gradient(180deg,#eef5ff 0%,#f9fbff 100%);display:grid;place-items:center;padding:20px}
+.auth-screen.hidden{display:none!important}
 .auth-card{width:min(94vw,460px);background:white;border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);padding:28px}
 .auth-logo{width:64px;height:64px;border-radius:20px;margin:0 auto 14px;background:linear-gradient(135deg,var(--primary),var(--primary-2));display:grid;place-items:center;color:white;font-size:34px;font-weight:900}
 .auth-title{text-align:center;margin:0;font-size:30px;font-weight:950}.auth-subtitle{text-align:center;color:var(--muted);margin:8px 0 22px;line-height:1.45}
@@ -338,11 +338,11 @@
       <div style="text-align:center"><button class="auth-link-btn" onclick="resetPassword()">Olvidé mi contraseña</button></div>
       <div id="authMessage" class="auth-message"></div>
     </div>
-    <div class="firebase-note"><strong>Configuración pendiente:</strong> busca en el código <strong>FIREBASE CONFIG — PEGA AQUÍ</strong> y reemplaza únicamente esos valores.</div>
+    <div class="firebase-note"><strong>Cuenta escolar:</strong> usa tu correo institucional y crea una contraseña exclusiva para esta plataforma.</div>
   </div>
 </div>
 
-<div class="app">
+<div class="app" id="mainApp" style="display:none">
   <header class="topbar">
     <div class="brand">
       <div class="brand-badge">汉</div>
@@ -2070,13 +2070,16 @@ async function resetPassword(){
 async function logoutUser(){if(window.firebaseReady)await window.fbSignOut(window.firebaseAuth);}
 async function saveLessonProgress(lessonNumber,data){
   if(!window.currentFirebaseUser||!window.firebaseDb)return;
-  const ref=window.fbDoc(window.firebaseDb,"users",window.currentFirebaseUser.uid);
-  await window.fbSetDoc(ref,{progress:{["lesson"+lessonNumber]:data,currentLesson:lessonNumber},updatedAt:window.fbServerTimestamp()},{merge:true});
+  const ref=window.firebaseDb.collection("users").doc(window.currentFirebaseUser.uid);
+  await ref.set({
+    progress:{["lesson"+lessonNumber]:data,currentLesson:lessonNumber},
+    updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+  },{merge:true});
 }
 async function loadUserProgress(){
   if(!window.currentFirebaseUser||!window.firebaseDb)return null;
-  const snap=await window.fbGetDoc(window.fbDoc(window.firebaseDb,"users",window.currentFirebaseUser.uid));
-  return snap.exists()?(snap.data().progress||null):null;
+  const snap=await window.firebaseDb.collection("users").doc(window.currentFirebaseUser.uid).get();
+  return snap.exists?(snap.data().progress||null):null;
 }
 
 renderLessons();
@@ -2090,11 +2093,15 @@ initRadicalControls();
 renderRadicals();
 </script>
 
-<script type="module">
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+<script>
 /* =========================================================
-   FIREBASE CONFIG — PEGA AQUÍ
-   Firebase Console > Project settings > Your apps > Web app
-   Reemplaza SOLO estos 6 valores.
+   FIREBASE CONFIG
+   Proyecto: clases-d23c1
    ========================================================= */
 const firebaseConfig = {
   apiKey: "AIzaSyB2rqwvXD91aI2I036yscV-_aJ9oJ0t0Sc",
@@ -2105,43 +2112,81 @@ const firebaseConfig = {
   appId: "1:600762030142:web:1b4a5d2f63a2473a55596f"
 };
 
-import {initializeApp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-import {getAuth,onAuthStateChanged,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,sendPasswordResetEmail}
-from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import {getFirestore,doc,getDoc,setDoc,serverTimestamp}
-from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+(function bootFirebase(){
+  const screen = document.getElementById("authScreen");
+  const appEl = document.getElementById("mainApp");
+  const msg = document.getElementById("authMessage");
 
-const app=initializeApp(firebaseConfig), auth=getAuth(app), db=getFirestore(app);
-Object.assign(window,{
-  firebaseReady:true,firebaseAuth:auth,firebaseDb:db,
-  fbCreateUser:createUserWithEmailAndPassword,fbSignIn:signInWithEmailAndPassword,
-  fbSignOut:signOut,fbResetPassword:sendPasswordResetEmail,
-  fbDoc:doc,fbGetDoc:getDoc,fbSetDoc:setDoc,fbServerTimestamp:serverTimestamp
-});
+  // Login must remain visible unless Firebase confirms a signed-in user.
+  if (screen) screen.classList.remove("hidden");
+  if (appEl) appEl.style.display = "none";
 
-onAuthStateChanged(auth,async user=>{
-  if(user){
-    authScreen.classList.add("hidden");
-    loggedUserEmail.textContent=user.email||"";
-    logoutBtn.style.display="inline-block";
-    window.currentFirebaseUser=user;
-    const ref=doc(db,"users",user.uid), snap=await getDoc(ref);
-    if(!snap.exists()){
-      await setDoc(ref,{
-        email:user.email||"",
-        createdAt:serverTimestamp(),
-        updatedAt:serverTimestamp(),
-        progress:{currentLesson:1,lesson1:{completed:false,score:null},lesson2:{completed:false,score:null}}
-      });
+  try {
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    window.firebaseReady = true;
+    window.firebaseAuth = auth;
+    window.firebaseDb = db;
+
+    window.fbCreateUser = (authObj,email,password)=>authObj.createUserWithEmailAndPassword(email,password);
+    window.fbSignIn = (authObj,email,password)=>authObj.signInWithEmailAndPassword(email,password);
+    window.fbSignOut = (authObj)=>authObj.signOut();
+    window.fbResetPassword = (authObj,email)=>authObj.sendPasswordResetEmail(email);
+    window.fbServerTimestamp = ()=>firebase.firestore.FieldValue.serverTimestamp();
+
+    auth.onAuthStateChanged(async (user)=>{
+      if(user){
+        window.currentFirebaseUser = user;
+
+        if(screen) screen.classList.add("hidden");
+        if(appEl) appEl.style.display = "block";
+
+        const userEmail = document.getElementById("loggedUserEmail");
+        const logout = document.getElementById("logoutBtn");
+        if(userEmail) userEmail.textContent = user.email || "";
+        if(logout) logout.style.display = "inline-block";
+
+        try{
+          const ref = db.collection("users").doc(user.uid);
+          const snap = await ref.get();
+          if(!snap.exists){
+            await ref.set({
+              email:user.email || "",
+              createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+              updatedAt:firebase.firestore.FieldValue.serverTimestamp(),
+              progress:{
+                currentLesson:1,
+                lesson1:{completed:false,score:null},
+                lesson2:{completed:false,score:null}
+              }
+            });
+          }
+        }catch(e){
+          console.error("Firestore profile error:", e);
+        }
+      }else{
+        window.currentFirebaseUser = null;
+        if(screen) screen.classList.remove("hidden");
+        if(appEl) appEl.style.display = "none";
+
+        const userEmail = document.getElementById("loggedUserEmail");
+        const logout = document.getElementById("logoutBtn");
+        if(userEmail) userEmail.textContent = "";
+        if(logout) logout.style.display = "none";
+      }
+    });
+  } catch (e) {
+    console.error("Firebase boot error:", e);
+    if(screen) screen.classList.remove("hidden");
+    if(appEl) appEl.style.display = "none";
+    if(msg){
+      msg.textContent = "No se pudo conectar con Firebase. Revisa la conexión.";
+      msg.style.color = "var(--danger)";
     }
-  }else{
-    authScreen.classList.remove("hidden");
-    loggedUserEmail.textContent="";
-    logoutBtn.style.display="none";
-    window.currentFirebaseUser=null;
   }
-});
+})();
 </script>
-
 </body>
 </html>
