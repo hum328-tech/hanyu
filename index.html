@@ -240,6 +240,27 @@
       .quiz-options{grid-template-columns:1fr}
     }
 
+
+    .agenda-index{max-width:760px;margin:8px auto 0;border-top:3px solid #1e3a8a;padding-top:8px}
+    .agenda-title{font-size:28px;font-weight:950;letter-spacing:.02em}
+    .agenda-subtitle{font-style:italic;color:#1e3a8a;font-weight:850;margin:6px 0 18px}
+    .agenda-link{
+      width:100%;display:grid;grid-template-columns:40px 1fr auto;gap:10px;align-items:center;
+      border:0;border-bottom:1px solid #e5e7eb;background:white;padding:15px 10px;
+      text-align:left;cursor:pointer;color:#172554;font-size:18px
+    }
+    .agenda-link:hover{background:#f5f8ff}
+    .agenda-link span:first-child{color:#111827}
+    .agenda-link small{color:var(--muted);font-size:13px}
+    .exercise-topic-head{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+    .exercise-topic-head h3{margin:3px 0 0;font-size:28px}
+    .exercise-topic-kicker{font-size:12px;font-weight:900;color:var(--primary);letter-spacing:.08em}
+    @media(max-width:700px){
+      .agenda-link{grid-template-columns:34px 1fr}
+      .agenda-link small{grid-column:2}
+      .exercise-topic-head{align-items:flex-start}
+    }
+
     .grammar-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px}
     .grammar-card{position:relative;border:1px solid var(--line);border-radius:22px;padding:22px;background:linear-gradient(180deg,#fff,#f8fbff)}
     .grammar-card h4{margin:0 0 12px;font-size:22px}
@@ -543,19 +564,60 @@
 
       <section id="ejercicios" class="tab-content">
         <div class="panel">
-          <h3 class="section-title">Ejercicios de gramática</h3>
-          <p class="section-subtitle">Práctica corta y directa: responde, comprueba y continúa.</p>
-          <div class="exercise-progress"><div id="exerciseProgressBar"></div></div>
-          <div class="exercise-card" id="exerciseCard">
-            <div class="exercise-count" id="exerciseCount">Ejercicio 1 de 8</div>
-            <div class="exercise-type" id="exerciseType">Completa la oración</div>
-            <div class="exercise-question" id="exerciseQuestion"></div>
-            <div id="exerciseAnswerArea"></div>
-            <div class="feedback" id="exerciseFeedback"></div>
-            <div class="action-row">
-              <button class="secondary-btn" onclick="exerciseHint()">💡 Pista</button>
-              <button class="primary-btn" id="exerciseCheckBtn" onclick="checkExercise()">Comprobar</button>
-              <button class="secondary-btn" id="exerciseNextBtn" onclick="nextExercise()" style="display:none">Siguiente →</button>
+          <div id="exerciseIndexView">
+            <h3 class="section-title">Ejercicios de gramática</h3>
+            <p class="section-subtitle">Elige un tema. Cada bloque practica una sola estructura para evitar respuestas ambiguas.</p>
+
+            <div class="agenda-index">
+              <div class="agenda-title">Lección 1 · Gramática</div>
+              <div class="agenda-subtitle">Ejercicios por tema</div>
+
+              <button class="agenda-link" onclick="openExerciseTopic('shi')">
+                <span>1.</span><span>是 · Oraciones afirmativas</span><small>5 ejercicios</small>
+              </button>
+              <button class="agenda-link" onclick="openExerciseTopic('negative')">
+                <span>2.</span><span>不 · Oraciones negativas</span><small>5 ejercicios</small>
+              </button>
+              <button class="agenda-link" onclick="openExerciseTopic('ma')">
+                <span>3.</span><span>吗 · Preguntas de sí/no</span><small>5 ejercicios</small>
+              </button>
+              <button class="agenda-link" onclick="openExerciseTopic('questionWords')">
+                <span>4.</span><span>什么 / 哪 / 谁 · Interrogativos</span><small>5 ejercicios</small>
+              </button>
+              <button class="agenda-link" onclick="openExerciseTopic('countryLanguage')">
+                <span>5.</span><span>País → persona → idioma</span><small>5 ejercicios</small>
+              </button>
+              <button class="agenda-link" onclick="openExerciseTopic('order')">
+                <span>6.</span><span>Orden de la oración</span><small>5 ejercicios</small>
+              </button>
+              <button class="agenda-link" onclick="openExerciseTopic('mixed')">
+                <span>7.</span><span>Repaso mixto</span><small>8 ejercicios</small>
+              </button>
+            </div>
+          </div>
+
+          <div id="exerciseTopicView" style="display:none">
+            <div class="exercise-topic-head">
+              <button class="back-btn" onclick="backToExerciseIndex()">← Índice</button>
+              <div>
+                <div class="exercise-topic-kicker">GRAMÁTICA · LECCIÓN 1</div>
+                <h3 id="exerciseTopicTitle">Tema</h3>
+              </div>
+            </div>
+
+            <div class="exercise-progress"><div id="exerciseProgressBar"></div></div>
+
+            <div class="exercise-card" id="exerciseCard">
+              <div class="exercise-count" id="exerciseCount"></div>
+              <div class="exercise-type" id="exerciseType"></div>
+              <div class="exercise-question" id="exerciseQuestion"></div>
+              <div id="exerciseAnswerArea"></div>
+              <div class="feedback" id="exerciseFeedback"></div>
+              <div class="action-row">
+                <button class="secondary-btn" onclick="exerciseHint()">💡 Pista</button>
+                <button class="primary-btn" id="exerciseCheckBtn" onclick="checkExercise()">Comprobar</button>
+                <button class="secondary-btn" id="exerciseNextBtn" onclick="nextExercise()" style="display:none">Siguiente →</button>
+              </div>
             </div>
           </div>
         </div>
@@ -1175,17 +1237,101 @@ function clearWriter(i){
 }
 
 
-const grammarExercises = [
-  {type:"Completa", q:"我 ___ 学生。", kind:"choice", options:["是","不是","吗"], answer:"是", hint:"La oración es afirmativa: “Soy estudiante”."},
-  {type:"Negativo", q:"他 ___ 老师。", kind:"choice", options:["不是","是","谁"], answer:"不是", hint:"Para negar 是, coloca 不 antes del verbo."},
-  {type:"Pregunta con 吗", q:"你是学生 ___？", kind:"choice", options:["吗","呢","的"], answer:"吗", hint:"Es una pregunta que se responde sí/no."},
-  {type:"Interrogativo", q:"他 ___？ 他是老师。", kind:"choice", options:["是谁","什么","哪国"], answer:"是谁", hint:"La respuesta nos dice quién es la persona."},
-  {type:"Ordena", q:"Forma: “Soy mexicano.”", kind:"order", words:["墨西哥人","我","是"], answer:"我是墨西哥人", hint:"Orden básico: Sujeto + Verbo + Objeto."},
-  {type:"País e idioma", q:"英国 → ___", kind:"choice", options:["英语","日语","法语"], answer:"英语", hint:"Para Reino Unido, conserva 英 y cambia 国 por 语."},
-  {type:"País e idioma", q:"日本 → ___", kind:"choice", options:["日语","日本语","日国语"], answer:"日语", hint:"日本 no tiene 国; se conserva 日 y se añade 语."},
-  {type:"Forma interrogativa", q:"Convierte en pregunta sí/no: 你是老师。", kind:"input", answer:"你是老师吗", alternatives:["你是老师吗？"], hint:"Conserva la oración y agrega 吗 al final."}
-];
+
+const exerciseTopics = {
+  shi: {
+    title:"是 · Oraciones afirmativas",
+    items:[
+      {type:"Completa", q:"我 ___ 学生。", kind:"choice", options:["是","不","吗"], answer:"是", hint:"La oración significa “Soy estudiante”."},
+      {type:"Completa", q:"他 ___ 老师。", kind:"choice", options:["是","不","谁"], answer:"是", hint:"Necesitas el verbo “ser”."},
+      {type:"Completa", q:"她 ___ 学生。", kind:"choice", options:["是","吗","哪"], answer:"是", hint:"Es una oración afirmativa."},
+      {type:"Ordena", q:"Forma: “Yo soy estudiante.”", kind:"order", words:["学生","我","是"], answer:"我是学生", hint:"Sujeto + 是 + sustantivo."},
+      {type:"Elige", q:"¿Cuál significa “Él es profesor”?", kind:"choice", options:["他是老师。","他不是老师。","他是谁？"], answer:"他是老师。", hint:"Busca una oración afirmativa con 他 + 是 + 老师."}
+    ]
+  },
+  negative: {
+    title:"不 · Oraciones negativas",
+    items:[
+      {type:"Completa", q:"他 ___ 是老师。", kind:"choice", options:["不","吗","谁"], answer:"不", hint:"不 se coloca antes del verbo."},
+      {type:"Completa", q:"我 ___ 会说中文。", kind:"choice", options:["不","是","哪"], answer:"不", hint:"Para negar 会, usa 不会."},
+      {type:"Elige", q:"¿Cuál significa “Ella no es estudiante”?", kind:"choice", options:["她不是学生。","她是学生。","她是谁？"], answer:"她不是学生。", hint:"La negación de 是 es 不是."},
+      {type:"Ordena", q:"Forma: “Yo no soy profesor.”", kind:"order", words:["老师","不是","我"], answer:"我不是老师", hint:"Sujeto + 不是 + sustantivo."},
+      {type:"Completa", q:"我 ___ 说汉语。", kind:"choice", options:["不会","不是","没有"], answer:"不会", hint:"La idea es “No sé hablar chino”."}
+    ]
+  },
+  ma: {
+    title:"吗 · Preguntas de sí/no",
+    items:[
+      {type:"Completa", q:"你是学生 ___？", kind:"choice", options:["吗","谁","的"], answer:"吗", hint:"吗 va al final de preguntas sí/no."},
+      {type:"Completa", q:"你会说汉语 ___？", kind:"choice", options:["吗","哪","什么"], answer:"吗", hint:"La pregunta se puede responder sí/no."},
+      {type:"Elige", q:"¿Cuál significa “¿Eres profesor?”", kind:"choice", options:["你是老师吗？","你不是老师。","你是谁？"], answer:"你是老师吗？", hint:"Debe terminar con 吗."},
+      {type:"Ordena", q:"Forma: “¿Él es estudiante?”", kind:"order", words:["吗","学生","他","是"], answer:"他是学生吗", hint:"Oración afirmativa + 吗."},
+      {type:"Elige", q:"Respuesta adecuada a 你是学生吗？", kind:"choice", options:["是。","谁。","什么。"], answer:"是。", hint:"Es una pregunta sí/no."}
+    ]
+  },
+  questionWords: {
+    title:"什么 / 哪 / 谁 · Interrogativos",
+    items:[
+      {type:"Completa", q:"你叫 ___ 名字？", kind:"choice", options:["什么","谁","吗"], answer:"什么", hint:"什么 = qué."},
+      {type:"Completa", q:"你是 ___ 国人？", kind:"choice", options:["哪","谁","吗"], answer:"哪", hint:"哪 = cuál."},
+      {type:"Completa", q:"他是 ___？", kind:"choice", options:["谁","哪","吗"], answer:"谁", hint:"谁 = quién."},
+      {type:"Elige", q:"¿Cuál pregunta “¿Cómo te llamas?”", kind:"choice", options:["你叫什么名字？","你是哪国人？","他是谁？"], answer:"你叫什么名字？", hint:"Busca la pregunta con 名字."},
+      {type:"Elige", q:"¿Cuál pregunta “¿De qué país eres?”", kind:"choice", options:["你是哪国人？","你叫什么名字？","你会说汉语吗？"], answer:"你是哪国人？", hint:"Busca 哪国人."}
+    ]
+  },
+  countryLanguage: {
+    title:"País → persona → idioma",
+    items:[
+      {type:"Idioma", q:"中国 → ___", kind:"choice", options:["中文","英语","日语"], answer:"中文", hint:"Con 中国 se usa 中 + 文."},
+      {type:"Idioma", q:"英国 → ___", kind:"choice", options:["英语","法语","德语"], answer:"英语", hint:"Con 英国 se usa 英 + 语."},
+      {type:"Idioma", q:"法国 → ___", kind:"choice", options:["法语","俄语","韩语"], answer:"法语", hint:"Con 法国 se usa 法 + 语."},
+      {type:"Idioma", q:"日本 → ___", kind:"choice", options:["日语","英语","中文"], answer:"日语", hint:"日本 no lleva 国; para el idioma se usa 日语."},
+      {type:"Idioma", q:"西班牙 → ___", kind:"choice", options:["西班牙语","意大利语","德语"], answer:"西班牙语", hint:"Se conserva 西班牙 y se agrega 语."}
+    ]
+  },
+  order: {
+    title:"Orden de la oración",
+    items:[
+      {type:"Ordena", q:"Forma: “Soy estudiante.”", kind:"order", words:["学生","是","我"], answer:"我是学生", hint:"Sujeto + verbo + objeto/complemento."},
+      {type:"Ordena", q:"Forma: “Él es profesor.”", kind:"order", words:["老师","他","是"], answer:"他是老师", hint:"他 + 是 + 老师."},
+      {type:"Ordena", q:"Forma: “No soy profesor.”", kind:"order", words:["老师","我","不是"], answer:"我不是老师", hint:"Sujeto + 不是 + sustantivo."},
+      {type:"Ordena", q:"Forma: “¿Eres estudiante?”", kind:"order", words:["学生","吗","你","是"], answer:"你是学生吗", hint:"Oración afirmativa + 吗."},
+      {type:"Ordena", q:"Forma: “¿Quién es él?”", kind:"order", words:["谁","他","是"], answer:"他是谁", hint:"La palabra interrogativa ocupa el lugar de la respuesta."}
+    ]
+  },
+  mixed: {
+    title:"Repaso mixto",
+    items:[
+      {type:"Completa", q:"我是 ___ 人。", kind:"choice", options:["墨西哥","汉语","老师"], answer:"墨西哥", hint:"La estructura pide un país antes de 人."},
+      {type:"Completa", q:"她 ___ 老师。", kind:"choice", options:["是","谁","吗"], answer:"是", hint:"Es una afirmación."},
+      {type:"Negativo", q:"他 ___ 学生。", kind:"choice", options:["不是","是","谁"], answer:"不是", hint:"Aquí la frase debe significar “Él no es estudiante”."},
+      {type:"Pregunta", q:"你是中国人 ___？", kind:"choice", options:["吗","什么","谁"], answer:"吗", hint:"Pregunta de sí/no."},
+      {type:"Interrogativo", q:"她是 ___？ 她是老师。", kind:"choice", options:["谁","哪","吗"], answer:"谁", hint:"La respuesta identifica a una persona."},
+      {type:"Idioma", q:"韩国 → ___", kind:"choice", options:["韩语","日语","英语"], answer:"韩语", hint:"韩 + 语."},
+      {type:"Ordena", q:"Forma: “Sé hablar chino.”", kind:"order", words:["说","我","中文","会"], answer:"我会说中文", hint:"Sujeto + 会 + 说 + idioma."},
+      {type:"Elige", q:"¿Cuál significa “¿Cómo te llamas?”", kind:"choice", options:["你叫什么名字？","你是哪国人？","你好吗？"], answer:"你叫什么名字？", hint:"Busca 叫什么名字."}
+    ]
+  }
+};
+
+let currentExerciseTopic="shi";
+let grammarExercises=[];
 let exerciseIndex=0, exerciseSelected=null, exerciseBuilt=[];
+
+function openExerciseTopic(topic){
+  currentExerciseTopic=topic;
+  grammarExercises=exerciseTopics[topic].items;
+  exerciseIndex=0;
+  document.getElementById("exerciseIndexView").style.display="none";
+  document.getElementById("exerciseTopicView").style.display="block";
+  document.getElementById("exerciseTopicTitle").textContent=exerciseTopics[topic].title;
+  renderExercise();
+}
+
+function backToExerciseIndex(){
+  document.getElementById("exerciseTopicView").style.display="none";
+  document.getElementById("exerciseIndexView").style.display="block";
+}
 
 function renderExercise(){
   const ex=grammarExercises[exerciseIndex];
@@ -1197,6 +1343,7 @@ function renderExercise(){
   exerciseNextBtn.style.display="none";
   exerciseCheckBtn.style.display="inline-block";
   exerciseProgressBar.style.width=`${(exerciseIndex/grammarExercises.length)*100}%`;
+
   if(ex.kind==="choice"){
     exerciseAnswerArea.innerHTML=`<div class="exercise-options">${ex.options.map(o=>`<button class="exercise-option" onclick="selectExerciseOption(this,'${escapeQuotes(o)}')">${o}</button>`).join("")}</div>`;
   } else if(ex.kind==="input"){
@@ -1205,6 +1352,7 @@ function renderExercise(){
     exerciseAnswerArea.innerHTML=`<div id="sentenceBuild" class="sentence-build"></div><div class="word-bank">${ex.words.map((w,i)=>`<button class="word-chip" id="wchip-${i}" onclick="addExerciseWord(${i},'${escapeQuotes(w)}')">${w}</button>`).join("")}</div>`;
   }
 }
+
 function selectExerciseOption(btn,val){
   document.querySelectorAll("#exerciseAnswerArea .exercise-option").forEach(b=>b.classList.remove("selected"));
   btn.classList.add("selected"); exerciseSelected=val;
@@ -1220,12 +1368,19 @@ function removeExerciseWord(i){
   document.getElementById(`wchip-${i}`)?.classList.remove("used");
   sentenceBuild.innerHTML=exerciseBuilt.map(x=>`<button class="word-chip" onclick="removeExerciseWord(${x.i})">${x.w}</button>`).join("");
 }
-function normalized(s){ return (s||"").replace(/[。，！？?！\s]/g,"").trim(); }
+function normalized(s){ return (s||"").replace(/[。，！？?！\\s]/g,"").trim(); }
 function checkExercise(){
   const ex=grammarExercises[exerciseIndex]; let ans="";
   if(ex.kind==="choice") ans=exerciseSelected||"";
   if(ex.kind==="input") ans=document.getElementById("exerciseInput")?.value||"";
   if(ex.kind==="order") ans=exerciseBuilt.map(x=>x.w).join("");
+
+  if(!ans){
+    exerciseFeedback.textContent="Selecciona o escribe una respuesta.";
+    exerciseFeedback.style.color="var(--danger)";
+    return;
+  }
+
   const accepted=[ex.answer,...(ex.alternatives||[])].map(normalized);
   const ok=accepted.includes(normalized(ans));
   exerciseFeedback.textContent=ok ? "✅ Correcto. Muy bien." : `❌ Revisa la estructura. Respuesta: ${ex.answer}`;
@@ -1234,11 +1389,25 @@ function checkExercise(){
   exerciseProgressBar.style.width=`${((exerciseIndex+1)/grammarExercises.length)*100}%`;
 }
 function exerciseHint(){
-  exerciseFeedback.textContent="💡 "+grammarExercises[exerciseIndex].hint;
+  const ex=grammarExercises[exerciseIndex];
+  exerciseFeedback.textContent="💡 "+ex.hint;
   exerciseFeedback.style.color="var(--primary)";
 }
 function nextExercise(){
-  exerciseIndex=(exerciseIndex+1)%grammarExercises.length; renderExercise();
+  if(exerciseIndex < grammarExercises.length-1){
+    exerciseIndex++;
+    renderExercise();
+  }else{
+    exerciseFeedback.textContent="✅ Tema completado.";
+    exerciseFeedback.style.color="var(--ok)";
+    exerciseNextBtn.textContent="Volver al índice";
+    exerciseNextBtn.onclick=()=>{
+      exerciseNextBtn.textContent="Siguiente →";
+      exerciseNextBtn.onclick=nextExercise;
+      backToExerciseIndex();
+    };
+  }
+}
 }
 
 const finalTestBank = [
