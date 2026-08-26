@@ -1242,51 +1242,51 @@ const exerciseTopics = {
   shi: {
     title:"是 · Oraciones afirmativas",
     items:[
-      {type:"Completa", q:"我 ___ 学生。", kind:"choice", options:["是","不","吗"], answer:"是", hint:"La oración significa “Soy estudiante”."},
-      {type:"Completa", q:"他 ___ 老师。", kind:"choice", options:["是","不","谁"], answer:"是", hint:"Necesitas el verbo “ser”."},
-      {type:"Completa", q:"她 ___ 学生。", kind:"choice", options:["是","吗","哪"], answer:"是", hint:"Es una oración afirmativa."},
+      {type:"Completa", q:"我 ___ 学生。", kind:"choice", options:["吗","是","不","谁"], answer:"是", hint:"La oración significa “Soy estudiante”."},
+      {type:"Completa", q:"他 ___ 老师。", kind:"choice", options:["不","谁","是","吗"], answer:"是", hint:"Necesitas el verbo “ser”."},
+      {type:"Completa", q:"她 ___ 学生。", kind:"choice", options:["哪","吗","不","是"], answer:"是", hint:"Es una oración afirmativa."},
       {type:"Ordena", q:"Forma: “Yo soy estudiante.”", kind:"order", words:["学生","我","是"], answer:"我是学生", hint:"Sujeto + 是 + sustantivo."},
-      {type:"Elige", q:"¿Cuál significa “Él es profesor”?", kind:"choice", options:["他是老师。","他不是老师。","他是谁？"], answer:"他是老师。", hint:"Busca una oración afirmativa con 他 + 是 + 老师."}
+      {type:"Elige", q:"¿Cuál significa “Él es profesor”?", kind:"choice", options:["他是谁？","他不是老师。","他是老师。","他是学生吗？"], answer:"他是老师。", hint:"Busca una oración afirmativa con 他 + 是 + 老师."}
     ]
   },
   negative: {
     title:"不 · Oraciones negativas",
     items:[
-      {type:"Completa", q:"他 ___ 是老师。", kind:"choice", options:["不","吗","谁"], answer:"不", hint:"不 se coloca antes del verbo."},
-      {type:"Completa", q:"我 ___ 会说中文。", kind:"choice", options:["不","是","哪"], answer:"不", hint:"Para negar 会, usa 不会."},
-      {type:"Elige", q:"¿Cuál significa “Ella no es estudiante”?", kind:"choice", options:["她不是学生。","她是学生。","她是谁？"], answer:"她不是学生。", hint:"La negación de 是 es 不是."},
+      {type:"Completa", q:"他 ___ 是老师。", kind:"choice", options:["谁","不","吗","哪"], answer:"不", hint:"不 se coloca antes del verbo."},
+      {type:"Completa", q:"我 ___ 会说中文。", kind:"choice", options:["哪","是","吗","不"], answer:"不", hint:"Para negar 会, usa 不会."},
+      {type:"Elige", q:"¿Cuál significa “Ella no es estudiante”?", kind:"choice", options:["她是学生。","她是谁？","她不是学生。","她是老师吗？"], answer:"她不是学生。", hint:"La negación de 是 es 不是."},
       {type:"Ordena", q:"Forma: “Yo no soy profesor.”", kind:"order", words:["老师","不是","我"], answer:"我不是老师", hint:"Sujeto + 不是 + sustantivo."},
-      {type:"Completa", q:"我 ___ 说汉语。", kind:"choice", options:["不会","不是","没有"], answer:"不会", hint:"La idea es “No sé hablar chino”."}
+      {type:"Completa", q:"我 ___ 说汉语。", kind:"choice", options:["没有","不会","不是","是"], answer:"不会", hint:"La idea es “No sé hablar chino”."}
     ]
   },
   ma: {
     title:"吗 · Preguntas de sí/no",
     items:[
-      {type:"Completa", q:"你是学生 ___？", kind:"choice", options:["吗","谁","的"], answer:"吗", hint:"吗 va al final de preguntas sí/no."},
-      {type:"Completa", q:"你会说汉语 ___？", kind:"choice", options:["吗","哪","什么"], answer:"吗", hint:"La pregunta se puede responder sí/no."},
-      {type:"Elige", q:"¿Cuál significa “¿Eres profesor?”", kind:"choice", options:["你是老师吗？","你不是老师。","你是谁？"], answer:"你是老师吗？", hint:"Debe terminar con 吗."},
+      {type:"Completa", q:"你是学生 ___？", kind:"choice", options:["谁","的","吗","哪"], answer:"吗", hint:"吗 va al final de preguntas sí/no."},
+      {type:"Completa", q:"你会说汉语 ___？", kind:"choice", options:["什么","吗","哪","谁"], answer:"吗", hint:"La pregunta se puede responder sí/no."},
+      {type:"Elige", q:"¿Cuál significa “¿Eres profesor?”", kind:"choice", options:["你不是老师。","你是老师吗？","你是谁？","你是学生。"], answer:"你是老师吗？", hint:"Debe terminar con 吗."},
       {type:"Ordena", q:"Forma: “¿Él es estudiante?”", kind:"order", words:["吗","学生","他","是"], answer:"他是学生吗", hint:"Oración afirmativa + 吗."},
-      {type:"Elige", q:"Respuesta adecuada a 你是学生吗？", kind:"choice", options:["是。","谁。","什么。"], answer:"是。", hint:"Es una pregunta sí/no."}
+      {type:"Elige", q:"Respuesta adecuada a 你是学生吗？", kind:"choice", options:["什么。","谁。","是。","哪。"], answer:"是。", hint:"Es una pregunta sí/no."}
     ]
   },
   questionWords: {
     title:"什么 / 哪 / 谁 · Interrogativos",
     items:[
-      {type:"Completa", q:"你叫 ___ 名字？", kind:"choice", options:["什么","谁","吗"], answer:"什么", hint:"什么 = qué."},
-      {type:"Completa", q:"你是 ___ 国人？", kind:"choice", options:["哪","谁","吗"], answer:"哪", hint:"哪 = cuál."},
-      {type:"Completa", q:"他是 ___？", kind:"choice", options:["谁","哪","吗"], answer:"谁", hint:"谁 = quién."},
-      {type:"Elige", q:"¿Cuál pregunta “¿Cómo te llamas?”", kind:"choice", options:["你叫什么名字？","你是哪国人？","他是谁？"], answer:"你叫什么名字？", hint:"Busca la pregunta con 名字."},
-      {type:"Elige", q:"¿Cuál pregunta “¿De qué país eres?”", kind:"choice", options:["你是哪国人？","你叫什么名字？","你会说汉语吗？"], answer:"你是哪国人？", hint:"Busca 哪国人."}
+      {type:"Completa", q:"你叫 ___ 名字？", kind:"choice", options:["谁","吗","什么","哪"], answer:"什么", hint:"什么 = qué."},
+      {type:"Completa", q:"你是 ___ 国人？", kind:"choice", options:["谁","哪","什么","吗"], answer:"哪", hint:"哪 = cuál."},
+      {type:"Completa", q:"他是 ___？", kind:"choice", options:["吗","哪","谁","什么"], answer:"谁", hint:"谁 = quién."},
+      {type:"Elige", q:"¿Cuál pregunta “¿Cómo te llamas?”", kind:"choice", options:["你是哪国人？","他是谁？","你叫什么名字？","你会说汉语吗？"], answer:"你叫什么名字？", hint:"Busca la pregunta con 名字."},
+      {type:"Elige", q:"¿Cuál pregunta “¿De qué país eres?”", kind:"choice", options:["你叫什么名字？","你会说汉语吗？","你是哪国人？","她是谁？"], answer:"你是哪国人？", hint:"Busca 哪国人."}
     ]
   },
   countryLanguage: {
     title:"País → persona → idioma",
     items:[
-      {type:"Idioma", q:"中国 → ___", kind:"choice", options:["中文","英语","日语"], answer:"中文", hint:"Con 中国 se usa 中 + 文."},
-      {type:"Idioma", q:"英国 → ___", kind:"choice", options:["英语","法语","德语"], answer:"英语", hint:"Con 英国 se usa 英 + 语."},
-      {type:"Idioma", q:"法国 → ___", kind:"choice", options:["法语","俄语","韩语"], answer:"法语", hint:"Con 法国 se usa 法 + 语."},
-      {type:"Idioma", q:"日本 → ___", kind:"choice", options:["日语","英语","中文"], answer:"日语", hint:"日本 no lleva 国; para el idioma se usa 日语."},
-      {type:"Idioma", q:"西班牙 → ___", kind:"choice", options:["西班牙语","意大利语","德语"], answer:"西班牙语", hint:"Se conserva 西班牙 y se agrega 语."}
+      {type:"Idioma", q:"中国 → ___", kind:"choice", options:["英语","日语","中文","法语"], answer:"中文", hint:"Con 中国 se usa 中 + 文."},
+      {type:"Idioma", q:"英国 → ___", kind:"choice", options:["法语","英语","德语","韩语"], answer:"英语", hint:"Con 英国 se usa 英 + 语."},
+      {type:"Idioma", q:"法国 → ___", kind:"choice", options:["德语","俄语","韩语","法语"], answer:"法语", hint:"Con 法国 se usa 法 + 语."},
+      {type:"Idioma", q:"日本 → ___", kind:"choice", options:["中文","英语","日语","韩语"], answer:"日语", hint:"日本 no lleva 国; para el idioma se usa 日语."},
+      {type:"Idioma", q:"西班牙 → ___", kind:"choice", options:["德语","西班牙语","意大利语","法语"], answer:"西班牙语", hint:"Se conserva 西班牙 y se agrega 语."}
     ]
   },
   order: {
@@ -1302,14 +1302,14 @@ const exerciseTopics = {
   mixed: {
     title:"Repaso mixto",
     items:[
-      {type:"Completa", q:"我是 ___ 人。", kind:"choice", options:["墨西哥","汉语","老师"], answer:"墨西哥", hint:"La estructura pide un país antes de 人."},
-      {type:"Completa", q:"她 ___ 老师。", kind:"choice", options:["是","谁","吗"], answer:"是", hint:"Es una afirmación."},
-      {type:"Negativo", q:"他 ___ 学生。", kind:"choice", options:["不是","是","谁"], answer:"不是", hint:"Aquí la frase debe significar “Él no es estudiante”."},
-      {type:"Pregunta", q:"你是中国人 ___？", kind:"choice", options:["吗","什么","谁"], answer:"吗", hint:"Pregunta de sí/no."},
-      {type:"Interrogativo", q:"她是 ___？ 她是老师。", kind:"choice", options:["谁","哪","吗"], answer:"谁", hint:"La respuesta identifica a una persona."},
-      {type:"Idioma", q:"韩国 → ___", kind:"choice", options:["韩语","日语","英语"], answer:"韩语", hint:"韩 + 语."},
+      {type:"Completa", q:"我是 ___ 人。", kind:"choice", options:["老师","墨西哥","汉语","学生"], answer:"墨西哥", hint:"La estructura pide un país antes de 人."},
+      {type:"Completa", q:"她 ___ 老师。", kind:"choice", options:["谁","吗","是","哪"], answer:"是", hint:"Es una afirmación."},
+      {type:"Negativo", q:"他 ___ 学生。", kind:"choice", options:["谁","是","不是","吗"], answer:"不是", hint:"Aquí la frase debe significar “Él no es estudiante”."},
+      {type:"Pregunta", q:"你是中国人 ___？", kind:"choice", options:["什么","谁","哪","吗"], answer:"吗", hint:"Pregunta de sí/no."},
+      {type:"Interrogativo", q:"她是 ___？ 她是老师。", kind:"choice", options:["哪","谁","吗","什么"], answer:"谁", hint:"La respuesta identifica a una persona."},
+      {type:"Idioma", q:"韩国 → ___", kind:"choice", options:["英语","日语","韩语","德语"], answer:"韩语", hint:"韩 + 语."},
       {type:"Ordena", q:"Forma: “Sé hablar chino.”", kind:"order", words:["说","我","中文","会"], answer:"我会说中文", hint:"Sujeto + 会 + 说 + idioma."},
-      {type:"Elige", q:"¿Cuál significa “¿Cómo te llamas?”", kind:"choice", options:["你叫什么名字？","你是哪国人？","你好吗？"], answer:"你叫什么名字？", hint:"Busca 叫什么名字."}
+      {type:"Elige", q:"¿Cuál significa “¿Cómo te llamas?”", kind:"choice", options:["你好吗？","你是哪国人？","你会说汉语吗？","你叫什么名字？"], answer:"你叫什么名字？", hint:"Busca 叫什么名字."}
     ]
   }
 };
@@ -1368,7 +1368,7 @@ function removeExerciseWord(i){
   document.getElementById(`wchip-${i}`)?.classList.remove("used");
   sentenceBuild.innerHTML=exerciseBuilt.map(x=>`<button class="word-chip" onclick="removeExerciseWord(${x.i})">${x.w}</button>`).join("");
 }
-function normalized(s){ return (s||"").replace(/[。，！？?！\\s]/g,"").trim(); }
+function normalized(s){ return (s||"").replace(/[。，！？?！\s]/g,"").trim(); }
 function checkExercise(){
   const ex=grammarExercises[exerciseIndex]; let ans="";
   if(ex.kind==="choice") ans=exerciseSelected||"";
@@ -1407,7 +1407,6 @@ function nextExercise(){
       backToExerciseIndex();
     };
   }
-}
 }
 
 const finalTestBank = [
@@ -1473,7 +1472,6 @@ function finishFinalTest(){
   testResult.innerHTML=`<div class="test-badge">${pct>=80?"🏆":"📘"}</div><div class="score-big">${pct}%</div><h3>${correct} / ${testAnswers.length} correctas</h3><div class="score-grid">${details}</div><h3>Calificación final: ${grade} / 10</h3><p>${pct>=80?"✅ Lección aprobada.":"🔁 Conviene repasar antes de continuar."}</p><button class="primary-btn" onclick="startFinalTest()">Intentar otra vez</button>`;
   testResult.style.display="block";
 }
-renderExercise();
 
 renderLessons();
 renderCategoryBar();
