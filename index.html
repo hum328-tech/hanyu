@@ -239,6 +239,50 @@
       .lesson-head{align-items:flex-start}
       .quiz-options{grid-template-columns:1fr}
     }
+
+    .grammar-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px}
+    .grammar-card{position:relative;border:1px solid var(--line);border-radius:22px;padding:22px;background:linear-gradient(180deg,#fff,#f8fbff)}
+    .grammar-card h4{margin:0 0 12px;font-size:22px}
+    .grammar-step{position:absolute;right:16px;top:14px;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--primary);color:white;font-weight:900}
+    .formula{display:inline-block;background:#eaf2ff;border:1px solid #bfd0ee;padding:10px 14px;border-radius:14px;font-weight:900;margin:4px 0 14px}
+    .pattern-list{display:grid;gap:8px;margin-bottom:14px}
+    .example-box{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);background:white;border-radius:16px;padding:12px;margin:12px 0;line-height:1.55}
+    .rule-note,.grammar-tip{background:#fff9e8;border:1px solid #f5dda0;border-radius:14px;padding:12px;line-height:1.55}
+    .mini-examples{display:grid;gap:8px;margin:12px 0;font-weight:800}
+    .grammar-examples{display:grid;gap:10px}
+    .grammar-examples button{border:1px solid var(--line);background:white;border-radius:14px;padding:12px;text-align:left;cursor:pointer}
+    .grammar-examples button span{display:block;font-size:20px;font-weight:900}
+    .grammar-examples button small{display:block;color:var(--muted);margin-top:4px}
+    .question-pairs{display:grid;gap:10px}
+    .question-pairs div{border:1px solid var(--line);border-radius:14px;padding:12px;background:white}
+    .question-pairs strong,.question-pairs span{display:block}
+    .question-pairs span{margin-top:6px;color:var(--primary);font-weight:800}
+    .exercise-progress{height:12px;background:#edf2f7;border-radius:999px;overflow:hidden;margin:6px 0 20px}
+    .exercise-progress>div{height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--primary-2));transition:.25s width}
+    .exercise-card{max-width:760px;margin:auto;border:1px solid var(--line);border-radius:24px;padding:24px;background:linear-gradient(180deg,#fff,#f8fbff)}
+    .exercise-count{font-weight:900;color:var(--muted);font-size:14px}
+    .exercise-type{display:inline-block;margin:10px 0;padding:7px 11px;border-radius:999px;background:#e7efff;color:var(--primary);font-weight:900}
+    .exercise-question{font-size:clamp(26px,5vw,44px);font-weight:900;text-align:center;margin:20px 0}
+    .exercise-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .exercise-option{border:2px solid var(--line);background:white;border-radius:16px;padding:14px;font-weight:850;cursor:pointer}
+    .exercise-option.selected{border-color:var(--primary);background:#edf4ff}
+    .exercise-input{width:100%;border:2px solid var(--line);border-radius:16px;padding:14px;font-size:20px;text-align:center}
+    .word-bank{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+    .word-chip{border:1px solid var(--line);background:white;border-radius:14px;padding:10px 14px;font-weight:900;cursor:pointer}
+    .word-chip.used{opacity:.35}
+    .sentence-build{min-height:62px;border:2px dashed #bfd0ee;border-radius:16px;padding:12px;margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+    .test-intro{text-align:center;padding:32px 10px}
+    .test-badge{font-size:64px}
+    .test-intro h4{font-size:28px;margin:8px 0}
+    .test-result{max-width:700px;margin:auto;text-align:center;border:1px solid var(--line);border-radius:24px;padding:30px;background:linear-gradient(180deg,#fff,#f8fbff)}
+    .score-big{font-size:64px;font-weight:1000;color:var(--primary)}
+    .score-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:18px 0}
+    .score-box{border:1px solid var(--line);border-radius:16px;padding:14px;background:white}
+    @media (max-width:700px){
+      .grammar-grid{grid-template-columns:1fr}
+      .exercise-options{grid-template-columns:1fr}
+    }
+
   </style>
 </head>
 <body>
@@ -402,20 +446,144 @@
       </section>
 
       <section id="gramatica" class="tab-content">
-        <div class="panel placeholder">
-          <div><div class="icon">🧩</div><h3>Gramática</h3><p>Aquí agregaremos explicaciones, ejemplos y práctica guiada.</p></div>
+        <div class="panel">
+          <h3 class="section-title">Gramática de la lección 1</h3>
+          <p class="section-subtitle">Aprende los patrones paso a paso. Escucha los ejemplos y observa cómo cambian las oraciones.</p>
+
+          <div class="grammar-grid">
+            <article class="grammar-card">
+              <div class="grammar-step">1</div>
+              <h4>País → persona → idioma</h4>
+              <div class="formula">Nombre del país + sufijo</div>
+              <div class="pattern-list">
+                <div><strong>国家 + 人</strong> → nacionalidad</div>
+                <div><strong>国家 + 文</strong> → lengua / escritura</div>
+                <div><strong>国家 + 语</strong> → lengua / idioma</div>
+              </div>
+              <div class="example-box">
+                <button class="speak-btn" onclick="speak('中国 中国人 中文 汉语')">🔊</button>
+                <div><strong>中国 → 中国人 → 中文 / 汉语</strong><br><span class="pinyin">Zhōngguó → Zhōngguórén → Zhōngwén / Hànyǔ</span><br>China → chino/a → chino</div>
+              </div>
+              <div class="rule-note">
+                <strong>Regla práctica:</strong> países como 中国、英国、法国、德国、美国、韩国、泰国 conservan el primer carácter y cambian 国 por 文 o 语 para formar el idioma.
+              </div>
+              <div class="mini-examples">
+                <div>英国 → 英文 / 英语</div>
+                <div>法国 → 法文 / 法语</div>
+                <div>德国 → 德文 / 德语</div>
+              </div>
+              <div class="rule-note">
+                <strong>Otros casos:</strong> 俄罗斯 y 日本 no usan 国 en el nombre del país; para el idioma conservan el primer carácter: 俄语、日语. Con 意大利 y 西班牙 se conserva el nombre y se añade 文 o 语: 意大利语、西班牙语.
+              </div>
+            </article>
+
+            <article class="grammar-card">
+              <div class="grammar-step">2</div>
+              <h4>Oración afirmativa</h4>
+              <div class="formula">Sujeto + Verbo + Objeto</div>
+              <div class="grammar-examples">
+                <button onclick="speak('你是学生')"><span>你是学生。</span><small>Nǐ shì xuésheng. · Eres estudiante.</small></button>
+                <button onclick="speak('他是西班牙人')"><span>他是西班牙人。</span><small>Tā shì Xībānyárén. · Él es español.</small></button>
+                <button onclick="speak('我叫胡安')"><span>我叫胡安。</span><small>Wǒ jiào Hú'ān. · Me llamo Juan.</small></button>
+                <button onclick="speak('她是安娜')"><span>她是安娜。</span><small>Tā shì Ānnà. · Ella es Ana.</small></button>
+                <button onclick="speak('我会说中文')"><span>我会说中文。</span><small>Wǒ huì shuō Zhōngwén. · Sé hablar chino.</small></button>
+              </div>
+            </article>
+
+            <article class="grammar-card">
+              <div class="grammar-step">3</div>
+              <h4>Oración negativa</h4>
+              <div class="formula">Sujeto + 不 + Verbo + Objeto</div>
+              <p class="grammar-tip">不 se coloca antes del verbo.</p>
+              <div class="grammar-examples">
+                <button onclick="speak('他不是学生')"><span>他不是学生。</span><small>Tā bú shì xuésheng. · Él no es estudiante.</small></button>
+                <button onclick="speak('他不是西班牙人')"><span>他不是西班牙人。</span><small>Tā bú shì Xībānyárén. · Él no es español.</small></button>
+                <button onclick="speak('我不叫胡安')"><span>我不叫胡安。</span><small>Wǒ bù jiào Hú'ān. · No me llamo Juan.</small></button>
+                <button onclick="speak('她不是安娜')"><span>她不是安娜。</span><small>Tā bú shì Ānnà. · Ella no es Ana.</small></button>
+                <button onclick="speak('我不会说中文')"><span>我不会说中文。</span><small>Wǒ bú huì shuō Zhōngwén. · No sé hablar chino.</small></button>
+              </div>
+            </article>
+
+            <article class="grammar-card">
+              <div class="grammar-step">4</div>
+              <h4>Preguntas con 吗</h4>
+              <div class="formula">Oración afirmativa + 吗？</div>
+              <p class="grammar-tip">Sirve para preguntas de sí/no. La estructura casi no cambia: solo agregas 吗 al final.</p>
+              <div class="example-box">
+                <button class="speak-btn" onclick="speak('你是西班牙人吗')">🔊</button>
+                <div><strong>你是西班牙人吗？</strong><br><span class="pinyin">Nǐ shì Xībānyárén ma?</span><br>¿Eres español/a?<br><strong>是 / 不是</strong></div>
+              </div>
+            </article>
+
+            <article class="grammar-card">
+              <div class="grammar-step">5</div>
+              <h4>Pronombres interrogativos</h4>
+              <div class="formula">什么 · 怎么 · 哪 · 哪儿 · 谁</div>
+              <p class="grammar-tip">La respuesta ocupa la misma posición que la palabra interrogativa.</p>
+              <div class="question-pairs">
+                <div><strong>你叫什么名字？</strong><span>我叫胡安。</span></div>
+                <div><strong>你是哪国人？</strong><span>我是西班牙人。</span></div>
+                <div><strong>她是谁？</strong><span>她是安娜。</span></div>
+              </div>
+            </article>
+
+            <article class="grammar-card">
+              <div class="grammar-step">6</div>
+              <h4>Pregunta afirmativo-negativa</h4>
+              <div class="formula">Verbo + 不 + Verbo</div>
+              <div class="question-pairs">
+                <div><strong>你是不是美国人？</strong><span>是 / 不是</span></div>
+                <div><strong>你有没有中文名字？</strong><span>有 / 没有</span></div>
+              </div>
+              <p class="grammar-tip">En esta lección practicaremos principalmente 是不是 porque usa vocabulario ya conocido.</p>
+            </article>
+          </div>
         </div>
       </section>
 
       <section id="ejercicios" class="tab-content">
-        <div class="panel placeholder">
-          <div><div class="icon">🎯</div><h3>Ejercicios</h3><p>Aquí irán actividades de escuchar, relacionar, ordenar y completar.</p></div>
+        <div class="panel">
+          <h3 class="section-title">Ejercicios de gramática</h3>
+          <p class="section-subtitle">Práctica corta y directa: responde, comprueba y continúa.</p>
+          <div class="exercise-progress"><div id="exerciseProgressBar"></div></div>
+          <div class="exercise-card" id="exerciseCard">
+            <div class="exercise-count" id="exerciseCount">Ejercicio 1 de 8</div>
+            <div class="exercise-type" id="exerciseType">Completa la oración</div>
+            <div class="exercise-question" id="exerciseQuestion"></div>
+            <div id="exerciseAnswerArea"></div>
+            <div class="feedback" id="exerciseFeedback"></div>
+            <div class="action-row">
+              <button class="secondary-btn" onclick="exerciseHint()">💡 Pista</button>
+              <button class="primary-btn" id="exerciseCheckBtn" onclick="checkExercise()">Comprobar</button>
+              <button class="secondary-btn" id="exerciseNextBtn" onclick="nextExercise()" style="display:none">Siguiente →</button>
+            </div>
+          </div>
         </div>
       </section>
 
       <section id="pruebas" class="tab-content">
-        <div class="panel placeholder">
-          <div><div class="icon">🏆</div><h3>Pruebas</h3><p>Aquí se integrarán evaluaciones de vocabulario, comprensión y producción oral.</p></div>
+        <div class="panel">
+          <h3 class="section-title">Prueba final · Lección 1</h3>
+          <p class="section-subtitle">Mezcla vocabulario y gramática. No hay pistas ni corrección hasta terminar.</p>
+          <div id="testIntro" class="test-intro">
+            <div class="test-badge">🏆</div>
+            <h4>20 preguntas</h4>
+            <p>Vocabulario, gramática, países e idiomas, comprensión y formación de oraciones.</p>
+            <button class="primary-btn" onclick="startFinalTest()">Comenzar prueba</button>
+          </div>
+          <div id="testArea" style="display:none">
+            <div class="exercise-progress"><div id="testProgressBar"></div></div>
+            <div class="exercise-card">
+              <div class="exercise-count" id="testCount"></div>
+              <div class="exercise-type" id="testType"></div>
+              <div class="exercise-question" id="testQuestion"></div>
+              <div id="testAnswerArea"></div>
+              <div class="action-row" style="margin-top:18px">
+                <button class="primary-btn" onclick="submitTestAnswer()">Guardar respuesta →</button>
+              </div>
+            </div>
+          </div>
+          <div id="testResult" class="test-result" style="display:none"></div>
         </div>
       </section>
     </section>
@@ -1005,6 +1173,138 @@ function clearWriter(i){
     width:220,height:220,padding:12,showOutline:true,showCharacter:false
   });
 }
+
+
+const grammarExercises = [
+  {type:"Completa", q:"我 ___ 学生。", kind:"choice", options:["是","不是","吗"], answer:"是", hint:"La oración es afirmativa: “Soy estudiante”."},
+  {type:"Negativo", q:"他 ___ 老师。", kind:"choice", options:["不是","是","谁"], answer:"不是", hint:"Para negar 是, coloca 不 antes del verbo."},
+  {type:"Pregunta con 吗", q:"你是学生 ___？", kind:"choice", options:["吗","呢","的"], answer:"吗", hint:"Es una pregunta que se responde sí/no."},
+  {type:"Interrogativo", q:"他 ___？ 他是老师。", kind:"choice", options:["是谁","什么","哪国"], answer:"是谁", hint:"La respuesta nos dice quién es la persona."},
+  {type:"Ordena", q:"Forma: “Soy mexicano.”", kind:"order", words:["墨西哥人","我","是"], answer:"我是墨西哥人", hint:"Orden básico: Sujeto + Verbo + Objeto."},
+  {type:"País e idioma", q:"英国 → ___", kind:"choice", options:["英语","日语","法语"], answer:"英语", hint:"Para Reino Unido, conserva 英 y cambia 国 por 语."},
+  {type:"País e idioma", q:"日本 → ___", kind:"choice", options:["日语","日本语","日国语"], answer:"日语", hint:"日本 no tiene 国; se conserva 日 y se añade 语."},
+  {type:"Forma interrogativa", q:"Convierte en pregunta sí/no: 你是老师。", kind:"input", answer:"你是老师吗", alternatives:["你是老师吗？"], hint:"Conserva la oración y agrega 吗 al final."}
+];
+let exerciseIndex=0, exerciseSelected=null, exerciseBuilt=[];
+
+function renderExercise(){
+  const ex=grammarExercises[exerciseIndex];
+  exerciseSelected=null; exerciseBuilt=[];
+  exerciseCount.textContent=`Ejercicio ${exerciseIndex+1} de ${grammarExercises.length}`;
+  exerciseType.textContent=ex.type;
+  exerciseQuestion.textContent=ex.q;
+  exerciseFeedback.textContent="";
+  exerciseNextBtn.style.display="none";
+  exerciseCheckBtn.style.display="inline-block";
+  exerciseProgressBar.style.width=`${(exerciseIndex/grammarExercises.length)*100}%`;
+  if(ex.kind==="choice"){
+    exerciseAnswerArea.innerHTML=`<div class="exercise-options">${ex.options.map(o=>`<button class="exercise-option" onclick="selectExerciseOption(this,'${escapeQuotes(o)}')">${o}</button>`).join("")}</div>`;
+  } else if(ex.kind==="input"){
+    exerciseAnswerArea.innerHTML=`<input id="exerciseInput" class="exercise-input" placeholder="Escribe tu respuesta">`;
+  } else {
+    exerciseAnswerArea.innerHTML=`<div id="sentenceBuild" class="sentence-build"></div><div class="word-bank">${ex.words.map((w,i)=>`<button class="word-chip" id="wchip-${i}" onclick="addExerciseWord(${i},'${escapeQuotes(w)}')">${w}</button>`).join("")}</div>`;
+  }
+}
+function selectExerciseOption(btn,val){
+  document.querySelectorAll("#exerciseAnswerArea .exercise-option").forEach(b=>b.classList.remove("selected"));
+  btn.classList.add("selected"); exerciseSelected=val;
+}
+function addExerciseWord(i,w){
+  const chip=document.getElementById(`wchip-${i}`);
+  if(chip.classList.contains("used")) return;
+  chip.classList.add("used"); exerciseBuilt.push({i,w});
+  sentenceBuild.innerHTML=exerciseBuilt.map(x=>`<button class="word-chip" onclick="removeExerciseWord(${x.i})">${x.w}</button>`).join("");
+}
+function removeExerciseWord(i){
+  exerciseBuilt=exerciseBuilt.filter(x=>x.i!==i);
+  document.getElementById(`wchip-${i}`)?.classList.remove("used");
+  sentenceBuild.innerHTML=exerciseBuilt.map(x=>`<button class="word-chip" onclick="removeExerciseWord(${x.i})">${x.w}</button>`).join("");
+}
+function normalized(s){ return (s||"").replace(/[。，！？?！\s]/g,"").trim(); }
+function checkExercise(){
+  const ex=grammarExercises[exerciseIndex]; let ans="";
+  if(ex.kind==="choice") ans=exerciseSelected||"";
+  if(ex.kind==="input") ans=document.getElementById("exerciseInput")?.value||"";
+  if(ex.kind==="order") ans=exerciseBuilt.map(x=>x.w).join("");
+  const accepted=[ex.answer,...(ex.alternatives||[])].map(normalized);
+  const ok=accepted.includes(normalized(ans));
+  exerciseFeedback.textContent=ok ? "✅ Correcto. Muy bien." : `❌ Revisa la estructura. Respuesta: ${ex.answer}`;
+  exerciseFeedback.style.color=ok ? "var(--ok)" : "var(--danger)";
+  exerciseNextBtn.style.display="inline-block"; exerciseCheckBtn.style.display="none";
+  exerciseProgressBar.style.width=`${((exerciseIndex+1)/grammarExercises.length)*100}%`;
+}
+function exerciseHint(){
+  exerciseFeedback.textContent="💡 "+grammarExercises[exerciseIndex].hint;
+  exerciseFeedback.style.color="var(--primary)";
+}
+function nextExercise(){
+  exerciseIndex=(exerciseIndex+1)%grammarExercises.length; renderExercise();
+}
+
+const finalTestBank = [
+  {cat:"Gramática",type:"Completa",q:"我是学生。 → forma negativa",kind:"choice",options:["我不是学生。","我是学生吗？","我学生不是。"],answer:"我不是学生。"},
+  {cat:"Gramática",type:"Completa",q:"你是老师 ___？",kind:"choice",options:["吗","的","也"],answer:"吗"},
+  {cat:"Gramática",type:"Interrogativo",q:"___ 是老师？ 他是老师。",kind:"choice",options:["谁","什么","哪"],answer:"谁"},
+  {cat:"Gramática",type:"Ordena",q:"Forma: “Él es estudiante.”",kind:"choice",options:["他是学生。","学生他是。","他学生是。"],answer:"他是学生。"},
+  {cat:"Gramática",type:"Negación",q:"我 ___ 说中文。",kind:"choice",options:["不会","会不","不是"],answer:"不会"},
+  {cat:"Países e idiomas",type:"Idioma",q:"中国 → ?",kind:"choice",options:["中文","日语","英语"],answer:"中文"},
+  {cat:"Países e idiomas",type:"Idioma",q:"法国 → ?",kind:"choice",options:["法语","德语","韩语"],answer:"法语"},
+  {cat:"Países e idiomas",type:"Idioma",q:"德国 → ?",kind:"choice",options:["德语","俄语","英语"],answer:"德语"},
+  {cat:"Países e idiomas",type:"Idioma",q:"日本 → ?",kind:"choice",options:["日语","日本语","中文"],answer:"日语"},
+  {cat:"Países e idiomas",type:"Idioma",q:"西班牙 → ?",kind:"choice",options:["西班牙语","法语","意大利语"],answer:"西班牙语"},
+  {cat:"Vocabulario",type:"Significado",q:"老师",kind:"choice",options:["profesor","estudiante","nombre"],answer:"profesor"},
+  {cat:"Vocabulario",type:"Significado",q:"学生",kind:"choice",options:["estudiante","profesor","apellido"],answer:"estudiante"},
+  {cat:"Vocabulario",type:"Significado",q:"谢谢",kind:"choice",options:["gracias","adiós","hola"],answer:"gracias"},
+  {cat:"Vocabulario",type:"Significado",q:"再见",kind:"choice",options:["adiós","buenos días","gracias"],answer:"adiós"},
+  {cat:"Vocabulario",type:"Significado",q:"名字",kind:"choice",options:["nombre","nacionalidad","idioma"],answer:"nombre"},
+  {cat:"Comprensión",type:"Pregunta",q:"你叫什么名字？",kind:"choice",options:["我叫安娜。","我是墨西哥人。","我很好。"],answer:"我叫安娜。"},
+  {cat:"Comprensión",type:"Pregunta",q:"你是哪国人？",kind:"choice",options:["我是墨西哥人。","我叫胡安。","我会说中文。"],answer:"我是墨西哥人。"},
+  {cat:"Comprensión",type:"Pregunta",q:"你会说汉语吗？",kind:"choice",options:["我会说一点儿。","我叫安娜。","我是老师。"],answer:"我会说一点儿。"},
+  {cat:"Comprensión",type:"Pregunta",q:"她是谁？",kind:"choice",options:["她是老师。","她是法国。","她会名字。"],answer:"她是老师。"},
+  {cat:"Gramática",type:"Pregunta",q:"¿Cuál es la pregunta correcta para “¿Eres estudiante?”",kind:"choice",options:["你是学生吗？","你学生是吗？","吗你是学生？"],answer:"你是学生吗？"}
+];
+let testItems=[],testIndex=0,testAnswers=[];
+
+function startFinalTest(){
+  testItems=shuffle(finalTestBank).slice(0,20);
+  testIndex=0; testAnswers=[];
+  testIntro.style.display="none"; testResult.style.display="none"; testArea.style.display="block";
+  renderTestQuestion();
+}
+function renderTestQuestion(){
+  const q=testItems[testIndex];
+  testCount.textContent=`Pregunta ${testIndex+1} de ${testItems.length}`;
+  testType.textContent=`${q.cat} · ${q.type}`;
+  testQuestion.textContent=q.q;
+  testProgressBar.style.width=`${(testIndex/testItems.length)*100}%`;
+  testAnswerArea.innerHTML=`<div class="exercise-options">${shuffle(q.options).map(o=>`<button class="exercise-option" onclick="selectTestOption(this,'${escapeQuotes(o)}')">${o}</button>`).join("")}</div>`;
+  window.currentTestSelection="";
+}
+function selectTestOption(btn,val){
+  document.querySelectorAll("#testAnswerArea .exercise-option").forEach(b=>b.classList.remove("selected"));
+  btn.classList.add("selected"); window.currentTestSelection=val;
+}
+function submitTestAnswer(){
+  if(!window.currentTestSelection){ alert("Selecciona una respuesta."); return; }
+  testAnswers.push({q:testItems[testIndex],ans:window.currentTestSelection,ok:window.currentTestSelection===testItems[testIndex].answer});
+  testIndex++;
+  if(testIndex>=testItems.length) finishFinalTest(); else renderTestQuestion();
+}
+function finishFinalTest(){
+  testArea.style.display="none";
+  const correct=testAnswers.filter(x=>x.ok).length;
+  const pct=Math.round(correct/testAnswers.length*100);
+  const grade=(pct/10).toFixed(1);
+  const cats=["Vocabulario","Gramática","Países e idiomas","Comprensión"];
+  const details=cats.map(cat=>{
+    const arr=testAnswers.filter(x=>x.q.cat===cat);
+    const score=arr.length ? Math.round(arr.filter(x=>x.ok).length/arr.length*100) : 0;
+    return `<div class="score-box"><strong>${cat}</strong><div>${score}%</div></div>`;
+  }).join("");
+  testResult.innerHTML=`<div class="test-badge">${pct>=80?"🏆":"📘"}</div><div class="score-big">${pct}%</div><h3>${correct} / ${testAnswers.length} correctas</h3><div class="score-grid">${details}</div><h3>Calificación final: ${grade} / 10</h3><p>${pct>=80?"✅ Lección aprobada.":"🔁 Conviene repasar antes de continuar."}</p><button class="primary-btn" onclick="startFinalTest()">Intentar otra vez</button>`;
+  testResult.style.display="block";
+}
+renderExercise();
 
 renderLessons();
 renderCategoryBar();
