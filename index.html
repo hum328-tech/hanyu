@@ -1633,8 +1633,81 @@ html:`<strong>人 rén</strong> significa persona.<br><br>No representa una letr
 },
 {
 title:"Una misma sílaba puede significar cosas completamente diferentes dependiendo del tono.",
-html:`El tono forma parte de la pronunciación. Por eso una palabra se aprende junto con su tono.<br><br>
-En esta introducción practicarás sonidos de los cuatro tonos y después los escucharás combinados dentro de palabras reales.`
+html:`
+Este texto famoso se llama <strong>《施氏食狮史》</strong>
+(<span class="intro-pinyin">Shī Shì shí shī shǐ</span>).
+
+<br><br>
+
+Fue escrito para mostrar lo importante que son los tonos y por qué el pinyin por sí solo puede ser confuso.
+
+<br><br>
+
+<div class="intro-verb-row">
+
+<div class="intro-cn" style="font-size:28px;line-height:1.8">
+石室诗士施氏，嗜狮，誓食十狮。
+</div>
+
+<div class="intro-pinyin" style="font-size:18px;line-height:1.8">
+<span class="i-tone2">Shí</span>
+<span class="i-tone4">shì</span>
+<span class="i-tone1">shī</span>
+<span class="i-tone4">shì</span>
+<span class="i-tone1">Shī</span>
+<span class="i-tone4">Shì</span>，
+<span class="i-tone4">shì</span>
+<span class="i-tone1">shī</span>，
+<span class="i-tone4">shì</span>
+<span class="i-tone2">shí</span>
+<span class="i-tone2">shí</span>
+<span class="i-tone1">shī</span>。
+</div>
+
+<div class="intro-translation">
+“En una habitación de piedra vivía el poeta Shi, a quien le gustaban los leones y juró comerse diez leones.”
+</div>
+
+</div>
+
+<div class="intro-roller-legend">
+<span class="intro-chip i-tone1">shī → 1.er tono</span>
+<span class="intro-chip i-tone2">shí ↗ 2.º tono</span>
+<span class="intro-chip i-tone3">shǐ ↓↑ 3.er tono</span>
+<span class="intro-chip i-tone4">shì ↘ 4.º tono</span>
+</div>
+
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+<button class="intro-action" onclick="introSpeakSlow('石室诗士施氏，嗜狮，誓食十狮。')">
+🐢 Escuchar lentamente
+</button>
+
+<button class="intro-action" onclick="introSpeak('石室诗士施氏，嗜狮，誓食十狮。')">
+🔊 Escuchar normal
+</button>
+</div>
+
+<div class="intro-practice" style="margin-top:14px">
+
+<strong>Mini reto:</strong>
+¿Cuántos tonos distintos aparecen en el pinyin de este fragmento?
+
+<div class="intro-options" style="margin-top:10px">
+<button class="intro-option" onclick="introShiQuiz(this,1)">1</button>
+<button class="intro-option" onclick="introShiQuiz(this,2)">2</button>
+<button class="intro-option" onclick="introShiQuiz(this,3)">3</button>
+<button class="intro-option" onclick="introShiQuiz(this,4)">4</button>
+</div>
+
+<div class="intro-feedback" id="introShiFeedback"></div>
+
+</div>
+
+<div class="intro-legend" style="margin-top:14px">
+Aunque muchas sílabas se escriben como <strong>shi</strong>, los tonos cambian.
+Por eso no basta con leer solo las letras: en mandarín el tono forma parte de la pronunciación y puede ayudar a distinguir significados.
+</div>
+`
 },
 {
 title:"El contexto es fundamental.",
@@ -1680,6 +1753,30 @@ function introSpeakSlow(text){
   speechSynthesis.cancel();
   const u=new SpeechSynthesisUtterance(text);u.lang="zh-CN";u.rate=.55;speechSynthesis.speak(u);
 }
+
+function introShiQuiz(button,answer){
+  const box=button.parentElement;
+  [...box.children].forEach(b=>b.classList.remove("selected"));
+  button.classList.add("selected");
+
+  const feedback=document.getElementById("introShiFeedback");
+  const ok=answer===4;
+
+  feedback.textContent=ok
+    ? "✅ Correcto. En el poema aparecen los cuatro tonos del mandarín."
+    : "❌ Escucha otra vez y observa los colores. Aparecen los cuatro tonos.";
+
+  feedback.style.color=ok ? "#16a34a" : "#dc2626";
+
+  if(window.trackStudentActivity){
+    window.trackStudentActivity("introduction_quiz_answered",{
+      label:"Poema Shi · tonos",
+      answer:answer,
+      correct:ok
+    });
+  }
+}
+
 const introToneQuestions=[
   {hanzi:"妈",pinyin:"mā",tone:1},
   {hanzi:"来",pinyin:"lái",tone:2},
