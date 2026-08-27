@@ -426,6 +426,47 @@
   cursor:pointer;
 }
 
+
+/* ===== INTRODUCCIÓN AL CHINO ===== */
+.intro-card{
+  min-height:150px;border:2px solid #bfdbfe;border-radius:var(--radius);
+  background:linear-gradient(180deg,#eff6ff,#fff);box-shadow:var(--shadow);
+  padding:20px;text-align:left;position:relative;cursor:pointer;transition:.2s transform,.2s border;
+}
+.intro-card:hover{transform:translateY(-4px);border-color:var(--primary)}
+.intro-card .lesson-number{color:var(--primary)}
+.intro-badge{position:absolute;right:16px;top:14px;font-size:28px}
+.intro-wrap{max-width:1180px;margin:auto;padding:0 2px 30px}
+.intro-hero{background:linear-gradient(135deg,#eef5ff,#fff);border:1px solid var(--line);border-radius:26px;padding:28px;box-shadow:var(--shadow);margin:12px 0 20px}
+.intro-tag{display:inline-block;padding:6px 10px;border-radius:999px;background:#e7efff;color:var(--primary);font-weight:900;font-size:13px}
+.intro-hero h1{font-size:clamp(34px,6vw,58px);margin:12px 0 6px}.intro-hero p{color:var(--muted);font-size:18px;margin:0;line-height:1.5}
+.intro-panel{background:white;border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:var(--shadow);margin-bottom:20px}
+.intro-title{font-size:28px;margin:0 0 6px}.intro-sub{color:var(--muted);margin:0 0 18px;line-height:1.5}
+.intro-features{display:grid;gap:12px}.intro-feature{border:1px solid var(--line);border-radius:18px;padding:15px;background:#fbfdff}
+.intro-feature-head{display:flex;gap:12px}.intro-num{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--primary);color:white;font-weight:900;flex:0 0 auto}
+.intro-feature h4{margin:4px 0 0;font-size:18px}.intro-example-btn{margin-top:10px;border:0;background:#edf4ff;color:var(--primary);border-radius:12px;padding:8px 12px;font-weight:850;cursor:pointer}
+.intro-example{display:none;margin-top:12px;padding:14px;border-radius:14px;background:#fff;border:1px dashed #b9ccf5;line-height:1.65}.intro-feature.open .intro-example{display:block}
+.intro-verb-demo{display:grid;gap:12px;margin-top:12px}.intro-verb-row{border:1px solid var(--line);border-radius:14px;padding:13px;background:#fff}
+.intro-cn{font-size:25px;font-weight:800}.intro-verb{color:#dc2626;font-weight:950}.intro-pinyin{color:var(--primary);font-weight:800;margin-top:4px}.intro-translation{margin-top:4px;color:var(--muted)}
+.intro-legend{background:#fff4f4;border:1px solid #ffd0d0;color:#8f1d1d;border-radius:12px;padding:10px;font-weight:800;margin-top:12px}
+.intro-compare{display:grid;grid-template-columns:1fr 1fr;gap:16px}.intro-compare-card{border:1px solid var(--line);border-radius:18px;padding:18px;background:#fbfdff;text-align:center}
+.intro-big{font-size:58px;font-weight:950}.intro-pinyin-big{color:#16a34a}.intro-hanzi-big{color:var(--primary)}
+.intro-audio{border:0;background:#e7efff;border-radius:999px;width:44px;height:44px;cursor:pointer;font-size:20px}
+.intro-tone-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.intro-tone{border:1px solid var(--line);border-radius:18px;padding:14px;background:#fbfdff;text-align:center}
+.intro-tone .syllable{font-size:42px;font-weight:950;margin:7px 0}.intro-tone-word{font-size:22px;font-weight:900;margin-top:8px}.intro-tone-pinyin{color:var(--primary);font-weight:850}
+.intro-contour{height:55px}.intro-contour svg{width:100%;height:100%}
+.i-tone1{color:#16a34a}.i-tone2{color:#2563eb}.i-tone3{color:#f59e0b}.i-tone4{color:#dc2626}
+.intro-word-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.intro-word-card{border:1px solid var(--line);border-radius:18px;padding:16px;background:#fbfdff}
+.intro-word-hanzi{font-size:34px;font-weight:900}.intro-syllables{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.intro-syl{padding:6px 10px;border-radius:999px;font-weight:900;background:#edf4ff}
+.intro-roller{background:linear-gradient(135deg,#fbf8ff,#f7fbff);border:1px solid #e4d8ff;border-radius:22px;padding:20px}
+.intro-roller-sentence{font-size:30px;font-weight:900;line-height:1.8;text-align:center}.intro-roller-pinyin{font-size:20px;text-align:center;color:var(--primary);line-height:1.7}
+.intro-roller-legend{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin:12px 0}.intro-chip{border-radius:999px;padding:6px 10px;background:white;border:1px solid var(--line);font-weight:850}
+.intro-practice{background:#fbf8ff;border:1px solid #e4d8ff;border-radius:20px;padding:18px;margin-top:16px}.intro-options{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.intro-option{border:2px solid var(--line);background:white;border-radius:14px;padding:11px;font-weight:900;cursor:pointer}.intro-option.selected{border-color:#7c3aed;background:#f3edff}
+.intro-feedback{min-height:26px;margin-top:10px;font-weight:900}.intro-action{border:0;background:var(--primary);color:white;border-radius:12px;padding:10px 14px;font-weight:900;cursor:pointer}
+@media(max-width:900px){.intro-compare,.intro-tone-grid,.intro-word-cards{grid-template-columns:1fr 1fr}}
+@media(max-width:620px){.intro-compare,.intro-tone-grid,.intro-word-cards,.intro-options{grid-template-columns:1fr}.intro-wrap{padding:0}.intro-hero{padding:20px}}
+
 </style>
 </head>
 <body>
@@ -517,6 +558,151 @@
         <p>Completa cada lección para desbloquear la siguiente.</p>
       </div>
       <div class="lesson-grid" id="lessonGrid"></div>
+    </section>
+
+
+    <section id="introScreen" class="screen">
+      <div class="lesson-head">
+        <button class="back-btn" onclick="closeIntroduction()">← Lecciones</button>
+        <div>
+          <div style="color:var(--primary);font-weight:900">INTRODUCCIÓN</div>
+          <h2>Antes de comenzar con chino mandarín</h2>
+        </div>
+      </div>
+
+      <div class="intro-wrap">
+        <section class="intro-hero">
+          <span class="intro-tag">ANTES DE LA LECCIÓN 1</span>
+          <h1>¿Cómo funciona el chino?</h1>
+          <p>Primero descubre cómo se escribe, cómo funcionan los verbos y por qué los tonos hacen que el mandarín suene como una montaña rusa.</p>
+        </section>
+
+        <section class="intro-panel">
+          <h2 class="intro-title">12 características del chino mandarín</h2>
+          <p class="intro-sub">No necesitas saber chino todavía. Abre cada ejemplo: siempre verás caracteres, pinyin y español cuando sea necesario.</p>
+          <div class="intro-features" id="introFeatureList"></div>
+        </section>
+
+        <section class="intro-panel">
+          <h2 class="intro-title">Pinyin vs Hanzi</h2>
+          <p class="intro-sub"><strong>Pinyin</strong> te ayuda a saber cómo suena una palabra. <strong>Hanzi</strong> es la escritura china.</p>
+          <div class="intro-compare">
+            <div class="intro-compare-card">
+              <h3>Pinyin 拼音</h3>
+              <div class="intro-big intro-pinyin-big">nǐ hǎo</div>
+              <button class="intro-audio" onclick="introSpeak('你好')">🔊</button>
+              <p>Usa letras del alfabeto latino para representar la pronunciación.</p>
+              <p><strong>Sirve para:</strong> aprender cómo se dice una palabra.</p>
+              <p><strong>nǐ hǎo</strong> = 你好</p>
+            </div>
+            <div class="intro-compare-card">
+              <h3>Hanzi 汉字</h3>
+              <div class="intro-big intro-hanzi-big">你好</div>
+              <button class="intro-audio" onclick="introSpeak('你好')">🔊</button>
+              <p>Son los caracteres utilizados para escribir chino.</p>
+              <p>No representan letras individuales: representan unidades escritas con significado.</p>
+              <p><strong>你好</strong> = hola</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="intro-panel">
+          <h2 class="intro-title">Los cuatro tonos del mandarín</h2>
+          <p class="intro-sub">La voz puede mantenerse plana, subir, bajar y volver a subir, o caer rápidamente.</p>
+          <div class="intro-tone-grid">
+            <div class="intro-tone">
+              <strong>Primer tono</strong><div class="syllable i-tone1">mā</div>
+              <button class="intro-audio" onclick="introSpeak('妈')">🔊</button>
+              <div class="intro-contour"><svg viewBox="0 0 100 50"><line x1="10" y1="20" x2="90" y2="20" stroke="#16a34a" stroke-width="5"/></svg></div>
+              <div class="intro-tone-word">妈</div><div class="intro-tone-pinyin">mā</div><div>mamá</div>
+            </div>
+            <div class="intro-tone">
+              <strong>Segundo tono</strong><div class="syllable i-tone2">lái</div>
+              <button class="intro-audio" onclick="introSpeak('来')">🔊</button>
+              <div class="intro-contour"><svg viewBox="0 0 100 50"><line x1="15" y1="40" x2="85" y2="10" stroke="#2563eb" stroke-width="5"/></svg></div>
+              <div class="intro-tone-word">来</div><div class="intro-tone-pinyin">lái</div><div>venir</div>
+            </div>
+            <div class="intro-tone">
+              <strong>Tercer tono</strong><div class="syllable i-tone3">hǎo</div>
+              <button class="intro-audio" onclick="introSpeak('好')">🔊</button>
+              <div class="intro-contour"><svg viewBox="0 0 100 50"><path d="M15 15 Q50 55 85 10" fill="none" stroke="#f59e0b" stroke-width="5"/></svg></div>
+              <div class="intro-tone-word">好</div><div class="intro-tone-pinyin">hǎo</div><div>bueno / bien</div>
+            </div>
+            <div class="intro-tone">
+              <strong>Cuarto tono</strong><div class="syllable i-tone4">qù</div>
+              <button class="intro-audio" onclick="introSpeak('去')">🔊</button>
+              <div class="intro-contour"><svg viewBox="0 0 100 50"><line x1="15" y1="10" x2="85" y2="42" stroke="#dc2626" stroke-width="5"/></svg></div>
+              <div class="intro-tone-word">去</div><div class="intro-tone-pinyin">qù</div><div>ir</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="intro-panel">
+          <h2 class="intro-title">Los tonos dentro de palabras</h2>
+          <p class="intro-sub">Las palabras pueden tener dos, tres o más sílabas. Cada sílaba tiene su propio tono.</p>
+          <div class="intro-word-cards">
+            <div class="intro-word-card">
+              <div class="intro-word-hanzi">你好 <button class="intro-audio" onclick="introSpeak('你好')">🔊</button></div>
+              <div class="intro-pinyin">nǐ hǎo</div>
+              <div class="intro-syllables"><span class="intro-syl i-tone3">nǐ ↓↑</span><span class="intro-syl i-tone3">hǎo ↓↑</span></div>
+              <p>Dos sílabas. Ambas llevan tercer tono en su forma escrita.</p>
+            </div>
+            <div class="intro-word-card">
+              <div class="intro-word-hanzi">中国 <button class="intro-audio" onclick="introSpeak('中国')">🔊</button></div>
+              <div class="intro-pinyin">Zhōngguó</div>
+              <div class="intro-syllables"><span class="intro-syl i-tone1">zhōng →</span><span class="intro-syl i-tone2">guó ↗</span></div>
+              <p>Primer tono + segundo tono.</p>
+            </div>
+            <div class="intro-word-card">
+              <div class="intro-word-hanzi">西班牙 <button class="intro-audio" onclick="introSpeak('西班牙')">🔊</button></div>
+              <div class="intro-pinyin">Xībānyá</div>
+              <div class="intro-syllables"><span class="intro-syl i-tone1">xī →</span><span class="intro-syl i-tone1">bān →</span><span class="intro-syl i-tone2">yá ↗</span></div>
+              <p>Tres sílabas: primer + primer + segundo tono.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="intro-panel">
+          <h2 class="intro-title">🎢 El mandarín puede sonar como una montaña rusa</h2>
+          <p class="intro-sub">Escucha la oración completa. No tienes que memorizarla: observa cómo la voz se mantiene, sube, baja y cae.</p>
+          <div class="intro-roller">
+            <div class="intro-roller-sentence">
+              <span class="i-tone3">你</span><span class="i-tone3">好</span>，
+              <span class="i-tone3">我</span><span class="i-tone4">叫</span>
+              <span class="i-tone2">胡</span><span class="i-tone1">安</span>，
+              <span class="i-tone3">我</span><span class="i-tone4">是</span>
+              <span class="i-tone2">墨</span><span class="i-tone1">西</span><span class="i-tone1">哥</span><span class="i-tone2">人</span>。
+            </div>
+            <div class="intro-roller-pinyin">
+              <span class="i-tone3">Nǐ</span> <span class="i-tone3">hǎo</span>,
+              <span class="i-tone3">wǒ</span> <span class="i-tone4">jiào</span>
+              <span class="i-tone2">Hú</span><span class="i-tone1">'ān</span>,
+              <span class="i-tone3">wǒ</span> <span class="i-tone4">shì</span>
+              <span class="i-tone2">Mò</span><span class="i-tone1">xī</span><span class="i-tone1">gē</span><span class="i-tone2">rén</span>.
+            </div>
+            <div class="intro-roller-legend">
+              <span class="intro-chip i-tone1">→ 1.er tono</span><span class="intro-chip i-tone2">↗ 2.º tono</span>
+              <span class="intro-chip i-tone3">↓↑ 3.er tono</span><span class="intro-chip i-tone4">↘ 4.º tono</span>
+            </div>
+            <div style="text-align:center">
+              <button class="intro-action" onclick="introSpeakSlow('你好，我叫胡安，我是墨西哥人。')">🔊 Escuchar lentamente</button>
+              <button class="intro-action" onclick="introSpeak('你好，我叫胡安，我是墨西哥人。')">🔊 Escuchar normal</button>
+            </div>
+            <p style="text-align:center;color:var(--muted)">“Hola, me llamo Juan y soy mexicano.”</p>
+          </div>
+        </section>
+
+        <section class="intro-panel">
+          <h2 class="intro-title">🎧 ¿Puedes reconocer el tono?</h2>
+          <p class="intro-sub">Escucha una palabra y selecciona el tono que escuchaste.</p>
+          <div class="intro-practice">
+            <button class="intro-audio" onclick="introPlayTone()">🔊</button>
+            <div class="intro-options" id="introToneOptions"></div>
+            <div class="intro-feedback" id="introToneFeedback"></div>
+            <button class="intro-action" onclick="introNewTone()">Otro ejemplo</button>
+          </div>
+        </section>
+      </div>
     </section>
 
     <section id="lessonScreen" class="screen">
@@ -1378,9 +1564,165 @@ let pronWords = currentVocab().filter(v => v.pinyin.trim().split(/\s+/).length =
 let pronIndex = 0;
 let flashIndex = 0;
 
+
+const introFeatures = [
+{
+title:"El chino mandarín no tiene alfabeto.",
+html:`En español podemos formar una palabra combinando letras: <strong>c + a + s + a = casa</strong>.<br><br>
+En chino aprenderás caracteres completos:<br><strong>你</strong> <span class="intro-pinyin">nǐ</span> = tú<br>
+<strong>好</strong> <span class="intro-pinyin">hǎo</span> = bueno / bien<br>
+<strong>你好</strong> <span class="intro-pinyin">nǐ hǎo</span> = hola.`
+},
+{
+title:"No tiene tiempos verbales como el español.",
+html:`Observa el verbo <strong class="intro-verb">学习 xuéxí</strong>, que significa <strong>estudiar</strong>.
+<div class="intro-verb-demo">
+<div class="intro-verb-row"><div class="intro-cn">今天我<span class="intro-verb">学习</span>中文。</div><div class="intro-pinyin">Jīntiān wǒ <span class="intro-verb">xuéxí</span> Zhōngwén.</div><div class="intro-translation">Hoy estudio chino.</div></div>
+<div class="intro-verb-row"><div class="intro-cn">昨天我<span class="intro-verb">学习</span>中文。</div><div class="intro-pinyin">Zuótiān wǒ <span class="intro-verb">xuéxí</span> Zhōngwén.</div><div class="intro-translation">Ayer estudié chino.</div></div>
+<div class="intro-verb-row"><div class="intro-cn">明天我<span class="intro-verb">学习</span>中文。</div><div class="intro-pinyin">Míngtiān wǒ <span class="intro-verb">xuéxí</span> Zhōngwén.</div><div class="intro-translation">Mañana estudiaré chino.</div></div>
+</div>
+<div class="intro-legend">🔴 La palabra roja <strong>学习 xuéxí</strong> siempre se escribe igual. Lo que indica hoy, ayer o mañana son las palabras de tiempo.</div>`
+},
+{
+title:"Los verbos no se conjugan.",
+html:`Usaremos <strong class="intro-verb">是 shì</strong>, que significa <strong>ser</strong>.
+<div class="intro-verb-demo">
+<div class="intro-verb-row"><div class="intro-cn">我<span class="intro-verb">是</span>学生。</div><div class="intro-pinyin">Wǒ <span class="intro-verb">shì</span> xuésheng.</div><div class="intro-translation">Yo soy estudiante.</div></div>
+<div class="intro-verb-row"><div class="intro-cn">他<span class="intro-verb">是</span>学生。</div><div class="intro-pinyin">Tā <span class="intro-verb">shì</span> xuésheng.</div><div class="intro-translation">Él es estudiante.</div></div>
+<div class="intro-verb-row"><div class="intro-cn">我们<span class="intro-verb">是</span>学生。</div><div class="intro-pinyin">Wǒmen <span class="intro-verb">shì</span> xuésheng.</div><div class="intro-translation">Nosotros somos estudiantes.</div></div>
+</div>
+<div class="intro-legend">🔴 En español cambia: <strong>soy / es / somos</strong>. En chino <strong>是 shì</strong> se mantiene igual.</div>`
+},
+{
+title:"Generalmente, los sustantivos no cambian para formar el plural.",
+html:`<strong>学生 xuésheng</strong> significa estudiante.<br><br>
+<strong>一个学生</strong> <span class="intro-pinyin">yí ge xuésheng</span> = un estudiante.<br>
+<strong>三个学生</strong> <span class="intro-pinyin">sān ge xuésheng</span> = tres estudiantes.<br><br>
+El sustantivo <strong>学生</strong> no cambia.`
+},
+{
+title:"Es un idioma tonal.",
+html:`La manera en que subes o bajas la voz forma parte de la pronunciación.<br><br>
+<strong class="i-tone1">妈 mā</strong> = mamá<br>
+<strong class="i-tone2">来 lái</strong> = venir<br>
+<strong class="i-tone3">好 hǎo</strong> = bueno / bien<br>
+<strong class="i-tone4">去 qù</strong> = ir`
+},
+{
+title:"No tiene género gramatical como masculino y femenino.",
+html:`<strong>老师 lǎoshī</strong> puede significar profesor o profesora. La palabra no cambia dependiendo de si la persona es hombre o mujer.`
+},
+{
+title:"No utiliza artículos como el, la, los, las, un, una.",
+html:`<strong>我是学生。</strong><div class="intro-pinyin">Wǒ shì xuésheng.</div>Significa: <strong>Yo soy estudiante.</strong><br><br>No necesitamos agregar una palabra equivalente a “un” antes de estudiante.`
+},
+{
+title:"El orden de las palabras es muy importante.",
+html:`Una estructura básica es:<br><br><strong>Sujeto + verbo + información</strong><br><br>
+我 + 是 + 学生<br><span class="intro-pinyin">wǒ + shì + xuésheng</span><br><br>
+<strong>我是学生。</strong> = Yo soy estudiante.`
+},
+{
+title:"Utiliza clasificadores al contar objetos.",
+html:`Para decir “tres personas”:<br><br><strong>三个人</strong><div class="intro-pinyin">sān ge rén</div>
+三 = tres<br>个 = clasificador<br>人 = persona<br><br>El clasificador <strong>个 ge</strong> aparece entre el número y el sustantivo.`
+},
+{
+title:"Los caracteres representan unidades de significado, no letras individuales.",
+html:`<strong>人 rén</strong> significa persona.<br><br>No representa una letra como R o P. Es una unidad escrita con significado.`
+},
+{
+title:"Una misma sílaba puede significar cosas completamente diferentes dependiendo del tono.",
+html:`El tono forma parte de la pronunciación. Por eso una palabra se aprende junto con su tono.<br><br>
+En esta introducción practicarás sonidos de los cuatro tonos y después los escucharás combinados dentro de palabras reales.`
+},
+{
+title:"El contexto es fundamental.",
+html:`Pregunta:<br><strong>你是学生吗？</strong><div class="intro-pinyin">Nǐ shì xuésheng ma?</div>¿Eres estudiante?<br><br>
+Una persona puede responder simplemente:<br><strong>是。</strong><div class="intro-pinyin">Shì.</div>
+Por el contexto entendemos: <strong>“Sí, lo soy.”</strong>`
+}
+];
+
+function renderIntroFeatures(){
+  const list=document.getElementById("introFeatureList");
+  if(!list || list.children.length) return;
+  introFeatures.forEach((f,i)=>{
+    const el=document.createElement("div");
+    el.className="intro-feature";
+    el.innerHTML=`<div class="intro-feature-head"><div class="intro-num">${i+1}</div><div><h4>${f.title}</h4><button class="intro-example-btn">Ver ejemplo</button><div class="intro-example">${f.html}</div></div></div>`;
+    el.querySelector(".intro-example-btn").onclick=()=>el.classList.toggle("open");
+    list.appendChild(el);
+  });
+}
+
+function openIntroduction(){
+  document.getElementById("homeScreen").classList.remove("active");
+  document.getElementById("lessonScreen").classList.remove("active");
+  document.getElementById("introScreen").classList.add("active");
+  renderIntroFeatures();
+  introNewTone();
+  if(window.trackStudentActivity) window.trackStudentActivity("introduction_opened",{label:"Introducción"});
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function closeIntroduction(){
+  document.getElementById("introScreen").classList.remove("active");
+  document.getElementById("homeScreen").classList.add("active");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function introSpeak(text){
+  if(!("speechSynthesis" in window)) return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);u.lang="zh-CN";u.rate=.78;speechSynthesis.speak(u);
+}
+function introSpeakSlow(text){
+  if(!("speechSynthesis" in window)) return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);u.lang="zh-CN";u.rate=.55;speechSynthesis.speak(u);
+}
+const introToneQuestions=[
+  {hanzi:"妈",pinyin:"mā",tone:1},
+  {hanzi:"来",pinyin:"lái",tone:2},
+  {hanzi:"好",pinyin:"hǎo",tone:3},
+  {hanzi:"去",pinyin:"qù",tone:4}
+];
+let introToneQ=introToneQuestions[0], introSelectedTone=null;
+function introNewTone(){
+  introToneQ=introToneQuestions[Math.floor(Math.random()*introToneQuestions.length)];
+  introSelectedTone=null;
+  const fb=document.getElementById("introToneFeedback");if(fb)fb.textContent="";
+  const labels=["1.º →","2.º ↗","3.º ↓↑","4.º ↘"];
+  const box=document.getElementById("introToneOptions");if(!box)return;
+  box.innerHTML="";
+  labels.forEach((label,index)=>{
+    const b=document.createElement("button");b.className="intro-option";b.textContent=label;
+    b.onclick=()=>{
+      introSelectedTone=index+1;
+      [...box.children].forEach(x=>x.classList.remove("selected"));b.classList.add("selected");
+      const ok=introSelectedTone===introToneQ.tone;
+      fb.textContent=ok?"✅ Correcto":`❌ Era ${introToneQ.pinyin}`;
+      fb.style.color=ok?"#16a34a":"#dc2626";
+    };
+    box.appendChild(b);
+  });
+}
+function introPlayTone(){introSpeak(introToneQ.hanzi);}
+
 function renderLessons(){
   const grid = document.getElementById("lessonGrid");
   grid.innerHTML = "";
+
+  const intro = document.createElement("button");
+  intro.className = "intro-card";
+  intro.innerHTML = `
+    <div class="lesson-number">INTRODUCCIÓN</div>
+    <div class="lesson-title">Antes de comenzar</div>
+    <span class="open-chip">Comenzar</span>
+    <span class="intro-badge">📘</span>
+  `;
+  intro.onclick = openIntroduction;
+  grid.appendChild(intro);
+
   for(let i=1;i<=10;i++){
     const unlocked = i===1 || i===2;
     const btn = document.createElement("button");
@@ -1409,6 +1751,7 @@ function openLesson(lesson=1){
   window.scrollTo({top:0,behavior:"smooth"});
 }
 function goHome(){
+  document.getElementById("introScreen")?.classList.remove("active");
   document.getElementById("lessonScreen").classList.remove("active");
   document.getElementById("homeScreen").classList.add("active");
   window.scrollTo({top:0,behavior:"smooth"});
@@ -2579,5 +2922,257 @@ nextQuiz();
 initRadicalControls();
 renderRadicals();
 </script>
+
+<script>
+/* =========================================================
+   NAVEGACIÓN PERSISTENTE DEL CURSO
+   - Flechas Atrás / Adelante del navegador
+   - Refresh conserva la pantalla actual
+   - Recuerda pestaña principal, subpestaña y tema de ejercicios
+   ========================================================= */
+(function(){
+  const NAV_KEY = "hanyu_navigation_state_v2";
+  let restoring = false;
+
+  function getSaved(){
+    try{
+      return JSON.parse(localStorage.getItem(NAV_KEY) || "{}");
+    }catch(e){
+      return {};
+    }
+  }
+
+  function save(partial){
+    const current = getSaved();
+    const next = Object.assign({}, current, partial);
+    localStorage.setItem(NAV_KEY, JSON.stringify(next));
+    return next;
+  }
+
+  function hideCourseScreens(){
+    ["homeScreen","introScreen","lessonScreen"].forEach(id=>{
+      const el = document.getElementById(id);
+      if(el) el.classList.remove("active");
+    });
+  }
+
+  function currentStateFromHash(){
+    const hash = location.hash || "";
+    if(hash === "#introduccion") return {page:"intro"};
+    if(hash === "#inicio" || hash === "") return {page:"home"};
+    const m = hash.match(/^#leccion-(\d+)$/);
+    if(m) return {page:"lesson", lesson:Number(m[1])};
+    return null;
+  }
+
+  function setHistory(state, mode="push"){
+    const url =
+      state.page === "intro" ? "#introduccion" :
+      state.page === "lesson" ? "#leccion-" + state.lesson :
+      "#inicio";
+
+    if(mode === "replace"){
+      history.replaceState(state,"",url);
+    }else{
+      history.pushState(state,"",url);
+    }
+  }
+
+  function restoreTabs(state){
+    if(!state || state.page !== "lesson") return;
+
+    setTimeout(()=>{
+      if(state.mainTab){
+        const mainBtn = document.querySelector(`.main-tabs .tab-btn[data-main="${state.mainTab}"]`);
+        if(mainBtn) mainBtn.click();
+      }
+
+      if(state.subTab){
+        const subBtn = document.querySelector(`.subtabs .tab-btn[data-sub="${state.subTab}"]`);
+        if(subBtn) subBtn.click();
+      }
+
+      if(state.exerciseTopic){
+        try{
+          if(Number(state.lesson) === 1 && typeof openExerciseTopic === "function"){
+            openExerciseTopic(state.exerciseTopic);
+          }
+          if(Number(state.lesson) === 2 && typeof openExerciseTopic2 === "function"){
+            openExerciseTopic2(state.exerciseTopic);
+          }
+        }catch(e){
+          console.warn("No se pudo restaurar el tema de ejercicios:", e);
+        }
+      }
+    },120);
+  }
+
+  function showState(state){
+    if(!state) state = {page:"home"};
+    restoring = true;
+
+    if(state.page === "intro"){
+      hideCourseScreens();
+      const intro = document.getElementById("introScreen");
+      if(intro) intro.classList.add("active");
+      if(typeof renderIntroFeatures === "function") renderIntroFeatures();
+      if(typeof introNewTone === "function") introNewTone();
+      window.scrollTo(0,0);
+    }
+    else if(state.page === "lesson" && state.lesson){
+      if(typeof openLesson === "function"){
+        openLesson(Number(state.lesson));
+      }
+      restoreTabs(state);
+    }
+    else{
+      hideCourseScreens();
+      const home = document.getElementById("homeScreen");
+      if(home) home.classList.add("active");
+      window.scrollTo(0,0);
+    }
+
+    save(state);
+    restoring = false;
+  }
+
+  /* ----------------------------
+     ENVOLVER FUNCIONES EXISTENTES
+  ---------------------------- */
+  if(typeof window.openIntroduction === "function"){
+    const original = window.openIntroduction;
+    window.openIntroduction = function(){
+      original();
+      const state = save({
+        page:"intro",
+        lesson:null,
+        mainTab:null,
+        subTab:null,
+        exerciseTopic:null
+      });
+      if(!restoring) setHistory(state,"push");
+    };
+  }
+
+  if(typeof window.closeIntroduction === "function"){
+    const original = window.closeIntroduction;
+    window.closeIntroduction = function(){
+      original();
+      const state = save({
+        page:"home",
+        lesson:null,
+        mainTab:null,
+        subTab:null,
+        exerciseTopic:null
+      });
+      if(!restoring) setHistory(state,"push");
+    };
+  }
+
+  if(typeof window.openLesson === "function"){
+    const original = window.openLesson;
+    window.openLesson = function(lesson){
+      original(lesson);
+      const previous = getSaved();
+      const state = save({
+        page:"lesson",
+        lesson:Number(lesson),
+        mainTab: previous.lesson === Number(lesson) ? previous.mainTab : "vocabulario",
+        subTab: previous.lesson === Number(lesson) ? previous.subTab : "lista",
+        exerciseTopic: previous.lesson === Number(lesson) ? previous.exerciseTopic : null
+      });
+      if(!restoring) setHistory(state,"push");
+    };
+  }
+
+  if(typeof window.goHome === "function"){
+    const original = window.goHome;
+    window.goHome = function(){
+      original();
+      const state = save({
+        page:"home",
+        lesson:null,
+        mainTab:null,
+        subTab:null,
+        exerciseTopic:null
+      });
+      if(!restoring) setHistory(state,"push");
+    };
+  }
+
+  if(typeof window.openExerciseTopic === "function"){
+    const original = window.openExerciseTopic;
+    window.openExerciseTopic = function(topic){
+      original(topic);
+      save({page:"lesson",lesson:1,mainTab:"ejercicios",exerciseTopic:topic});
+    };
+  }
+
+  if(typeof window.openExerciseTopic2 === "function"){
+    const original = window.openExerciseTopic2;
+    window.openExerciseTopic2 = function(topic){
+      original(topic);
+      save({page:"lesson",lesson:2,mainTab:"ejercicios",exerciseTopic:topic});
+    };
+  }
+
+  /* ----------------------------
+     GUARDAR PESTAÑAS
+  ---------------------------- */
+  document.addEventListener("click",function(e){
+    const main = e.target.closest(".main-tabs .tab-btn[data-main]");
+    if(main){
+      save({
+        page:"lesson",
+        lesson: typeof currentLesson !== "undefined" ? Number(currentLesson) : getSaved().lesson,
+        mainTab:main.dataset.main,
+        exerciseTopic: main.dataset.main === "ejercicios" ? getSaved().exerciseTopic : null
+      });
+      return;
+    }
+
+    const sub = e.target.closest(".subtabs .tab-btn[data-sub]");
+    if(sub){
+      save({
+        page:"lesson",
+        lesson: typeof currentLesson !== "undefined" ? Number(currentLesson) : getSaved().lesson,
+        mainTab:"vocabulario",
+        subTab:sub.dataset.sub
+      });
+    }
+  });
+
+  /* ----------------------------
+     ATRÁS / ADELANTE
+  ---------------------------- */
+  window.addEventListener("popstate",function(event){
+    const state = event.state || currentStateFromHash() || getSaved() || {page:"home"};
+    showState(state);
+  });
+
+  /* ----------------------------
+     REFRESH / PRIMERA CARGA
+  ---------------------------- */
+  window.addEventListener("load",function(){
+    setTimeout(()=>{
+      const hashState = currentStateFromHash();
+      const saved = getSaved();
+      let state;
+
+      if(hashState && hashState.page !== "home"){
+        state = Object.assign({}, saved, hashState);
+      }else if(saved && saved.page){
+        state = saved;
+      }else{
+        state = {page:"home"};
+      }
+
+      setHistory(state,"replace");
+      showState(state);
+    },350);
+  });
+})();
+</script>
+
 </body>
 </html>
