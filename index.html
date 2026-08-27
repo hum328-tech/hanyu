@@ -473,7 +473,10 @@
         <h2>Panel docente</h2>
         <div class="teacher-summary" id="teacherSummary">Seguimiento del grupo</div><div class="admin-setup-note">El botón aparece al iniciar sesión. Si la cuenta aún no es docente, mostrará el UID exacto que debes registrar en Firestore.</div>
       </div>
-      <button class="teacher-close" id="teacherCloseBtn" type="button">Cerrar ✕</button>
+      <div style="display:flex;gap:8px">
+        <button class="teacher-close" id="teacherRefreshBtn" type="button">↻ Actualizar</button>
+        <button class="teacher-close" id="teacherCloseBtn" type="button">Cerrar ✕</button>
+      </div>
     </div>
     <div id="teacherPanelMessage" class="feedback"></div>
     <div class="teacher-table-wrap">
@@ -1085,12 +1088,17 @@
           </tr>
         `);
       });
-      teacherUsersBody.innerHTML = rows.join("") || '<tr><td colspan="7">Todavía no hay alumnas registradas.</td></tr>';
+      teacherUsersBody.innerHTML = rows.join("") || '<tr><td colspan="7"><strong>No hay alumnas registradas todavía.</strong><br><small>Cuando una alumna cree su cuenta aparecerá aquí automáticamente.</small></td></tr>';
       teacherSummary.textContent = rows.length + " alumna(s) registrada(s)";
       teacherPanelMessage.textContent = "";
     }catch(e){
       console.error("Teacher panel:",e);
-      teacherPanelMessage.textContent = "No se pudo leer el grupo. Falta habilitar el acceso del profesor en las reglas de Firestore.";
+      const code = e && e.code ? e.code : "sin-codigo";
+      const detail = e && e.message ? e.message : String(e);
+      teacherPanelMessage.innerHTML =
+        "<strong>No se pudo leer el grupo.</strong><br>" +
+        "Error Firebase: <code>" + code + "</code><br>" +
+        "<small>" + detail + "</small>";
       teacherPanelMessage.style.color = "#dc2626";
     }
   }
@@ -1115,6 +1123,7 @@
     teacherPanel.classList.add("open");
     loadTeacherPanel();
   });
+  document.getElementById("teacherRefreshBtn").addEventListener("click",function(){ loadTeacherPanel(); });
   teacherCloseBtn.addEventListener("click",function(){ teacherPanel.classList.remove("open"); });
 
   auth.onAuthStateChanged(async function(user){
