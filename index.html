@@ -467,6 +467,42 @@
 @media(max-width:900px){.intro-compare,.intro-tone-grid,.intro-word-cards{grid-template-columns:1fr 1fr}}
 @media(max-width:620px){.intro-compare,.intro-tone-grid,.intro-word-cards,.intro-options{grid-template-columns:1fr}.intro-wrap{padding:0}.intro-hero{padding:20px}}
 
+
+/* ===== SESIONES DE TARJETAS Y OPCIÓN MÚLTIPLE ===== */
+.study-progress{
+  max-width:720px;margin:0 auto 16px;padding:14px 16px;
+  border:1px solid var(--line);border-radius:16px;background:#f8fbff
+}
+.study-progress-top{display:flex;justify-content:space-between;gap:12px;align-items:center;font-weight:900}
+.study-progress-bar{height:10px;background:#e8eef8;border-radius:999px;overflow:hidden;margin-top:9px}
+.study-progress-bar>div{height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--primary-2));transition:.25s width}
+.study-finish{
+  max-width:720px;margin:18px auto 0;text-align:center;padding:26px;
+  border:1px solid var(--line);border-radius:22px;background:linear-gradient(180deg,#fff,#f8fbff)
+}
+.study-finish h3{font-size:28px;margin:8px 0}
+.study-finish .big-check{font-size:56px}
+.study-note{color:var(--muted);font-size:14px;margin-top:8px}
+.mastery-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.know-btn{border:0;background:#16a34a;color:#fff;border-radius:14px;padding:12px 16px;font-weight:900;cursor:pointer}
+.review-btn{border:1px solid #f5c2c2;background:#fff4f4;color:#b42318;border-radius:14px;padding:12px 16px;font-weight:900;cursor:pointer}
+
+
+.teacher-completions{min-width:285px}
+.completion-group{margin-bottom:8px}
+.completion-title{font-weight:900;font-size:12px;margin-bottom:5px}
+.completion-chips{display:flex;flex-wrap:wrap;gap:5px}
+.completion-chip{
+  display:inline-flex;align-items:center;gap:4px;padding:5px 8px;border-radius:999px;
+  font-size:11px;font-weight:900;border:1px solid #d7dee9;background:#f4f6f9;color:#6b7280
+}
+.completion-chip.done{background:#ecfdf3;border-color:#86efac;color:#166534}
+.completion-chip.pending{background:#f8fafc;color:#94a3b8}
+.activity-complete-banner{
+  margin:14px 0;padding:13px 15px;border-radius:15px;background:#ecfdf3;
+  border:1px solid #86efac;color:#166534;font-weight:900
+}
+
 </style>
 </head>
 <body>
@@ -530,6 +566,7 @@
             <th>Lección actual</th>
             <th>Progreso</th>
             <th>Última actividad</th>
+            <th>Actividades terminadas</th>
             <th>Calificaciones</th>
           </tr>
         </thead>
@@ -758,6 +795,15 @@
 
           <div id="pronunciacion" class="subtab-content">
             <h3 class="section-title">Prueba de pronunciación</h3>
+            <div class="study-progress" id="pronProgressBox">
+              <div class="study-progress-top">
+                <span id="pronProgressText">0 de 0 palabras reconocidas</span>
+                <span id="pronRemainingText">Faltan 0</span>
+              </div>
+              <div class="study-progress-bar"><div id="pronProgressBar"></div></div>
+              <div class="study-note">Para terminar, cada palabra debe ser reconocida correctamente al menos una vez.</div>
+            </div>
+            <div id="pronCompleteBanner" class="activity-complete-banner" style="display:none">✅ Pronunciación terminada.</div>
             <p class="section-subtitle">Solo aparecen palabras de dos sílabas. Escucha, repite y recibe retroalimentación.</p>
             <div class="pron-card">
               <div class="pron-hanzi" id="pronHanzi">你好</div>
@@ -793,9 +839,26 @@
                   </div>
                 </div>
               </div>
-              <div class="action-row">
+              <div class="study-progress" id="flashProgressBox">
+                <div class="study-progress-top">
+                  <span id="flashProgressText">0 de 0 palabras dominadas</span>
+                  <span id="flashRemainingText">Faltan 0</span>
+                </div>
+                <div class="study-progress-bar"><div id="flashProgressBar"></div></div>
+                <div class="study-note">Si marcas “Repasar”, esa palabra volverá a aparecer después de 2–3 tarjetas.</div>
+              </div>
+
+              <div class="action-row" id="flashActions">
                 <button class="secondary-btn" onclick="speakFlash()">🔊 Escuchar</button>
-                <button class="primary-btn" onclick="nextFlash()">Siguiente tarjeta →</button>
+                <button class="review-btn" onclick="markFlash(false)">🔁 Repasar</button>
+                <button class="know-btn" onclick="markFlash(true)">✓ Ya la sé</button>
+              </div>
+
+              <div id="flashFinish" class="study-finish" style="display:none">
+                <div class="big-check">🏆</div>
+                <h3>¡Tarjetas terminadas!</h3>
+                <p id="flashFinishText">Completaste todas las palabras.</p>
+                <button class="primary-btn" onclick="startFlashSession()">Practicar otra vez</button>
               </div>
             </div>
           </div>
@@ -822,21 +885,48 @@
             </div>
 
             <div class="quiz-box">
-              <div class="quiz-prompt">
-                <div class="quiz-main" id="quizMain">你好</div>
-                <div class="quiz-sub" id="quizPinyin">nǐ hǎo</div>
+              <div class="study-progress" id="quizProgressBox">
+                <div class="study-progress-top">
+                  <span id="quizProgressText">0 de 0 palabras correctas</span>
+                  <span id="quizRemainingText">Faltan 0</span>
+                </div>
+                <div class="study-progress-bar"><div id="quizProgressBar"></div></div>
+                <div class="study-note">Las respuestas incorrectas vuelven a aparecer después de 2–3 preguntas.</div>
               </div>
-              <div class="quiz-options" id="quizOptions"></div>
-              <div class="feedback" id="quizFeedback"></div>
-              <div class="action-row" style="margin-top:12px">
-                <button class="secondary-btn" onclick="speakQuiz()">🔊 Escuchar</button>
-                <button class="primary-btn" onclick="nextQuiz()">Siguiente →</button>
+
+              <div id="quizPlayArea">
+                <div class="quiz-prompt">
+                  <div class="quiz-main" id="quizMain">你好</div>
+                  <div class="quiz-sub" id="quizPinyin">nǐ hǎo</div>
+                </div>
+                <div class="quiz-options" id="quizOptions"></div>
+                <div class="feedback" id="quizFeedback"></div>
+                <div class="action-row" style="margin-top:12px">
+                  <button class="secondary-btn" onclick="speakQuiz()">🔊 Escuchar</button>
+                  <button class="primary-btn" id="quizNextBtn" onclick="nextQuiz()" style="display:none">Siguiente →</button>
+                </div>
+              </div>
+
+              <div id="quizFinish" class="study-finish" style="display:none">
+                <div class="big-check">🏆</div>
+                <h3>¡Actividad terminada!</h3>
+                <p id="quizFinishText">Completaste todas las palabras.</p>
+                <button class="primary-btn" onclick="startQuizSession()">Practicar otra vez</button>
               </div>
             </div>
           </div>
 
           <div id="escritura" class="subtab-content">
             <h3 class="section-title">Práctica de escritura</h3>
+            <div class="study-progress" id="writingProgressBox">
+              <div class="study-progress-top">
+                <span id="writingProgressText">0 de 0 caracteres completados</span>
+                <span id="writingRemainingText">Faltan 0</span>
+              </div>
+              <div class="study-progress-bar"><div id="writingProgressBar"></div></div>
+              <div class="study-note">Un carácter cuenta como terminado cuando completas correctamente su práctica de trazos.</div>
+            </div>
+            <div id="writingCompleteBanner" class="activity-complete-banner" style="display:none">✅ Escritura terminada.</div>
             <p class="section-subtitle">Primero observa el orden de trazos, después escribe sobre la guía y finalmente de memoria.</p>
             <div id="writingGrid" class="writing-grid"></div>
           </div>
@@ -1224,6 +1314,37 @@
     }catch(e){ console.error("Activity tracking:",e); }
   };
 
+
+  window.markActivityCompleted = async function(lesson, activityKey, label){
+    const user = auth.currentUser;
+    if(!user) return;
+
+    const base = "progress.lesson" + lesson + ".activities." + activityKey;
+    const payload = {
+      email:user.email || "",
+      username:usernameFromEmail(user.email),
+      lastActivity:{
+        type:"activity_completed",
+        detail:{
+          lesson:Number(lesson),
+          activity:activityKey,
+          label:label || activityKey
+        },
+        at:firebase.firestore.FieldValue.serverTimestamp()
+      },
+      updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    payload[base + ".completed"] = true;
+    payload[base + ".completedAt"] = firebase.firestore.FieldValue.serverTimestamp();
+
+    try{
+      await db.collection("users").doc(user.uid).set(payload,{merge:true});
+    }catch(e){
+      console.error("Completion tracking:",e);
+    }
+  };
+
   async function countLoginOnce(user){
     const sessionKey = "hanyu_login_counted_" + user.uid;
     if(sessionStorage.getItem(sessionKey)) return;
@@ -1262,6 +1383,28 @@
         ].filter(Boolean).join(" · ") || "—";
         const status = l2.completed ? "L2 terminada" : (l1.completed ? "L2 en progreso" : "L1 en progreso");
 
+        function completionChip(obj,key,label){
+          const done = !!(obj.activities && obj.activities[key] && obj.activities[key].completed);
+          return `<span class="completion-chip ${done ? "done" : "pending"}">${done ? "✓" : "○"} ${label}</span>`;
+        }
+
+        function completionGroup(lessonObj, lessonNumber){
+          return `
+            <div class="completion-group">
+              <div class="completion-title">Lección ${lessonNumber}</div>
+              <div class="completion-chips">
+                ${completionChip(lessonObj,"pronunciacion","Pron.")}
+                ${completionChip(lessonObj,"tarjetas","Tarjetas")}
+                ${completionChip(lessonObj,"opcion_multiple","Opción múltiple")}
+                ${completionChip(lessonObj,"escritura","Escritura")}
+                ${completionChip(lessonObj,"ejercicios","Ejercicios")}
+                ${completionChip(lessonObj,"prueba","Prueba")}
+              </div>
+            </div>`;
+        }
+
+        const completions = completionGroup(l1,1) + completionGroup(l2,2);
+
         rows.push(`
           <tr>
             <td><strong>${d.username || usernameFromEmail(d.email) || "—"}</strong><br><small>${d.email || ""}</small><br><span class="teacher-status">${status}</span></td>
@@ -1270,11 +1413,12 @@
             <td>Lección ${currentLesson}</td>
             <td><span class="teacher-progress">${overall}%</span><br>L1 ${l1p}% · L2 ${l2p}%</td>
             <td>${activity}<br><small>${formatFirestoreDate(act.at)}</small></td>
+            <td class="teacher-completions">${completions}</td>
             <td>${scores}</td>
           </tr>
         `);
       });
-      teacherUsersBody.innerHTML = rows.join("") || '<tr><td colspan="7"><strong>No hay alumnas registradas todavía.</strong><br><small>Cuando una alumna cree su cuenta aparecerá aquí automáticamente.</small></td></tr>';
+      teacherUsersBody.innerHTML = rows.join("") || '<tr><td colspan="8"><strong>No hay alumnas registradas todavía.</strong><br><small>Cuando una alumna cree su cuenta aparecerá aquí automáticamente.</small></td></tr>';
       teacherSummary.textContent = rows.length + " alumna(s) registrada(s)";
       teacherPanelMessage.textContent = "";
     }catch(e){
@@ -1560,7 +1704,7 @@ function currentVocab(){
   return currentLesson===2 ? lesson2Vocab : vocab;
 }
 
-let pronWords = currentVocab().filter(v => v.pinyin.trim().split(/\s+/).length === 2 || [...v.hanzi].length === 2);(v => v.pinyin.trim().split(/\s+/).length === 2 || [...v.hanzi].length === 2);
+let pronWords = currentVocab().filter(v => v.pinyin.trim().split(/\s+/).length === 2 || [...v.hanzi].length === 2);
 let pronIndex = 0;
 let flashIndex = 0;
 
@@ -1950,6 +2094,40 @@ document.querySelectorAll("[data-sub]").forEach(btn=>{
   });
 });
 
+let pronMastered = new Set();
+let pronCompletionSent = false;
+
+function pronKey(v){ return `${v.hanzi}||${v.pinyin}`; }
+
+function updatePronProgress(){
+  const total = pronWords.length;
+  const done = pronMastered.size;
+  const pct = total ? Math.round(done/total*100) : 0;
+  const t = document.getElementById("pronProgressText");
+  const r = document.getElementById("pronRemainingText");
+  const b = document.getElementById("pronProgressBar");
+  const banner = document.getElementById("pronCompleteBanner");
+  if(t) t.textContent = `${done} de ${total} palabras reconocidas`;
+  if(r) r.textContent = `Faltan ${Math.max(0,total-done)}`;
+  if(b) b.style.width = `${pct}%`;
+  if(banner) banner.style.display = done >= total && total ? "block" : "none";
+
+  if(done >= total && total && !pronCompletionSent){
+    pronCompletionSent = true;
+    if(window.markActivityCompleted){
+      window.markActivityCompleted(currentLesson,"pronunciacion","Pronunciación terminada");
+    }
+  }
+}
+
+function resetPronSession(){
+  pronMastered = new Set();
+  pronCompletionSent = false;
+  pronIndex = 0;
+  updatePronProgress();
+  updatePron();
+}
+
 function updatePron(){
   const v = pronWords[pronIndex % pronWords.length];
   pronHanzi.textContent = v.hanzi;
@@ -1979,6 +2157,13 @@ function startRecognition(){
     const ok = heard.some(t=>t.includes(target) || target.includes(t));
     pronFeedback.textContent = ok ? "✅ ¡Muy bien! La pronunciación fue reconocida." : `🔁 Intenta otra vez. Se reconoció: ${heard[0]}`;
     pronFeedback.style.color = ok ? "var(--ok)" : "var(--danger)";
+    if(ok){
+      pronMastered.add(pronKey(pronWords[pronIndex % pronWords.length]));
+      updatePronProgress();
+      if(pronMastered.size < pronWords.length){
+        setTimeout(()=>{ nextPron(); },650);
+      }
+    }
   };
   rec.onerror = ()=> {
     pronFeedback.textContent = "No pude escucharte con claridad. Intenta nuevamente.";
@@ -1987,21 +2172,128 @@ function startRecognition(){
   rec.start();
 }
 
-function updateFlash(){
-  const data=currentVocab(); const v = data[flashIndex % data.length];
-  flashHanzi.textContent = v.hanzi;
-  flashPinyin.textContent = v.pinyin;
-  flashBackPinyin.textContent = v.pinyin;
-  flashMeaning.textContent = v.es;
+
+let flashSession = [];
+let flashQueue = [];
+let flashMastered = new Set();
+let flashCurrent = null;
+let flashAttempts = 0;
+
+function flashKey(v){ return `${v.hanzi}||${v.pinyin}||${v.es}`; }
+
+function startFlashSession(){
+  const data = currentVocab();
+  flashSession = [...data];
+  flashQueue = shuffle([...data]);
+  flashMastered = new Set();
+  flashAttempts = 0;
+
+  const finish = document.getElementById("flashFinish");
+  const actions = document.getElementById("flashActions");
+  const card = document.getElementById("flashcard");
+  if(finish) finish.style.display = "none";
+  if(actions) actions.style.display = "flex";
+  if(card) card.style.display = "block";
+
+  updateFlashProgress();
+  showNextFlash();
+}
+
+function updateFlashProgress(){
+  const total = flashSession.length;
+  const done = flashMastered.size;
+  const pct = total ? Math.round(done/total*100) : 0;
+  const t = document.getElementById("flashProgressText");
+  const r = document.getElementById("flashRemainingText");
+  const b = document.getElementById("flashProgressBar");
+  if(t) t.textContent = `${done} de ${total} palabras dominadas`;
+  if(r) r.textContent = `Faltan ${Math.max(0,total-done)}`;
+  if(b) b.style.width = `${pct}%`;
+}
+
+function showNextFlash(){
+  if(flashMastered.size >= flashSession.length){
+    finishFlashSession();
+    return;
+  }
+
+  while(flashQueue.length && flashMastered.has(flashKey(flashQueue[0]))){
+    flashQueue.shift();
+  }
+
+  if(!flashQueue.length){
+    flashQueue = shuffle(flashSession.filter(v=>!flashMastered.has(flashKey(v))));
+  }
+
+  flashCurrent = flashQueue.shift();
+  if(!flashCurrent){ finishFlashSession(); return; }
+
+  flashHanzi.textContent = flashCurrent.hanzi;
+  flashPinyin.textContent = flashCurrent.pinyin;
+  flashBackPinyin.textContent = flashCurrent.pinyin;
+  flashMeaning.textContent = flashCurrent.es;
   flashcard.classList.remove("flipped");
   applyPinyinToggle();
 }
-function nextFlash(){ const data=currentVocab(); flashIndex=(flashIndex+1)%data.length; updateFlash();
-initQuizControls();
-nextQuiz();
-initRadicalControls();
-renderRadicals(); }
-function speakFlash(){ const data=currentVocab(); speak(data[flashIndex % data.length].hanzi); }
+
+function scheduleFlashReview(item){
+  const delay = 2 + Math.floor(Math.random()*2); // 2–3 tarjetas
+  const position = Math.min(delay, flashQueue.length);
+  flashQueue.splice(position,0,item);
+}
+
+function markFlash(known){
+  if(!flashCurrent) return;
+  flashAttempts++;
+
+  if(known){
+    flashMastered.add(flashKey(flashCurrent));
+  }else{
+    scheduleFlashReview(flashCurrent);
+  }
+
+  updateFlashProgress();
+  showNextFlash();
+}
+
+function finishFlashSession(){
+  updateFlashProgress();
+  const finish = document.getElementById("flashFinish");
+  const actions = document.getElementById("flashActions");
+  const card = document.getElementById("flashcard");
+  const text = document.getElementById("flashFinishText");
+
+  if(actions) actions.style.display = "none";
+  if(card) card.style.display = "none";
+  if(finish) finish.style.display = "block";
+  if(text) text.textContent = `Dominaste ${flashSession.length} de ${flashSession.length} palabras en ${flashAttempts} intentos.`;
+
+  if(window.trackStudentActivity){
+    window.trackStudentActivity("flashcards_completed",{
+      lesson:currentLesson,
+      total:flashSession.length,
+      attempts:flashAttempts,
+      label:"Tarjetas completadas"
+    });
+    if(window.markActivityCompleted){
+      window.markActivityCompleted(currentLesson,"tarjetas","Tarjetas terminadas");
+    }
+  }
+}
+
+function updateFlash(){
+  if(!flashSession.length) startFlashSession();
+  else if(flashCurrent){
+    flashHanzi.textContent = flashCurrent.hanzi;
+    flashPinyin.textContent = flashCurrent.pinyin;
+    flashBackPinyin.textContent = flashCurrent.pinyin;
+    flashMeaning.textContent = flashCurrent.es;
+    flashcard.classList.remove("flipped");
+    applyPinyinToggle();
+  }
+}
+function nextFlash(){ markFlash(true); }
+function speakFlash(){ if(flashCurrent) speak(flashCurrent.hanzi); }
 function applyPinyinToggle(){
   const show = document.getElementById("pinyinToggle").checked;
   document.getElementById("flashPinyin").style.display = show ? "block" : "none";
@@ -2194,72 +2486,205 @@ function renderRadicals(){
   `).join("");
 }
 
+
 const quizCategory = document.getElementById("quizCategory");
 const quizDirection = document.getElementById("quizDirection");
 const quizPinyinToggle = document.getElementById("quizPinyinToggle");
+
 let quizItem = null;
 let quizAnswered = false;
+let quizSessionPool = [];
+let quizQueue = [];
+let quizMastered = new Set();
+let quizAttempts = 0;
+let quizErrors = 0;
+
+function quizKey(v){ return `${v.hanzi}||${v.pinyin}||${v.es}`; }
 
 function initQuizControls(){
   quizCategory.innerHTML = `
     <option value="todos">Todo el vocabulario</option>
     ${Object.entries(currentCategoryLabels()).map(([k,v])=>`<option value="${k}">${v}</option>`).join("")}
   `;
-  quizCategory.addEventListener("change", nextQuiz);
-  quizDirection.addEventListener("change", nextQuiz);
-  quizPinyinToggle.addEventListener("change", updateQuizPinyin);
+
+  quizCategory.onchange = startQuizSession;
+  quizDirection.onchange = startQuizSession;
+  quizPinyinToggle.onchange = updateQuizPinyin;
 }
 
 function getQuizPool(){
   const cat = quizCategory.value || "todos";
-  return cat==="todos" ? vocab : currentVocab().filter(v=>v.cat===cat);
+  return cat==="todos" ? currentVocab() : currentVocab().filter(v=>v.cat===cat);
 }
 
 function shuffle(arr){
   return [...arr].sort(()=>Math.random()-.5);
 }
 
-function nextQuiz(){
+function startQuizSession(){
   const pool = getQuizPool();
+
+  quizFeedback.textContent = "";
   if(pool.length < 4){
     quizFeedback.textContent = "Esta categoría necesita al menos cuatro elementos.";
+    quizFeedback.style.color = "var(--danger)";
     return;
   }
+
+  quizSessionPool = [...pool];
+  quizQueue = shuffle([...pool]);
+  quizMastered = new Set();
+  quizAttempts = 0;
+  quizErrors = 0;
+  quizItem = null;
+
+  const finish = document.getElementById("quizFinish");
+  const play = document.getElementById("quizPlayArea");
+  if(finish) finish.style.display = "none";
+  if(play) play.style.display = "block";
+
+  updateQuizProgress();
+  nextQuiz();
+}
+
+function updateQuizProgress(){
+  const total = quizSessionPool.length;
+  const done = quizMastered.size;
+  const pct = total ? Math.round(done/total*100) : 0;
+  const t = document.getElementById("quizProgressText");
+  const r = document.getElementById("quizRemainingText");
+  const b = document.getElementById("quizProgressBar");
+  if(t) t.textContent = `${done} de ${total} palabras correctas`;
+  if(r) r.textContent = `Faltan ${Math.max(0,total-done)}`;
+  if(b) b.style.width = `${pct}%`;
+}
+
+function scheduleQuizReview(item){
+  const delay = 2 + Math.floor(Math.random()*2); // 2–3 preguntas
+  const position = Math.min(delay, quizQueue.length);
+  quizQueue.splice(position,0,item);
+}
+
+function nextQuiz(){
+  if(!quizSessionPool.length){
+    startQuizSession();
+    return;
+  }
+
+  if(quizMastered.size >= quizSessionPool.length){
+    finishQuizSession();
+    return;
+  }
+
+  while(quizQueue.length && quizMastered.has(quizKey(quizQueue[0]))){
+    quizQueue.shift();
+  }
+
+  if(!quizQueue.length){
+    quizQueue = shuffle(quizSessionPool.filter(v=>!quizMastered.has(quizKey(v))));
+  }
+
+  quizItem = quizQueue.shift();
+  if(!quizItem){ finishQuizSession(); return; }
+
   quizAnswered = false;
   quizFeedback.textContent = "";
-  quizItem = pool[Math.floor(Math.random()*pool.length)];
+  const nextBtn = document.getElementById("quizNextBtn");
+  if(nextBtn) nextBtn.style.display = "none";
+
   const direction = quizDirection.value;
   quizMain.textContent = direction==="zh-es" ? quizItem.hanzi : quizItem.es;
   quizPinyin.textContent = quizItem.pinyin;
-  updateQuizPinyin();
+  updateQuizPinyin(false);
 
-  const others = shuffle(pool.filter(v=>v!==quizItem)).slice(0,3);
+  const pool = quizSessionPool;
+  const others = shuffle(pool.filter(v=>quizKey(v)!==quizKey(quizItem))).slice(0,3);
   const options = shuffle([quizItem,...others]);
-  quizOptions.innerHTML = options.map((v,i)=>`
-    <button class="quiz-option" data-correct="${v===quizItem}" onclick="answerQuiz(this)">
+
+  quizOptions.innerHTML = options.map(v=>`
+    <button class="quiz-option" data-key="${escapeQuotes(quizKey(v))}" onclick="answerQuiz(this)">
       ${direction==="zh-es" ? v.es : v.hanzi}
       ${direction==="es-zh" && quizPinyinToggle.checked ? `<div class="pinyin" style="font-size:14px;margin-top:4px">${v.pinyin}</div>` : ""}
     </button>
   `).join("");
 }
 
-function updateQuizPinyin(){
+function updateQuizPinyin(rebuild=true){
   if(!quizItem) return;
   const direction = quizDirection.value;
   quizPinyin.style.display = quizPinyinToggle.checked ? "block" : "none";
-  if(direction==="es-zh") nextQuiz();
+
+  if(rebuild && direction==="es-zh" && !quizAnswered){
+    const pool = quizSessionPool;
+    const others = shuffle(pool.filter(v=>quizKey(v)!==quizKey(quizItem))).slice(0,3);
+    const options = shuffle([quizItem,...others]);
+    quizOptions.innerHTML = options.map(v=>`
+      <button class="quiz-option" data-key="${escapeQuotes(quizKey(v))}" onclick="answerQuiz(this)">
+        ${v.hanzi}
+        ${quizPinyinToggle.checked ? `<div class="pinyin" style="font-size:14px;margin-top:4px">${v.pinyin}</div>` : ""}
+      </button>
+    `).join("");
+  }
 }
 
 function answerQuiz(btn){
-  if(quizAnswered) return;
+  if(quizAnswered || !quizItem) return;
   quizAnswered = true;
-  const correct = btn.dataset.correct==="true";
+  quizAttempts++;
+
+  const correct = btn.dataset.key === quizKey(quizItem);
+
   document.querySelectorAll(".quiz-option").forEach(b=>{
-    if(b.dataset.correct==="true") b.classList.add("correct");
+    if(b.dataset.key === quizKey(quizItem)) b.classList.add("correct");
   });
-  if(!correct) btn.classList.add("wrong");
-  quizFeedback.textContent = correct ? "✅ Correcto" : "❌ No es correcto. Revisa la respuesta marcada.";
-  quizFeedback.style.color = correct ? "var(--ok)" : "var(--danger)";
+
+  if(correct){
+    quizMastered.add(quizKey(quizItem));
+    quizFeedback.textContent = "✅ Correcto";
+    quizFeedback.style.color = "var(--ok)";
+  }else{
+    quizErrors++;
+    btn.classList.add("wrong");
+    scheduleQuizReview(quizItem);
+    quizFeedback.textContent = "❌ No es correcto. Esta palabra volverá a aparecer en 2–3 preguntas.";
+    quizFeedback.style.color = "var(--danger)";
+  }
+
+  updateQuizProgress();
+
+  const nextBtn = document.getElementById("quizNextBtn");
+  if(nextBtn){
+    nextBtn.style.display = "inline-block";
+    nextBtn.textContent = quizMastered.size >= quizSessionPool.length ? "Ver resultado →" : "Siguiente →";
+  }
+}
+
+function finishQuizSession(){
+  updateQuizProgress();
+
+  const finish = document.getElementById("quizFinish");
+  const play = document.getElementById("quizPlayArea");
+  const text = document.getElementById("quizFinishText");
+
+  if(play) play.style.display = "none";
+  if(finish) finish.style.display = "block";
+
+  if(text){
+    text.textContent = `Completaste ${quizSessionPool.length} palabras. Tuviste ${quizErrors} error${quizErrors===1?"":"es"} y ${quizAttempts} intentos en total.`;
+  }
+
+  if(window.trackStudentActivity){
+    window.trackStudentActivity("multiple_choice_completed",{
+      lesson:currentLesson,
+      total:quizSessionPool.length,
+      attempts:quizAttempts,
+      errors:quizErrors,
+      label:"Opción múltiple completada"
+    });
+    if(window.markActivityCompleted){
+      window.markActivityCompleted(currentLesson,"opcion_multiple","Opción múltiple terminada");
+    }
+  }
 }
 
 function speakQuiz(){
@@ -2269,6 +2694,30 @@ function speakQuiz(){
 
 
 let writingChars = [];
+let writingCompleted = new Set();
+let writingCompletionSent = false;
+
+function updateWritingProgress(){
+  const total = writingChars.length;
+  const done = writingCompleted.size;
+  const pct = total ? Math.round(done/total*100) : 0;
+  const t = document.getElementById("writingProgressText");
+  const r = document.getElementById("writingRemainingText");
+  const b = document.getElementById("writingProgressBar");
+  const banner = document.getElementById("writingCompleteBanner");
+  if(t) t.textContent = `${done} de ${total} caracteres completados`;
+  if(r) r.textContent = `Faltan ${Math.max(0,total-done)}`;
+  if(b) b.style.width = `${pct}%`;
+  if(banner) banner.style.display = done >= total && total ? "block" : "none";
+
+  if(done >= total && total && !writingCompletionSent){
+    writingCompletionSent = true;
+    if(window.markActivityCompleted){
+      window.markActivityCompleted(currentLesson,"escritura","Escritura terminada");
+    }
+  }
+}
+
 function getWritingChars(){
   const source = currentLesson===2
     ? "护士工人售货员医生职员家庭主妇秘书商人工程师建筑师记者律师作家服务员设计师办公室商店公司书房学校法院医院工厂家饭馆工作正式场合非正式先生小姐经理高兴认识同学这那里儿都在哪地方"
@@ -2281,6 +2730,9 @@ const writers = {};
 function initWriters(){
   writersInitialized = true;
   writingChars = getWritingChars();
+  writingCompleted = new Set();
+  writingCompletionSent = false;
+  updateWritingProgress();
   const grid = document.getElementById("writingGrid");
   grid.innerHTML = writingChars.map((ch,i)=>`
     <div class="writer-card">
@@ -2312,7 +2764,16 @@ function initWriters(){
   });
 }
 function animateWriter(i){ writers[i]?.animateCharacter(); }
-function quizWriter(i){ writers[i]?.quiz({showHintAfterMisses:2, highlightOnComplete:true}); }
+function quizWriter(i){
+  writers[i]?.quiz({
+    showHintAfterMisses:2,
+    highlightOnComplete:true,
+    onComplete:function(){
+      writingCompleted.add(i);
+      updateWritingProgress();
+    }
+  });
+}
 function clearWriter(i){
   const ch = writingChars[i];
   const box = document.getElementById(`writer-${i}`);
@@ -2323,6 +2784,21 @@ function clearWriter(i){
 }
 
 
+
+let completedExerciseTopics1 = new Set();
+let completedExerciseTopics2 = new Set();
+
+function maybeCompleteExercises(lesson){
+  if(lesson===1){
+    if(completedExerciseTopics1.size >= Object.keys(exerciseTopics).length){
+      if(window.markActivityCompleted) window.markActivityCompleted(1,"ejercicios","Ejercicios terminados");
+    }
+  }else if(lesson===2){
+    if(completedExerciseTopics2.size >= Object.keys(exerciseTopics2).length){
+      if(window.markActivityCompleted) window.markActivityCompleted(2,"ejercicios","Ejercicios terminados");
+    }
+  }
+}
 
 const exerciseTopics = {
   shi: {
@@ -2489,6 +2965,8 @@ function nextExercise(){
     exerciseFeedback.textContent="✅ Tema completado.";
     exerciseFeedback.style.color="var(--ok)";
     if(window.trackStudentActivity) window.trackStudentActivity("exercise_topic_completed",{lesson:1,topic:currentExerciseTopic,label:exerciseTopics[currentExerciseTopic]?.title||currentExerciseTopic});
+    completedExerciseTopics1.add(currentExerciseTopic);
+    maybeCompleteExercises(1);
     exerciseNextBtn.textContent="Volver al índice";
     exerciseNextBtn.onclick=()=>{
       exerciseNextBtn.textContent="Siguiente →";
@@ -2559,6 +3037,7 @@ function finishFinalTest(){
     return `<div class="score-box"><strong>${cat}</strong><div>${score}%</div></div>`;
   }).join("");
   if(window.trackStudentActivity) window.trackStudentActivity("test_finished",{lesson:1,percent:pct,score:Number(grade),label:"Prueba final L1"},{"lesson1.score":Number(grade),"lesson1.progress":pct>=80?100:Math.max(70,pct),"lesson1.completed":pct>=80});
+  if(window.markActivityCompleted) window.markActivityCompleted(1,"prueba","Prueba final terminada");
   testResult.innerHTML=`<div class="test-badge">${pct>=80?"🏆":"📘"}</div><div class="score-big">${pct}%</div><h3>${correct} / ${testAnswers.length} correctas</h3><div class="score-grid">${details}</div><h3>Calificación final: ${grade} / 10</h3><p>${pct>=80?"✅ Lección aprobada.":"🔁 Conviene repasar antes de continuar."}</p><button class="primary-btn" onclick="startFinalTest()">Intentar otra vez</button>`;
   testResult.style.display="block";
 }
@@ -2567,12 +3046,19 @@ function finishFinalTest(){
 function refreshLessonData(){
   pronWords = currentVocab().filter(v => v.pinyin.trim().split(/\s+/).length === 2 || [...v.hanzi].length === 2);
   pronIndex=0; flashIndex=0; writersInitialized=false;
+  pronMastered = new Set();
+  pronCompletionSent = false;
+  writingCompleted = new Set();
+  writingCompletionSent = false;
+  if(currentLesson===1) completedExerciseTopics1 = new Set();
+  if(currentLesson===2) completedExerciseTopics2 = new Set();
   renderCategoryBar();
   renderVocab();
   updatePron();
-  updateFlash();
+  updatePronProgress();
+  startFlashSession();
   initQuizControls();
-  nextQuiz();
+  startQuizSession();
   const grammar = document.getElementById("gramatica");
   const exercises = document.getElementById("ejercicios");
   const tests = document.getElementById("pruebas");
@@ -2924,6 +3410,8 @@ function nextExercise2(){
     exerciseFeedback2.textContent="✅ Tema completado.";
     exerciseFeedback2.style.color="var(--ok)";
     if(window.trackStudentActivity) window.trackStudentActivity("exercise_topic_completed",{lesson:2,topic:currentExerciseTopic2,label:exerciseTopics2[currentExerciseTopic2]?.title||currentExerciseTopic2});
+    completedExerciseTopics2.add(currentExerciseTopic2);
+    maybeCompleteExercises(2);
     exerciseNextBtn2.textContent="Volver al índice";
     exerciseNextBtn2.onclick=()=>{
       exerciseNextBtn2.textContent="Siguiente →";
@@ -2999,6 +3487,7 @@ function finishFinalTest2(){
     return `<div class="score-box"><strong>${cat}</strong><div>${score}%</div></div>`;
   }).join("");
   if(window.trackStudentActivity) window.trackStudentActivity("test_finished",{lesson:2,percent:pct,score:Number(grade),label:"Prueba final L2"},{"lesson2.score":Number(grade),"lesson2.progress":pct>=80?100:Math.max(70,pct),"lesson2.completed":pct>=80});
+  if(window.markActivityCompleted) window.markActivityCompleted(2,"prueba","Prueba final terminada");
   testResult2.innerHTML=`<div class="test-badge">${pct>=80?"🏆":"📘"}</div>
     <div class="score-big">${pct}%</div>
     <h3>${correct} / ${testAnswers2.length} correctas</h3>
@@ -3013,9 +3502,9 @@ renderLessons();
 renderCategoryBar();
 renderVocab();
 updatePron();
-updateFlash();
+startFlashSession();
 initQuizControls();
-nextQuiz();
+startQuizSession();
 initRadicalControls();
 renderRadicals();
 </script>
