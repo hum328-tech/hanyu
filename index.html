@@ -503,6 +503,24 @@
   border:1px solid #86efac;color:#166534;font-weight:900
 }
 
+
+.teacher-search-wrap{
+  display:flex;align-items:center;gap:10px;margin:12px 0 14px
+}
+.teacher-search{
+  flex:1;min-width:220px;padding:12px 14px;border:1px solid #cfd8e6;
+  border-radius:14px;font:inherit;background:#fff;outline:none
+}
+.teacher-search:focus{
+  border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.10)
+}
+.teacher-search-count{font-size:12px;font-weight:800;color:var(--muted);white-space:nowrap}
+.completion-chip.done{
+  background:#dcfce7 !important;border-color:#22c55e !important;color:#166534 !important;
+  box-shadow:0 0 0 2px rgba(34,197,94,.10)
+}
+.completion-chip.done::before{content:"";width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block}
+
 </style>
 </head>
 <body>
@@ -556,6 +574,13 @@
       </div>
     </div>
     <div id="teacherPanelMessage" class="feedback"></div>
+
+    <div class="teacher-search-wrap">
+      <input id="teacherUserSearch" class="teacher-search" type="search"
+             placeholder="🔎 Buscar por usuario o correo..." autocomplete="off">
+      <span id="teacherSearchCount" class="teacher-search-count"></span>
+    </div>
+
     <div class="teacher-table-wrap">
       <table class="teacher-table">
         <thead>
@@ -1317,31 +1342,61 @@
 
   window.markActivityCompleted = async function(lesson, activityKey, label){
     const user = auth.currentUser;
-    if(!user) return;
+    if(!user) return false;
 
-    const base = "progress.lesson" + lesson + ".activities." + activityKey;
-    const payload = {
-      email:user.email || "",
-      username:usernameFromEmail(user.email),
-      lastActivity:{
-        type:"activity_completed",
-        detail:{
-          lesson:Number(lesson),
-          activity:activityKey,
-          label:label || activityKey
-        },
-        at:firebase.firestore.FieldValue.serverTimestamp()
-      },
-      updatedAt:firebase.firestore.FieldValue.serverTimestamp()
-    };
-
-    payload[base + ".completed"] = true;
-    payload[base + ".completedAt"] = firebase.firestore.FieldValue.serverTimestamp();
+    const base = "progress.lesson" + Number(lesson) + ".activities." + activityKey;
+    const ref = db.collection("users").doc(user.uid);
 
     try{
-      await db.collection("users").doc(user.uid).set(payload,{merge:true});
+      // update() sí interpreta los puntos como rutas anidadas de Firestore.
+      await ref.update({
+        [base + ".completed"]: true,
+        [base + ".completedAt"]: firebase.firestore.FieldValue.serverTimestamp(),
+        ["progress.currentLesson"]: Number(lesson),
+        lastActivity:{
+          type:"activity_completed",
+          detail:{
+            lesson:Number(lesson),
+            activity:activityKey,
+            label:label || activityKey
+          },
+          at:firebase.firestore.FieldValue.serverTimestamp()
+        },
+        updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+      });
+      return true;
     }catch(e){
+      // Si el documento aún no existe, lo creamos y volvemos a guardar.
+      if(e && (e.code === "not-found" || String(e.message || "").toLowerCase().includes("no document"))){
+        try{
+          await ref.set({
+            email:user.email || "",
+            username:usernameFromEmail(user.email),
+            progress:{currentLesson:Number(lesson)},
+            updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+          },{merge:true});
+          await ref.update({
+            [base + ".completed"]: true,
+            [base + ".completedAt"]: firebase.firestore.FieldValue.serverTimestamp(),
+            lastActivity:{
+              type:"activity_completed",
+              detail:{
+                lesson:Number(lesson),
+                activity:activityKey,
+                label:label || activityKey
+              },
+              at:firebase.firestore.FieldValue.serverTimestamp()
+            },
+            updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+          });
+          return true;
+        }catch(e2){
+          console.error("Completion tracking:",e2);
+          return false;
+        }
+      }
       console.error("Completion tracking:",e);
+      return false;
     }
   };
 
@@ -1383,9 +1438,17 @@
         ].filter(Boolean).join(" · ") || "—";
         const status = l2.completed ? "L2 terminada" : (l1.completed ? "L2 en progreso" : "L1 en progreso");
 
-        function completionChip(obj,key,label){
-          const done = !!(obj.activities && obj.activities[key] && obj.activities[key].completed);
-          return `<span class="completion-chip ${done ? "done" : "pending"}">${done ? "✓" : "○"} ${label}</span>`;
+        function activityWasCompleted(lessonObj, lessonNumber, key){
+          const nested = !!(lessonObj.activities && lessonObj.activities[key] && lessonObj.activities[key].completed);
+          // Compatibilidad con versiones anteriores que guardaron accidentalmente el nombre con puntos.
+          const legacyKey = "progress.lesson" + lessonNumber + ".activities." + key + ".completed";
+          const legacy = d[legacyKey] === true;
+          return nested || legacy;
+        }
+
+        function completionChip(obj,lessonNumber,key,label){
+          const done = activityWasCompleted(obj,lessonNumber,key);
+          return `<span class="completion-chip ${done ? "done" : "pending"}" title="${done ? "TERMINADO" : "Pendiente"}">${done ? "✓ TERMINADO · " : "○ "}${label}</span>`;
         }
 
         function completionGroup(lessonObj, lessonNumber){
@@ -1393,20 +1456,22 @@
             <div class="completion-group">
               <div class="completion-title">Lección ${lessonNumber}</div>
               <div class="completion-chips">
-                ${completionChip(lessonObj,"pronunciacion","Pron.")}
-                ${completionChip(lessonObj,"tarjetas","Tarjetas")}
-                ${completionChip(lessonObj,"opcion_multiple","Opción múltiple")}
-                ${completionChip(lessonObj,"escritura","Escritura")}
-                ${completionChip(lessonObj,"ejercicios","Ejercicios")}
-                ${completionChip(lessonObj,"prueba","Prueba")}
+                ${completionChip(lessonObj,lessonNumber,"pronunciacion","Pron.")}
+                ${completionChip(lessonObj,lessonNumber,"tarjetas","Tarjetas")}
+                ${completionChip(lessonObj,lessonNumber,"opcion_multiple","Opción múltiple")}
+                ${completionChip(lessonObj,lessonNumber,"escritura","Escritura")}
+                ${completionChip(lessonObj,lessonNumber,"ejercicios","Ejercicios")}
+                ${completionChip(lessonObj,lessonNumber,"prueba","Prueba")}
               </div>
             </div>`;
         }
 
         const completions = completionGroup(l1,1) + completionGroup(l2,2);
 
+        const searchable = ((d.username || usernameFromEmail(d.email) || "") + " " + (d.email || "")).toLowerCase();
+
         rows.push(`
-          <tr>
+          <tr data-user-search="${escapeQuotes(searchable)}">
             <td><strong>${d.username || usernameFromEmail(d.email) || "—"}</strong><br><small>${d.email || ""}</small><br><span class="teacher-status">${status}</span></td>
             <td>${d.loginCount || 0}</td>
             <td>${formatFirestoreDate(d.lastLoginAt)}</td>
@@ -1421,6 +1486,7 @@
       teacherUsersBody.innerHTML = rows.join("") || '<tr><td colspan="8"><strong>No hay alumnas registradas todavía.</strong><br><small>Cuando una alumna cree su cuenta aparecerá aquí automáticamente.</small></td></tr>';
       teacherSummary.textContent = rows.length + " alumna(s) registrada(s)";
       teacherPanelMessage.textContent = "";
+      applyTeacherUserSearch();
     }catch(e){
       console.error("Teacher panel:",e);
       const code = e && e.code ? e.code : "sin-codigo";
@@ -1433,7 +1499,36 @@
     }
   }
 
+
+  function applyTeacherUserSearch(){
+    const input = document.getElementById("teacherUserSearch");
+    const counter = document.getElementById("teacherSearchCount");
+    if(!input) return;
+
+    const q = input.value.trim().toLowerCase();
+    const rows = [...teacherUsersBody.querySelectorAll("tr[data-user-search]")];
+    let visible = 0;
+
+    rows.forEach(row=>{
+      const haystack = row.dataset.userSearch || "";
+      const show = !q || haystack.includes(q);
+      row.style.display = show ? "" : "none";
+      if(show) visible++;
+    });
+
+    if(counter){
+      counter.textContent = q ? `${visible} encontrado(s)` : "";
+    }
+  }
+
+  const teacherUserSearch = document.getElementById("teacherUserSearch");
+  if(teacherUserSearch){
+    teacherUserSearch.addEventListener("input",applyTeacherUserSearch);
+  }
+
   teacherPanelBtn.addEventListener("click",function(){
+    const search = document.getElementById("teacherUserSearch");
+    if(search) search.value = "";
     teacherPanel.classList.add("open");
     if(window.currentUserIsTeacher){
       loadTeacherPanel();
