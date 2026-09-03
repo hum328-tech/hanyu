@@ -521,6 +521,18 @@
 }
 .completion-chip.done::before{content:"";width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block}
 
+
+/* =========================================================
+   MULTI-MATERIA + GEOGRAFÍA
+   ========================================================= */
+.subject-field{display:none}
+.subject-field.visible{display:block}
+.subject-select,.geo-input,.geo-textarea{width:100%;box-sizing:border-box;padding:12px 14px;border:1px solid #cfd8e6;border-radius:14px;background:#fff;font:inherit;outline:none}
+.subject-select:focus,.geo-input:focus,.geo-textarea:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.10)}
+.subject-switch-wrap{display:none;align-items:center;gap:7px}.subject-switch-wrap.show{display:flex}.subject-switch{padding:8px 10px;border:1px solid #dbe3ef;border-radius:10px;background:#fff;font:inherit;font-weight:800}
+#geoScreen,#spanishScreen{display:none}.geo-shell{max-width:1050px;margin:0 auto;padding:24px 16px 60px}.geo-hero{padding:28px;border-radius:24px;background:linear-gradient(135deg,#e0f2fe,#ecfeff);border:1px solid #bae6fd;margin-bottom:18px}.geo-kicker{font-size:13px;font-weight:1000;letter-spacing:.08em;color:#0369a1}.geo-hero h1{font-size:clamp(30px,5vw,52px);margin:5px 0 8px}.geo-hero p{margin:0;color:#475569;font-size:17px}.geo-toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}.geo-btn{border:0;border-radius:14px;padding:12px 16px;font:inherit;font-weight:900;cursor:pointer;background:#fff;border:1px solid #dbe3ef;color:#0f172a}.geo-btn.active,.geo-btn.primary{background:#0f766e;color:#fff;border-color:#0f766e}.geo-btn:disabled{opacity:.45;cursor:not-allowed}.geo-panel{background:#fff;border:1px solid #e2e8f0;border-radius:22px;padding:22px;box-shadow:0 8px 30px rgba(15,23,42,.06);margin-bottom:18px}.geo-lesson-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}.geo-lesson-card{text-align:left;padding:20px;border-radius:20px;background:#fff;border:1px solid #dbe3ef;cursor:pointer;min-height:140px}.geo-lesson-card:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(15,23,42,.08)}.geo-lesson-card small{font-weight:900;color:#0f766e}.geo-lesson-card h3{font-size:21px;margin:8px 0}.geo-chip{display:inline-flex;padding:6px 10px;border-radius:999px;background:#ecfdf5;color:#047857;font-size:12px;font-weight:900}.geo-study-list{display:grid;gap:10px}.geo-study-item{display:grid;grid-template-columns:minmax(130px,.7fr) 1.8fr auto;align-items:center;gap:14px;padding:14px;border:1px solid #e2e8f0;border-radius:16px}.geo-term{font-size:20px;font-weight:1000}.geo-definition{color:#475569;line-height:1.45}.geo-audio{width:44px;height:44px;border-radius:50%;border:0;background:#e0f2fe;cursor:pointer;font-size:20px}.geo-card-wrap{perspective:1000px;max-width:760px;margin:12px auto}.geo-card{height:360px;position:relative;transform-style:preserve-3d;transition:.45s;cursor:pointer}.geo-card.flipped{transform:rotateY(180deg)}.geo-face{position:absolute;inset:0;backface-visibility:hidden;border:1px solid #dbe3ef;border-radius:26px;background:#fff;display:flex;align-items:center;justify-content:center;text-align:center;padding:34px;box-shadow:0 14px 36px rgba(15,23,42,.10)}.geo-face.back{transform:rotateY(180deg);background:#f0fdfa}.geo-face .big{font-size:clamp(32px,6vw,58px);font-weight:1000}.geo-face .def{font-size:clamp(20px,3vw,30px);line-height:1.35}.geo-counter{text-align:center;font-weight:900;color:#64748b;margin:10px}.geo-nav{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}.geo-question{font-size:clamp(24px,4vw,36px);font-weight:1000;margin:10px 0 18px}.geo-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}.geo-option{padding:16px;border:1px solid #dbe3ef;border-radius:15px;background:#fff;font:inherit;font-weight:800;text-align:left;cursor:pointer}.geo-option.correct{background:#dcfce7;border-color:#22c55e}.geo-option.wrong{background:#fee2e2;border-color:#ef4444}.geo-feedback{min-height:28px;font-weight:900;margin-top:12px}.geo-write-row{display:flex;gap:10px;align-items:center}.geo-write-row .geo-input{font-size:18px}.geo-progress{height:10px;background:#e2e8f0;border-radius:999px;overflow:hidden;margin:10px 0 18px}.geo-progress>div{height:100%;background:#0f766e;width:0}.geo-builder{display:none}.geo-builder.show{display:block}.geo-builder-pairs{display:grid;gap:10px;margin:14px 0}.geo-pair{display:grid;grid-template-columns:1fr 1.5fr auto;gap:8px}.geo-remove{border:0;background:#fee2e2;border-radius:12px;padding:0 13px;cursor:pointer}.geo-empty{text-align:center;padding:50px 20px;color:#64748b}.subject-placeholder{max-width:760px;margin:40px auto;padding:40px 22px;text-align:center;background:#fff;border:1px solid #e2e8f0;border-radius:24px}
+@media(max-width:720px){.geo-study-item{grid-template-columns:1fr auto}.geo-definition{grid-column:1/-1}.geo-options{grid-template-columns:1fr}.geo-card{height:320px}.geo-pair{grid-template-columns:1fr}.geo-write-row{flex-direction:column;align-items:stretch}.subject-switch-wrap{width:100%}.subject-switch{width:100%}}
+
 </style>
 </head>
 <body>
@@ -528,7 +540,7 @@
 <div id="authGate">
   <div class="auth-box">
     <div class="auth-symbol">汉</div>
-    <h1>Chino interactivo</h1>
+    <h1>Aula interactiva</h1>
     <p class="auth-intro">Inicia sesión o crea una cuenta para guardar tu progreso. Tu usuario se tomará automáticamente de tu correo.</p>
 
     <div class="auth-tabs">
@@ -549,6 +561,16 @@
     <div class="auth-field" id="confirmField" style="display:none">
       <label for="loginConfirm">Confirma tu contraseña</label>
       <input id="loginConfirm" type="password" autocomplete="new-password" placeholder="Repite tu contraseña">
+    </div>
+
+    <div class="auth-field subject-field" id="subjectField">
+      <label for="registerSubject">¿A qué clase perteneces?</label>
+      <select id="registerSubject" class="subject-select">
+        <option value="">Selecciona una clase</option>
+        <option value="chinese">Chino</option>
+        <option value="spanish">Español</option>
+        <option value="geography">Geografía</option>
+      </select>
     </div>
 
     <button type="button" id="authPrimary">Iniciar sesión</button>
@@ -604,10 +626,10 @@
 <div class="app auth-locked" id="appShell">
   <header class="topbar">
     <div class="brand">
-      <div class="brand-badge">汉</div>
+      <div class="brand-badge" id="brandBadge">汉</div>
       <div>
-        <div>Chino interactivo</div>
-        <small style="color:var(--muted)">Curso inicial</small>
+        <div id="brandTitle">Aula interactiva</div>
+        <small id="brandSubtitle" style="color:var(--muted)">Curso inicial</small>
       </div>
     </div>
     <div class="user-session"><div><div class="stars">⭐ 0</div><div id="sessionEmail"></div></div><button id="teacherPanelBtn" class="teacher-btn" type="button">Panel docente</button><button id="signOutButton" type="button" style="display:none">Salir</button></div>
@@ -1141,6 +1163,60 @@
         </div>
       </section>
     </section>
+
+    <section id="geoScreen" class="screen">
+      <div class="geo-shell">
+        <section id="geoHomeView">
+          <div class="geo-hero">
+            <div class="geo-kicker">GEOGRAPHY · VOCABULARY LAB</div>
+            <h1>Geography Flashcards</h1>
+            <p>Listen, understand, review and then produce the vocabulary.</p>
+          </div>
+          <div class="geo-toolbar">
+            <button class="geo-btn primary" id="geoNewLessonBtn" type="button" style="display:none">＋ New lesson</button>
+          </div>
+          <div id="geoLessonGrid" class="geo-lesson-grid"></div>
+          <div id="geoBuilder" class="geo-panel geo-builder">
+            <h2>Create a new Geography lesson</h2>
+            <p>Add the lesson name, then write each term and its definition. It will be available to Geography students.</p>
+            <label><strong>Lesson name</strong></label>
+            <input id="geoLessonName" class="geo-input" placeholder="Example: Rivers and Mountains">
+            <div id="geoBuilderPairs" class="geo-builder-pairs"></div>
+            <div class="geo-toolbar">
+              <button class="geo-btn" id="geoAddPairBtn" type="button">＋ Add term</button>
+              <button class="geo-btn primary" id="geoSaveLessonBtn" type="button">Save lesson</button>
+              <button class="geo-btn" id="geoCancelBuilderBtn" type="button">Cancel</button>
+            </div>
+            <div id="geoBuilderStatus" class="geo-feedback"></div>
+          </div>
+        </section>
+
+        <section id="geoLessonView" style="display:none">
+          <button class="geo-btn" id="geoBackBtn" type="button">← Lessons</button>
+          <div class="geo-hero" style="margin-top:14px">
+            <div class="geo-kicker" id="geoLessonKicker">LESSON 1</div>
+            <h1 id="geoLessonTitle">Geographic Features</h1>
+            <p id="geoLessonObjective">Recognize and explain basic geographic terms in English.</p>
+          </div>
+          <div class="geo-toolbar" id="geoModeTabs">
+            <button class="geo-btn active" data-geo-mode="study">🔊 Study</button>
+            <button class="geo-btn" data-geo-mode="cards">🃏 Flashcards</button>
+            <button class="geo-btn" data-geo-mode="choice">✅ Multiple Choice</button>
+            <button class="geo-btn" data-geo-mode="write">✍️ Write</button>
+          </div>
+          <div id="geoActivityArea" class="geo-panel"></div>
+        </section>
+      </div>
+    </section>
+
+    <section id="spanishScreen" class="screen">
+      <div class="subject-placeholder">
+        <div style="font-size:56px">📚</div>
+        <h1>Español</h1>
+        <p>Tu cuenta está registrada para Español. El contenido de esta materia se añadirá aquí sin mostrar las lecciones de Chino o Geografía.</p>
+      </div>
+    </section>
+
   </main>
 </div>
 
@@ -1186,6 +1262,8 @@
   const passwordInput = document.getElementById("loginPassword");
   const confirmInput = document.getElementById("loginConfirm");
   const confirmField = document.getElementById("confirmField");
+  const subjectField = document.getElementById("subjectField");
+  const registerSubject = document.getElementById("registerSubject");
   const primary = document.getElementById("authPrimary");
   const forgot = document.getElementById("forgotPassword");
   const status = document.getElementById("authStatus");
@@ -1212,6 +1290,7 @@
     tabLogin.classList.toggle("active", !registering);
     tabRegister.classList.toggle("active", registering);
     confirmField.style.display = registering ? "block" : "none";
+    if(subjectField) subjectField.classList.toggle("visible", registering);
     primary.textContent = registering ? "Crear cuenta" : "Iniciar sesión";
     passwordInput.autocomplete = registering ? "new-password" : "current-password";
     showStatus("", false);
@@ -1270,13 +1349,26 @@
       showStatus("Las contraseñas no coinciden.", false);
       return;
     }
+    if(mode === "register" && (!registerSubject || !registerSubject.value)){
+      showStatus("Selecciona la clase a la que perteneces.", false);
+      return;
+    }
 
     primary.disabled = true;
     showStatus(mode === "register" ? "Creando cuenta..." : "Iniciando sesión...", true);
 
     try{
       if(mode === "register"){
-        await auth.createUserWithEmailAndPassword(email, password);
+        const selectedSubject = registerSubject.value;
+        sessionStorage.setItem("pendingRegistrationSubject", selectedSubject);
+        const cred = await auth.createUserWithEmailAndPassword(email, password);
+        await db.collection("users").doc(cred.user.uid).set({
+          subject:selectedSubject,
+          updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+        },{merge:true});
+        window.currentSubject = selectedSubject;
+        if(window.routeSubjectUI) window.routeSubjectUI(selectedSubject);
+        sessionStorage.removeItem("pendingRegistrationSubject");
       }else{
         await auth.signInWithEmailAndPassword(email, password);
       }
@@ -1570,6 +1662,7 @@
         await ref.set({
           email: user.email || "",
           username: usernameFromEmail(user.email),
+          subject: sessionStorage.getItem("pendingRegistrationSubject") || "chinese",
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
           updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
           progress: {
@@ -1593,12 +1686,21 @@
       window.currentFirebaseUser = user;
     }
 
+    try{
+      const profileSnap = await db.collection("users").doc(user.uid).get();
+      const pendingSubject = sessionStorage.getItem("pendingRegistrationSubject");
+      const profileData = profileSnap.exists ? profileSnap.data() : {};
+      window.currentSubject = pendingSubject || profileData.subject || "chinese"; // Materia fija elegida al registrarse
+    }catch(e){ window.currentSubject = sessionStorage.getItem("pendingRegistrationSubject") || "chinese"; }
+    if(window.routeSubjectUI) window.routeSubjectUI(window.currentSubject);
+
     sessionEmail.textContent = usernameFromEmail(user.email);
     sessionEmail.title = user.email || "";
     signOutButton.style.display = "inline-block";
     try{
       const isTeacher = await currentUserIsTeacher(user);
       window.currentUserIsTeacher = isTeacher;
+      if(window.routeSubjectUI) window.routeSubjectUI(window.currentSubject || "chinese");
       if(teacherPanelBtn){
         teacherPanelBtn.style.display = isTeacher ? "inline-block" : "none";
         teacherPanelBtn.textContent = "Panel docente";
@@ -3852,6 +3954,167 @@ renderRadicals();
       showState(state);
     },350);
   });
+})();
+</script>
+
+
+<script>
+(function(){
+  "use strict";
+  const DEFAULT_GEO_LESSON={
+    id:"geography-basics-1",
+    title:"Geographic Features & Places",
+    objective:"Identify, understand, pronounce and define essential geographic features and political places in English.",
+    items:[
+      {term:"Gulf",definition:"A large part of a sea or ocean that extends into the land and is partly surrounded by land."},
+      {term:"Peninsula",definition:"A piece of land almost surrounded by water but connected to a larger land area."},
+      {term:"Isthmus",definition:"A narrow strip of land that connects two larger land areas, with water on both sides."},
+      {term:"Strait",definition:"A narrow passage of water that connects two larger bodies of water, with land on both sides."},
+      {term:"Island",definition:"A piece of land completely surrounded by water."},
+      {term:"Lake",definition:"A large body of water surrounded by land."},
+      {term:"Archipelago",definition:"A group or chain of islands."},
+      {term:"Lake system",definition:"A group of connected or closely related lakes."},
+      {term:"Continent",definition:"One of Earth's large continuous land areas."},
+      {term:"Country",definition:"A territory with its own government and borders."},
+      {term:"City",definition:"A large and organized human settlement with its own local government."},
+      {term:"State",definition:"A political division of a country with its own regional government."}
+    ]
+  };
+  let geoLessons=[DEFAULT_GEO_LESSON], currentGeoLesson=null, geoMode="study", geoIndex=0, geoQueue=[], geoCorrect=0, geoAnswered=false;
+
+  const $=id=>document.getElementById(id);
+  function hideChinese(){ ["homeScreen","lessonScreen","introScreen"].forEach(id=>$(id)?.classList.remove("active")); }
+  function setBrand(subject){
+    const badge=$("brandBadge"), title=$("brandTitle"), sub=$("brandSubtitle");
+    if(subject==="geography"){ if(badge)badge.textContent="🌎"; if(title)title.textContent="Geography Lab"; if(sub)sub.textContent="Flashcards & practice"; }
+    else if(subject==="spanish"){ if(badge)badge.textContent="Ñ"; if(title)title.textContent="Español"; if(sub)sub.textContent="Curso"; }
+    else { if(badge)badge.textContent="汉"; if(title)title.textContent="Aula interactiva"; if(sub)sub.textContent="Curso inicial"; }
+  }
+  window.routeSubjectUI=function(subject){
+    subject=subject||"chinese"; window.currentSubject=subject; setBrand(subject);
+    const geo=$("geoScreen"), spa=$("spanishScreen");
+    if(geo) geo.style.display="none"; if(spa) spa.style.display="none";
+    if(subject==="geography"){
+      hideChinese(); if(geo){geo.style.display="block";geo.classList.add("active");}
+      loadGeoLessons();
+    }else if(subject==="spanish"){
+      hideChinese(); if(spa){spa.style.display="block";spa.classList.add("active");}
+    }else{
+      if(geo)geo.classList.remove("active"); if(spa)spa.classList.remove("active");
+      const h=$("homeScreen"); if(h && !$("lessonScreen")?.classList.contains("active") && !$("introScreen")?.classList.contains("active")) h.classList.add("active");
+    }
+  };
+
+
+  function speakEnglish(text){
+    if(!("speechSynthesis" in window)) return;
+    speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang="en-US"; u.rate=.82; speechSynthesis.speak(u);
+  }
+  window.geoSpeak=speakEnglish;
+  function shuffle(arr){ return [...arr].sort(()=>Math.random()-.5); }
+  function escapeHtml(v){return String(v??"").replace(/[&<>\"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+  function norm(v){return String(v||"").trim().toLowerCase().replace(/[^a-z0-9 ]/g,"").replace(/\s+/g," ");}
+
+  async function loadGeoLessons(){
+    geoLessons=[DEFAULT_GEO_LESSON];
+    try{
+      if(window.firebaseDb){
+        const snap=await window.firebaseDb.collection("geographyLessons").orderBy("createdAt","asc").get();
+        snap.forEach(d=>{ const x=d.data(); if(x && x.title && Array.isArray(x.items)) geoLessons.push({id:d.id,...x}); });
+      }
+    }catch(e){console.warn("Could not load Geography lessons",e);}
+    renderGeoLessonGrid();
+    const b=$("geoNewLessonBtn"); if(b)b.style.display=window.currentUserIsTeacher?"inline-block":"none";
+  }
+  window.loadGeoLessons=loadGeoLessons;
+  function renderGeoLessonGrid(){
+    const grid=$("geoLessonGrid"); if(!grid)return; grid.innerHTML="";
+    geoLessons.forEach((lesson,i)=>{
+      const b=document.createElement("button"); b.className="geo-lesson-card";
+      b.innerHTML=`<small>LESSON ${i+1}</small><h3>${escapeHtml(lesson.title)}</h3><p>${lesson.items.length} terms</p><span class="geo-chip">Start →</span>`;
+      b.onclick=()=>openGeoLesson(lesson,i+1); grid.appendChild(b);
+    });
+  }
+  function openGeoLesson(lesson,num){
+    currentGeoLesson=lesson; geoIndex=0; geoMode="study";
+    $("geoHomeView").style.display="none"; $("geoLessonView").style.display="block";
+    $("geoLessonKicker").textContent=`LESSON ${num}`; $("geoLessonTitle").textContent=lesson.title; $("geoLessonObjective").textContent=lesson.objective||"Learn the terms and explain them in English.";
+    document.querySelectorAll("[data-geo-mode]").forEach(b=>b.classList.toggle("active",b.dataset.geoMode==="study"));
+    renderGeoMode();
+    window.trackStudentActivity?.("geography_lesson_opened",{label:lesson.title,subject:"geography"});
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+  $("geoBackBtn")?.addEventListener("click",()=>{$("geoLessonView").style.display="none";$("geoHomeView").style.display="block";currentGeoLesson=null;});
+  $("geoModeTabs")?.addEventListener("click",e=>{const b=e.target.closest("[data-geo-mode]");if(!b)return;geoMode=b.dataset.geoMode;geoIndex=0;document.querySelectorAll("[data-geo-mode]").forEach(x=>x.classList.toggle("active",x===b));renderGeoMode();});
+
+  function renderGeoMode(){
+    if(!currentGeoLesson)return;
+    if(geoMode==="study")renderStudy();
+    if(geoMode==="cards")renderCards();
+    if(geoMode==="choice")startChoice();
+    if(geoMode==="write")startWrite();
+  }
+  function renderStudy(){
+    const a=$("geoActivityArea");
+    a.innerHTML=`<h2>Study first</h2><p>Listen to each term and understand its meaning before testing yourself.</p><div class="geo-study-list">${currentGeoLesson.items.map(x=>`<div class="geo-study-item"><div class="geo-term">${escapeHtml(x.term)}</div><div class="geo-definition">${escapeHtml(x.definition)}</div><button class="geo-audio" type="button" data-speak="${escapeHtml(x.term)}" aria-label="Listen">🔊</button></div>`).join("")}</div>`;
+    a.querySelectorAll("[data-speak]").forEach(b=>b.onclick=()=>speakEnglish(b.dataset.speak));
+  }
+  function renderCards(){
+    const items=currentGeoLesson.items; geoIndex=Math.max(0,Math.min(geoIndex,items.length-1)); const x=items[geoIndex];
+    $("geoActivityArea").innerHTML=`<h2>Flashcards</h2><div class="geo-counter">${geoIndex+1} / ${items.length}</div><div class="geo-card-wrap"><div class="geo-card" id="geoFlashCard"><div class="geo-face"><div><div class="big">${escapeHtml(x.term)}</div><p>Tap to reveal the definition</p><button class="geo-audio" id="geoCardAudio" type="button">🔊</button></div></div><div class="geo-face back"><div class="def">${escapeHtml(x.definition)}</div></div></div></div><div class="geo-nav"><button class="geo-btn" id="geoPrev">← Previous</button><button class="geo-btn primary" id="geoNext">${geoIndex===items.length-1?"Finish":"Next →"}</button></div>`;
+    $("geoFlashCard").onclick=()=>$("geoFlashCard").classList.toggle("flipped"); $("geoCardAudio").onclick=e=>{e.stopPropagation();speakEnglish(x.term)};
+    $("geoPrev").onclick=()=>{geoIndex=Math.max(0,geoIndex-1);renderCards()};
+    $("geoNext").onclick=()=>{if(geoIndex===items.length-1){finishGeoActivity("Flashcards");}else{geoIndex++;renderCards();}};
+  }
+  function startChoice(){geoQueue=shuffle(currentGeoLesson.items);geoIndex=0;geoCorrect=0;renderChoice();}
+  function renderChoice(){
+    if(geoIndex>=geoQueue.length){finishGeoQuiz("Multiple Choice",geoCorrect,geoQueue.length);return;}
+    const q=geoQueue[geoIndex], others=shuffle(currentGeoLesson.items.filter(x=>x.term!==q.term)).slice(0,3), opts=shuffle([q,...others]); geoAnswered=false;
+    $("geoActivityArea").innerHTML=`<h2>Multiple Choice</h2><div class="geo-progress"><div style="width:${(geoIndex/geoQueue.length)*100}%"></div></div><div class="geo-counter">${geoIndex+1} / ${geoQueue.length}</div><div class="geo-question">Which term matches this definition?</div><p class="geo-definition" style="font-size:18px">${escapeHtml(q.definition)}</p><div class="geo-options">${opts.map(o=>`<button class="geo-option" data-answer="${escapeHtml(o.term)}">${escapeHtml(o.term)}</button>`).join("")}</div><div class="geo-feedback" id="geoFeedback"></div><div class="geo-nav" style="margin-top:12px"><button class="geo-btn primary" id="geoChoiceNext" disabled>Next →</button></div>`;
+    document.querySelectorAll(".geo-option").forEach(b=>b.onclick=()=>{if(geoAnswered)return;geoAnswered=true;const ok=b.dataset.answer===q.term;if(ok)geoCorrect++;b.classList.add(ok?"correct":"wrong");document.querySelectorAll(".geo-option").forEach(x=>{if(x.dataset.answer===q.term)x.classList.add("correct");x.disabled=true});$("geoFeedback").textContent=ok?"✅ Correct!":"❌ Review the correct term and try to remember the definition.";$("geoChoiceNext").disabled=false;});
+    $("geoChoiceNext").onclick=()=>{geoIndex++;renderChoice()};
+  }
+  function startWrite(){geoQueue=shuffle(currentGeoLesson.items);geoIndex=0;geoCorrect=0;renderWrite();}
+  function renderWrite(){
+    if(geoIndex>=geoQueue.length){finishGeoQuiz("Write",geoCorrect,geoQueue.length);return;}
+    const q=geoQueue[geoIndex]; geoAnswered=false;
+    $("geoActivityArea").innerHTML=`<h2>Write the term</h2><div class="geo-progress"><div style="width:${(geoIndex/geoQueue.length)*100}%"></div></div><div class="geo-counter">${geoIndex+1} / ${geoQueue.length}</div><div class="geo-question">Listen and read the definition. Type the English term.</div><p class="geo-definition" style="font-size:18px">${escapeHtml(q.definition)}</p><button class="geo-btn" id="geoListenWrite">🔊 Listen to the term</button><div class="geo-write-row" style="margin-top:14px"><input id="geoWriteInput" class="geo-input" autocomplete="off" placeholder="Type the term"><button class="geo-btn primary" id="geoCheckWrite">Check</button></div><div class="geo-feedback" id="geoFeedback"></div><div class="geo-nav"><button class="geo-btn primary" id="geoWriteNext" style="display:none">Next →</button></div>`;
+    $("geoListenWrite").onclick=()=>speakEnglish(q.term);
+    const check=()=>{if(geoAnswered)return;const val=$("geoWriteInput").value; if(!val.trim())return;geoAnswered=true;const ok=norm(val)===norm(q.term);if(ok)geoCorrect++;$("geoFeedback").textContent=ok?"✅ Correct!":`❌ Correct answer: ${q.term}`;$("geoFeedback").style.color=ok?"#15803d":"#b91c1c";$("geoCheckWrite").disabled=true;$("geoWriteInput").disabled=true;$("geoWriteNext").style.display="inline-block";};
+    $("geoCheckWrite").onclick=check; $("geoWriteInput").onkeydown=e=>{if(e.key==="Enter")check()}; $("geoWriteNext").onclick=()=>{geoIndex++;renderWrite()};
+  }
+  function finishGeoActivity(name){
+    $("geoActivityArea").innerHTML=`<div class="geo-empty"><div style="font-size:64px">🏆</div><h2>${name} completed!</h2><p>You reviewed all ${currentGeoLesson.items.length} terms.</p><button class="geo-btn primary" id="geoAgain">Practice again</button></div>`;
+    window.trackStudentActivity?.("activity_completed",{label:`Geography · ${currentGeoLesson.title} · ${name}`,subject:"geography",activity:name,completed:true});
+    $("geoAgain").onclick=()=>{geoIndex=0;renderGeoMode()};
+  }
+  function finishGeoQuiz(name,correct,total){
+    const pct=Math.round(correct/total*100);
+    $("geoActivityArea").innerHTML=`<div class="geo-empty"><div style="font-size:64px">${pct>=80?"🏆":"📘"}</div><h2>${name} completed</h2><div style="font-size:44px;font-weight:1000">${pct}%</div><p>${correct} / ${total} correct</p><button class="geo-btn primary" id="geoAgain">Try again</button></div>`;
+    window.trackStudentActivity?.("activity_completed",{label:`Geography · ${currentGeoLesson.title} · ${name}`,subject:"geography",activity:name,completed:true,score:pct},{geographyLastScore:pct});
+    $("geoAgain").onclick=()=>{geoMode==="choice"?startChoice():startWrite()};
+  }
+
+  // Teacher lesson builder
+  function addBuilderPair(term="",definition=""){
+    const row=document.createElement("div");row.className="geo-pair";row.innerHTML=`<input class="geo-input geo-term-input" placeholder="Term" value="${escapeHtml(term)}"><textarea class="geo-textarea geo-def-input" rows="2" placeholder="Definition">${escapeHtml(definition)}</textarea><button class="geo-remove" type="button">✕</button>`;row.querySelector(".geo-remove").onclick=()=>row.remove();$("geoBuilderPairs").appendChild(row);
+  }
+  $("geoNewLessonBtn")?.addEventListener("click",()=>{if(!window.currentUserIsTeacher)return;$("geoBuilder").classList.add("show");$("geoBuilderPairs").innerHTML="";$("geoLessonName").value="";addBuilderPair();addBuilderPair();});
+  $("geoAddPairBtn")?.addEventListener("click",()=>addBuilderPair());
+  $("geoCancelBuilderBtn")?.addEventListener("click",()=>$("geoBuilder").classList.remove("show"));
+  $("geoSaveLessonBtn")?.addEventListener("click",async()=>{
+    if(!window.currentUserIsTeacher)return;
+    const title=$("geoLessonName").value.trim();const items=[...document.querySelectorAll("#geoBuilderPairs .geo-pair")].map(r=>({term:r.querySelector(".geo-term-input").value.trim(),definition:r.querySelector(".geo-def-input").value.trim()})).filter(x=>x.term&&x.definition);
+    if(!title||items.length<2){$("geoBuilderStatus").textContent="Add a lesson name and at least two complete term-definition pairs.";return;}
+    try{
+      if(!window.firebaseDb)throw new Error("Firebase not available");
+      await window.firebaseDb.collection("geographyLessons").add({title,objective:`Learn and practice ${title} vocabulary in English.`,items,createdAt:firebase.firestore.FieldValue.serverTimestamp(),createdBy:window.firebaseAuth?.currentUser?.uid||""});
+      $("geoBuilderStatus").textContent="✅ Lesson saved.";$("geoBuilder").classList.remove("show");await loadGeoLessons();
+    }catch(e){console.error(e);$("geoBuilderStatus").textContent="Could not save the lesson. Check Firestore permissions for geographyLessons.";}
+  });
+
+  // Re-assert subject after the old navigation restore code runs.
+  window.addEventListener("load",()=>setTimeout(()=>{if(window.currentSubject)window.routeSubjectUI(window.currentSubject);},700));
 })();
 </script>
 
