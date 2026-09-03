@@ -597,6 +597,16 @@
     </div>
     <div id="teacherPanelMessage" class="feedback"></div>
 
+    <div class="teacher-search-wrap" style="align-items:center;gap:10px;flex-wrap:wrap">
+      <label for="teacherClassSelect" style="font-weight:900">Clase:</label>
+      <select id="teacherClassSelect" class="teacher-search" style="max-width:220px">
+        <option value="chinese">Chino</option>
+        <option value="spanish">Español</option>
+        <option value="geography">Geografía</option>
+      </select>
+      <span style="font-size:13px;color:var(--muted)">La vista y los alumnos se filtrarán por esta materia.</span>
+    </div>
+
     <div class="teacher-search-wrap">
       <input id="teacherUserSearch" class="teacher-search" type="search"
              placeholder="🔎 Buscar por usuario o correo..." autocomplete="off">
@@ -1275,6 +1285,7 @@
   const teacherCloseBtn = document.getElementById("teacherCloseBtn");
   const teacherUsersBody = document.getElementById("teacherUsersBody");
   const teacherPanelMessage = document.getElementById("teacherPanelMessage");
+  const teacherClassSelect = document.getElementById("teacherClassSelect");
   const teacherSummary = document.getElementById("teacherSummary");
 
   let mode = "login";
@@ -1506,88 +1517,113 @@
   }
 
   async function loadTeacherPanel(){
-    teacherPanelMessage.textContent = "Cargando alumnas…";
+    const selectedClass = (teacherClassSelect && teacherClassSelect.value) || window.teacherSelectedSubject || "chinese";
+    window.teacherSelectedSubject = selectedClass;
+    teacherPanelMessage.textContent = "Cargando alumnos de " + ({chinese:"Chino",spanish:"Español",geography:"Geografía"}[selectedClass] || selectedClass) + "…";
     teacherUsersBody.innerHTML = "";
     try{
       const snap = await db.collection("users").get();
       const rows = [];
       snap.forEach(function(ds){
         const d = ds.data() || {};
-        
+        if(ds.id === TEACHER_UID) return;
+        const userSubject = d.subject || "chinese";
+        if(userSubject !== selectedClass) return;
+
         const p = d.progress || {};
-        const l1 = p.lesson1 || {};
-        const l2 = p.lesson2 || {};
-        const l1p = Number(l1.progress || (l1.completed ? 100 : 0));
-        const l2p = Number(l2.progress || (l2.completed ? 100 : 0));
-        const overall = Math.round((l1p + l2p) / 2);
-        const currentLesson = p.currentLesson || 1;
         const act = d.lastActivity || {};
         const det = act.detail || {};
         const activity = [act.type,det.label||det.topic||det.section||det.exercise].filter(Boolean).join(" · ") || "—";
-        const scores = [
-          l1.score !== undefined && l1.score !== null ? "L1: "+l1.score : null,
-          l2.score !== undefined && l2.score !== null ? "L2: "+l2.score : null
-        ].filter(Boolean).join(" · ") || "—";
-        const status = l2.completed ? "L2 terminada" : (l1.completed ? "L2 en progreso" : "L1 en progreso");
+        let currentText="—", progressText="—", status="En curso", completions="—", scores="—";
 
-        function activityWasCompleted(lessonObj, lessonNumber, key){
-          const nested = !!(lessonObj.activities && lessonObj.activities[key] && lessonObj.activities[key].completed);
-          // Compatibilidad con versiones anteriores que guardaron accidentalmente el nombre con puntos.
-          const legacyKey = "progress.lesson" + lessonNumber + ".activities." + key + ".completed";
-          const legacy = d[legacyKey] === true;
-          return nested || legacy;
-        }
-
-        function completionChip(obj,lessonNumber,key,label){
-          const done = activityWasCompleted(obj,lessonNumber,key);
+        function chip(done,label){
           return `<span class="completion-chip ${done ? "done" : "pending"}" title="${done ? "TERMINADO" : "Pendiente"}">${done ? "✓ TERMINADO · " : "○ "}${label}</span>`;
         }
-
-        function completionGroup(lessonObj, lessonNumber){
-          return `
-            <div class="completion-group">
-              <div class="completion-title">Lección ${lessonNumber}</div>
-              <div class="completion-chips">
-                ${completionChip(lessonObj,lessonNumber,"pronunciacion","Pron.")}
-                ${completionChip(lessonObj,lessonNumber,"tarjetas","Tarjetas")}
-                ${completionChip(lessonObj,lessonNumber,"opcion_multiple","Opción múltiple")}
-                ${completionChip(lessonObj,lessonNumber,"escritura","Escritura")}
-                ${completionChip(lessonObj,lessonNumber,"ejercicios","Ejercicios")}
-                ${completionChip(lessonObj,lessonNumber,"prueba","Prueba")}
-              </div>
-            </div>`;
+        function activityWasCompleted(lessonObj, lessonNumber, key){
+          const nested = !!(lessonObj.activities && lessonObj.activities[key] && lessonObj.activities[key].completed);
+          const legacyKey = "progress.lesson" + lessonNumber + ".activities." + key + ".completed";
+          return nested || d[legacyKey] === true;
+        }
+        function chineseCompletionGroup(lessonObj, lessonNumber){
+          return `<div class="completion-group"><div class="completion-title">Lección ${lessonNumber}</div><div class="completion-chips">
+            ${chip(activityWasCompleted(lessonObj,lessonNumber,"pronunciacion"),"Pron.")}
+            ${chip(activityWasCompleted(lessonObj,lessonNumber,"tarjetas"),"Tarjetas")}
+            ${chip(activityWasCompleted(lessonObj,lessonNumber,"opcion_multiple"),"Opción múltiple")}
+            ${chip(activityWasCompleted(lessonObj,lessonNumber,"escritura"),"Escritura")}
+            ${chip(activityWasCompleted(lessonObj,lessonNumber,"ejercicios"),"Ejercicios")}
+            ${chip(activityWasCompleted(lessonObj,lessonNumber,"prueba"),"Prueba")}
+          </div></div>`;
         }
 
-        const completions = completionGroup(l1,1) + completionGroup(l2,2);
+        if(selectedClass === "geography"){
+          const gp = p.geography || {};
+          const lessons = gp.lessons || {};
+          const lessonEntries = Object.entries(lessons);
+          const completedCount = lessonEntries.reduce((sum,[,lo])=> sum + Object.values((lo&&lo.activities)||{}).filter(a=>a&&a.completed).length,0);
+          const totalPossible = Math.max(lessonEntries.length*3, 3);
+          const pct = Math.min(100, Math.round(completedCount/totalPossible*100));
+          currentText = gp.currentLessonTitle || det.lessonTitle || "Geografía";
+          progressText = `<span class="teacher-progress">${pct}%</span><br>${completedCount} actividad(es) terminada(s)`;
+          status = completedCount ? "Geografía en progreso" : "Sin actividades terminadas";
+          if(lessonEntries.length){
+            completions = lessonEntries.map(([key,lo],idx)=>{
+              const a=(lo&&lo.activities)||{};
+              const title=(lo&&lo.title)||`Lección ${idx+1}`;
+              return `<div class="completion-group"><div class="completion-title">${escapeQuotes(title)}</div><div class="completion-chips">
+                ${chip(!!a.flashcards?.completed,"Tarjetas")}
+                ${chip(!!a.multiple_choice?.completed,"Opción múltiple")}
+                ${chip(!!a.write?.completed,"Escritura")}
+              </div></div>`;
+            }).join("");
+          } else {
+            completions = `<div class="completion-group"><div class="completion-title">Geografía</div><div class="completion-chips">${chip(false,"Tarjetas")}${chip(false,"Opción múltiple")}${chip(false,"Escritura")}</div></div>`;
+          }
+          const geoScores=[];
+          lessonEntries.forEach(([,lo])=>{
+            const a=(lo&&lo.activities)||{};
+            if(a.multiple_choice && a.multiple_choice.score!=null) geoScores.push(`OM: ${a.multiple_choice.score}%`);
+            if(a.write && a.write.score!=null) geoScores.push(`Escritura: ${a.write.score}%`);
+          });
+          scores=geoScores.join(" · ")||"—";
+        }else if(selectedClass === "chinese"){
+          const l1 = p.lesson1 || {}, l2 = p.lesson2 || {};
+          const l1p = Number(l1.progress || (l1.completed ? 100 : 0));
+          const l2p = Number(l2.progress || (l2.completed ? 100 : 0));
+          const overall = Math.round((l1p+l2p)/2);
+          const currentLesson = p.currentLesson || 1;
+          currentText = "Lección " + currentLesson;
+          progressText = `<span class="teacher-progress">${overall}%</span><br>L1 ${l1p}% · L2 ${l2p}%`;
+          status = l2.completed ? "L2 terminada" : (l1.completed ? "L2 en progreso" : "L1 en progreso");
+          completions = chineseCompletionGroup(l1,1)+chineseCompletionGroup(l2,2);
+          scores=[l1.score!=null?"L1: "+l1.score:null,l2.score!=null?"L2: "+l2.score:null].filter(Boolean).join(" · ")||"—";
+        }else{
+          currentText="Español";
+          progressText="—";
+          status="Registrado en Español";
+          completions="Aún sin actividades configuradas";
+        }
 
         const searchable = ((d.username || usernameFromEmail(d.email) || "") + " " + (d.email || "")).toLowerCase();
-
-        rows.push(`
-          <tr data-user-search="${escapeQuotes(searchable)}">
-            <td><strong>${d.username || usernameFromEmail(d.email) || "—"}</strong><br><small>${d.email || ""}</small><br><span class="teacher-status">${status}</span></td>
-            <td>${d.loginCount || 0}</td>
-            <td>${formatFirestoreDate(d.lastLoginAt)}</td>
-            <td>Lección ${currentLesson}</td>
-            <td><span class="teacher-progress">${overall}%</span><br>L1 ${l1p}% · L2 ${l2p}%</td>
-            <td>${activity}<br><small>${formatFirestoreDate(act.at)}</small></td>
-            <td class="teacher-completions">${completions}</td>
-            <td>${scores}</td>
-          </tr>
-        `);
+        rows.push(`<tr data-user-search="${escapeQuotes(searchable)}">
+          <td><strong>${d.username || usernameFromEmail(d.email) || "—"}</strong><br><small>${d.email || ""}</small><br><span class="teacher-status">${status}</span></td>
+          <td>${d.loginCount || 0}</td>
+          <td>${formatFirestoreDate(d.lastLoginAt)}</td>
+          <td>${currentText}</td>
+          <td>${progressText}</td>
+          <td>${activity}<br><small>${formatFirestoreDate(act.at)}</small></td>
+          <td class="teacher-completions">${completions}</td>
+          <td>${scores}</td>
+        </tr>`);
       });
-      teacherUsersBody.innerHTML = rows.join("") || '<tr><td colspan="8"><strong>No hay alumnas registradas todavía.</strong><br><small>Cuando una alumna cree su cuenta aparecerá aquí automáticamente.</small></td></tr>';
-      teacherSummary.textContent = rows.length + " alumna(s) registrada(s)";
+      teacherUsersBody.innerHTML = rows.join("") || '<tr><td colspan="8"><strong>No hay alumnos registrados en esta clase todavía.</strong></td></tr>';
+      teacherSummary.textContent = rows.length + " alumno(s) · " + ({chinese:"Chino",spanish:"Español",geography:"Geografía"}[selectedClass] || selectedClass);
       teacherPanelMessage.textContent = "";
       applyTeacherUserSearch();
     }catch(e){
       console.error("Teacher panel:",e);
-      const code = e && e.code ? e.code : "sin-codigo";
-      const detail = e && e.message ? e.message : String(e);
-      teacherPanelMessage.innerHTML =
-        "<strong>No se pudo leer el grupo.</strong><br>" +
-        "Error Firebase: <code>" + code + "</code><br>" +
-        "<small>" + detail + "</small>";
-      teacherPanelMessage.style.color = "#dc2626";
+      const code=e&&e.code?e.code:"sin-codigo", detail=e&&e.message?e.message:String(e);
+      teacherPanelMessage.innerHTML="<strong>No se pudo leer el grupo.</strong><br>Error Firebase: <code>"+code+"</code><br><small>"+detail+"</small>";
+      teacherPanelMessage.style.color="#dc2626";
     }
   }
 
@@ -1618,11 +1654,21 @@
     teacherUserSearch.addEventListener("input",applyTeacherUserSearch);
   }
 
+  if(teacherClassSelect){
+    teacherClassSelect.addEventListener("change", function(){
+      if(!window.currentUserIsTeacher) return;
+      window.teacherSelectedSubject = teacherClassSelect.value;
+      if(window.routeSubjectUI) window.routeSubjectUI(teacherClassSelect.value);
+      loadTeacherPanel();
+    });
+  }
+
   teacherPanelBtn.addEventListener("click",function(){
     const search = document.getElementById("teacherUserSearch");
     if(search) search.value = "";
     teacherPanel.classList.add("open");
     if(window.currentUserIsTeacher){
+      if(teacherClassSelect){ teacherClassSelect.value = window.teacherSelectedSubject || window.currentSubject || "chinese"; }
       loadTeacherPanel();
     }else{
       const u = auth.currentUser;
@@ -1700,7 +1746,11 @@
     try{
       const isTeacher = await currentUserIsTeacher(user);
       window.currentUserIsTeacher = isTeacher;
-      if(window.routeSubjectUI) window.routeSubjectUI(window.currentSubject || "chinese");
+      if(isTeacher){
+        window.teacherSelectedSubject = window.teacherSelectedSubject || "chinese";
+        if(teacherClassSelect) teacherClassSelect.value = window.teacherSelectedSubject;
+        if(window.routeSubjectUI) window.routeSubjectUI(window.teacherSelectedSubject);
+      }else if(window.routeSubjectUI) window.routeSubjectUI(window.currentSubject || "chinese");
       if(teacherPanelBtn){
         teacherPanelBtn.style.display = isTeacher ? "inline-block" : "none";
         teacherPanelBtn.textContent = "Panel docente";
@@ -4083,15 +4133,47 @@ renderRadicals();
     const check=()=>{if(geoAnswered)return;const val=$("geoWriteInput").value; if(!val.trim())return;geoAnswered=true;const ok=norm(val)===norm(q.term);if(ok)geoCorrect++;$("geoFeedback").textContent=ok?"✅ Correct!":`❌ Correct answer: ${q.term}`;$("geoFeedback").style.color=ok?"#15803d":"#b91c1c";$("geoCheckWrite").disabled=true;$("geoWriteInput").disabled=true;$("geoWriteNext").style.display="inline-block";};
     $("geoCheckWrite").onclick=check; $("geoWriteInput").onkeydown=e=>{if(e.key==="Enter")check()}; $("geoWriteNext").onclick=()=>{geoIndex++;renderWrite()};
   }
+  function geoActivityKey(name){
+    if(name==="Flashcards") return "flashcards";
+    if(name==="Multiple Choice") return "multiple_choice";
+    if(name==="Write") return "write";
+    return String(name||"activity").toLowerCase().replace(/[^a-z0-9]+/g,"_");
+  }
+  function geoLessonKey(){
+    return String((currentGeoLesson&&currentGeoLesson.id)||"lesson").replace(/[^a-zA-Z0-9_-]/g,"_");
+  }
+  async function markGeoCompleted(name,score){
+    const user=window.firebaseAuth?.currentUser; if(!user||window.currentUserIsTeacher)return;
+    const key=geoActivityKey(name), lessonKey=geoLessonKey();
+    const base=`progress.geography.lessons.${lessonKey}`;
+    const payload={
+      subject:"geography",
+      [`${base}.title`]:currentGeoLesson?.title||"Geography",
+      [`${base}.activities.${key}.completed`]:true,
+      [`${base}.activities.${key}.completedAt`]:firebase.firestore.FieldValue.serverTimestamp(),
+      "progress.geography.currentLessonTitle":currentGeoLesson?.title||"Geography",
+      lastActivity:{type:"activity_completed",detail:{subject:"geography",lessonTitle:currentGeoLesson?.title||"Geography",activity:key,label:`Geography · ${currentGeoLesson?.title||"Geography"} · ${name}`},at:firebase.firestore.FieldValue.serverTimestamp()},
+      updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+    };
+    if(score!==undefined && score!==null) payload[`${base}.activities.${key}.score`]=Number(score);
+    try{ await window.firebaseDb.collection("users").doc(user.uid).update(payload); }
+    catch(e){
+      try{ await window.firebaseDb.collection("users").doc(user.uid).set(payload,{merge:true}); }
+      catch(e2){ console.error("Geography completion tracking:",e2); }
+    }
+  }
+
   function finishGeoActivity(name){
     $("geoActivityArea").innerHTML=`<div class="geo-empty"><div style="font-size:64px">🏆</div><h2>${name} completed!</h2><p>You reviewed all ${currentGeoLesson.items.length} terms.</p><button class="geo-btn primary" id="geoAgain">Practice again</button></div>`;
     window.trackStudentActivity?.("activity_completed",{label:`Geography · ${currentGeoLesson.title} · ${name}`,subject:"geography",activity:name,completed:true});
+    markGeoCompleted(name);
     $("geoAgain").onclick=()=>{geoIndex=0;renderGeoMode()};
   }
   function finishGeoQuiz(name,correct,total){
     const pct=Math.round(correct/total*100);
     $("geoActivityArea").innerHTML=`<div class="geo-empty"><div style="font-size:64px">${pct>=80?"🏆":"📘"}</div><h2>${name} completed</h2><div style="font-size:44px;font-weight:1000">${pct}%</div><p>${correct} / ${total} correct</p><button class="geo-btn primary" id="geoAgain">Try again</button></div>`;
     window.trackStudentActivity?.("activity_completed",{label:`Geography · ${currentGeoLesson.title} · ${name}`,subject:"geography",activity:name,completed:true,score:pct},{geographyLastScore:pct});
+    markGeoCompleted(name,pct);
     $("geoAgain").onclick=()=>{geoMode==="choice"?startChoice():startWrite()};
   }
 
