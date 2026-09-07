@@ -545,6 +545,45 @@
 .history-card{display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid #e5e7eb;border-radius:20px;padding:22px;box-shadow:0 8px 26px rgba(15,23,42,.06)}
 .history-card h3{font-size:24px;margin:8px 0}.history-card span{display:inline-block;margin-top:10px;background:#fff7ed;color:#c2410c;padding:6px 10px;border-radius:999px;font-weight:900}
 
+
+.teacher-filter-note{
+  margin:-4px 0 12px;padding:9px 12px;border-radius:12px;
+  background:#f8fafc;border:1px solid #e2e8f0;color:#64748b;font-size:12px
+}
+
+/* ===== GEOGRAPHY · MAP CHALLENGE ===== */
+.geo-map-shell{max-width:980px;margin:0 auto}
+.geo-map-head{text-align:center;margin-bottom:14px}
+.geo-map-head h2{font-size:30px;margin:0 0 6px}
+.geo-map-question{
+  font-size:24px;font-weight:1000;text-align:center;margin:12px 0 14px;
+  padding:14px 16px;border-radius:16px;background:#f8fbff;border:1px solid #dbeafe
+}
+.geo-map-counter{font-size:13px;font-weight:900;color:#64748b;text-align:center;margin-bottom:8px}
+.geo-map-frame{
+  position:relative;border-radius:22px;overflow:hidden;border:1px solid #cbd5e1;
+  background:#dff4ff;box-shadow:0 12px 28px rgba(15,23,42,.08)
+}
+.geo-map-frame svg{display:block;width:100%;height:auto;touch-action:manipulation}
+.geo-map-hotspot{cursor:pointer;fill:rgba(37,99,235,.04);stroke:rgba(37,99,235,.0);stroke-width:4;transition:.15s}
+.geo-map-hotspot:hover{fill:rgba(37,99,235,.12);stroke:rgba(37,99,235,.35)}
+.geo-map-hotspot.correct{fill:rgba(34,197,94,.34)!important;stroke:#16a34a!important}
+.geo-map-hotspot.wrong{fill:rgba(239,68,68,.28)!important;stroke:#dc2626!important}
+.geo-map-feedback{min-height:32px;text-align:center;font-weight:1000;font-size:17px;margin:12px 0}
+.geo-map-legend{
+  display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:12px 0 4px;
+  color:#475569;font-size:13px;font-weight:800
+}
+.geo-map-legend span{display:inline-flex;align-items:center;gap:6px}
+.geo-map-dot{width:12px;height:12px;border-radius:3px;display:inline-block}
+.geo-map-controls{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+.geo-map-finish{text-align:center;padding:34px 18px}
+.geo-map-finish .trophy{font-size:66px}
+@media(max-width:720px){
+  .geo-map-question{font-size:20px}
+  .geo-map-frame{border-radius:16px}
+}
+
 </style>
 </head>
 <body>
@@ -588,7 +627,6 @@
         <option value="">Selecciona una clase</option>
         <option value="chinese">Chino</option>
         <option value="geography">Geografía</option>
-        <option value="history">Historia</option>
       </select>
     </div>
 
@@ -613,8 +651,13 @@
     <div class="teacher-panel-subjects" id="teacherPanelSubjects">
       <button type="button" class="teacher-panel-subject-btn active" data-teacher-panel-subject="chinese">汉 Chino</button>
       <button type="button" class="teacher-panel-subject-btn" data-teacher-panel-subject="geography">🌎 Geografía</button>
-      <button type="button" class="teacher-panel-subject-btn" data-teacher-panel-subject="history">🏛️ Historia</button>
+      <span style="font-size:12px;color:#94a3b8;align-self:center">Historia se administra desde su plataforma.</span>
     </div>
+
+    <div class="teacher-filter-note">
+      Geografía muestra únicamente cuentas registradas específicamente en Geografía. Las cuentas sin materia asignada o con cualquier otro valor aparecen en Chino.
+    </div>
+
 
 
     <div class="teacher-search-wrap">
@@ -1229,6 +1272,7 @@
             <button class="geo-btn" data-geo-mode="cards">🃏 Flashcards</button>
             <button class="geo-btn" data-geo-mode="choice">✅ Multiple Choice</button>
             <button class="geo-btn" data-geo-mode="write">✍️ Write</button>
+            <button class="geo-btn" data-geo-mode="map">🗺️ Map Challenge</button>
           </div>
           <div id="geoActivityArea" class="geo-panel"></div>
         </section>
@@ -1575,7 +1619,6 @@
       [base+".completed"]:true,
       [base+".completedAt"]:firebase.firestore.FieldValue.serverTimestamp(),
       ["progress.subjects."+subject+".currentLesson"]:lessonKey,
-      subject,
       lastActivity:{type:"activity_completed",detail:{subject,lesson:lessonKey,activity:activityKey,label:label||activityKey,completed:true,score:score??null},at:firebase.firestore.FieldValue.serverTimestamp()},
       updatedAt:firebase.firestore.FieldValue.serverTimestamp()
     };
@@ -1586,7 +1629,7 @@
     try{await ref.update(update);return true;}
     catch(e){
       try{
-        await ref.set({email:user.email||"",username:usernameFromEmail(user.email),subject,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+        await ref.set({email:user.email||"",username:usernameFromEmail(user.email),updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
         await ref.update(update);return true;
       }catch(e2){console.error("Subject completion tracking:",e2);return false;}
     }
@@ -1607,8 +1650,9 @@
 
   let teacherPanelSubject="chinese";
   function normalizedSubject(d){
-    const s=String(d.subject||"chinese").toLowerCase();
-    return s==="geo"?"geography":s==="historia"?"history":s==="chino"?"chinese":s;
+    const s=String(d.subject||"").trim().toLowerCase();
+    const isGeography=["geography","geo","geografía","geografia"].includes(s);
+    return isGeography ? "geography" : "chinese";
   }
   async function loadTeacherPanel(){
     teacherPanelMessage.textContent = "Cargando alumnas…";
@@ -1618,7 +1662,8 @@
       const rows = [];
       snap.forEach(function(ds){
         const d = ds.data() || {};
-        
+        if(normalizedSubject(d) !== teacherPanelSubject) return;
+
         const p = d.progress || {};
         let l1=p.lesson1||{},l2=p.lesson2||{};
         let l1p=Number(l1.progress||(l1.completed?100:0)),l2p=Number(l2.progress||(l2.completed?100:0));
@@ -1648,10 +1693,11 @@
             const cards=!!(acts.cards&&acts.cards.completed)||fallback("cards","Flashcards");
             const choice=!!(acts.choice&&acts.choice.completed)||fallback("choice","Multiple Choice");
             const write=!!(acts.write&&acts.write.completed)||fallback("write","Write");
-            doneCount+=[cards,choice,write].filter(Boolean).length;
-            return `<div class="completion-group"><div class="completion-title">Lección ${i+1}</div><div class="completion-chips">${chip(cards,"Tarjetas")}${chip(choice,"Opción múltiple")}${chip(write,"Escritura")}</div></div>`;
+            const mapDone=!!(acts.map&&acts.map.completed)||fallback("map","Map Challenge");
+            doneCount+=[cards,choice,write,mapDone].filter(Boolean).length;
+            return `<div class="completion-group"><div class="completion-title">Lección ${i+1}</div><div class="completion-chips">${chip(cards,"Tarjetas")}${chip(choice,"Opción múltiple")}${chip(write,"Escritura")}${chip(mapDone,"Mapa")}</div></div>`;
           }).join("");
-          overall=Math.round(doneCount/Math.max(3,keys.length*3)*100);
+          overall=Math.round(doneCount/Math.max(4,keys.length*4)*100);
           currentLesson=String(gs.currentLesson||"lesson1").replace("lesson","");
           scores=gs.lastScore!==undefined?gs.lastScore+"%":"—";
           status=overall>=100?"Geografía terminada":"Geografía en progreso";
@@ -1679,7 +1725,7 @@
         `);
       });
       teacherUsersBody.innerHTML = rows.join("") || '<tr><td colspan="8"><strong>No hay alumnas registradas todavía.</strong><br><small>Cuando una alumna cree su cuenta aparecerá aquí automáticamente.</small></td></tr>';
-      teacherSummary.textContent=rows.length+" alumna(s) · "+(teacherPanelSubject==="chinese"?"Chino":teacherPanelSubject==="geography"?"Geografía":"Historia");
+      teacherSummary.textContent=rows.length+" alumna(s) · "+(teacherPanelSubject==="geography"?"Geografía":"Chino");
       teacherPanelMessage.textContent = "";
       applyTeacherUserSearch();
     }catch(e){
@@ -1735,7 +1781,7 @@
     if(search) search.value = "";
     teacherPanel.classList.add("open");
     if(window.currentUserIsTeacher){
-      teacherPanelSubject=teacherViewingSubject||"chinese";
+      teacherPanelSubject=(teacherViewingSubject==="geography") ? "geography" : "chinese";
       document.querySelectorAll("[data-teacher-panel-subject]").forEach(b=>b.classList.toggle("active",b.dataset.teacherPanelSubject===teacherPanelSubject));
       loadTeacherPanel();
     }else{
@@ -4132,6 +4178,7 @@ renderRadicals();
     if(geoMode==="cards")renderCards();
     if(geoMode==="choice")startChoice();
     if(geoMode==="write")startWrite();
+    if(geoMode==="map")startMapChallenge();
   }
   function renderStudy(){
     const a=$("geoActivityArea");
@@ -4176,6 +4223,282 @@ renderRadicals();
     window.markSubjectActivityCompleted?.("geography",currentGeoLessonKey,completionKey,`Geography · ${currentGeoLesson.title} · ${name}`,pct);
     $("geoAgain").onclick=()=>{geoMode==="choice"?startChoice():startWrite()};
   }
+
+
+  /* =========================================================
+     MAP CHALLENGE
+     Mapa esquemático para identificar accidentes geográficos.
+     ========================================================= */
+  const GEO_MAP_QUESTIONS=[
+    {key:"gulf",term:"Gulf",prompt:"Select the GULF on the map."},
+    {key:"peninsula",term:"Peninsula",prompt:"Select the PENINSULA on the map."},
+    {key:"isthmus",term:"Isthmus",prompt:"Select the ISTHMUS on the map."},
+    {key:"strait",term:"Strait",prompt:"Select the STRAIT on the map."},
+    {key:"island",term:"Island",prompt:"Select the ISLAND on the map."},
+    {key:"lake",term:"Lake",prompt:"Select the LAKE on the map."},
+    {key:"archipelago",term:"Archipelago",prompt:"Select the ARCHIPELAGO on the map."},
+    {key:"lake-system",term:"Lake system",prompt:"Select the LAKE SYSTEM on the map."}
+  ];
+
+  let geoMapQueue=[];
+  let geoMapIndex=0;
+  let geoMapCorrect=0;
+  let geoMapAnswered=false;
+  let geoMapWrongQueue=[];
+  let geoMapAttempts=0;
+
+  function mapQuestionsForLesson(){
+    const available=new Set((currentGeoLesson?.items||[]).map(x=>String(x.term||"").toLowerCase()));
+    const qs=GEO_MAP_QUESTIONS.filter(q=>available.has(q.term.toLowerCase()));
+    return qs.length ? qs : GEO_MAP_QUESTIONS;
+  }
+
+  function startMapChallenge(){
+    geoMapQueue=shuffle(mapQuestionsForLesson());
+    geoMapIndex=0;
+    geoMapCorrect=0;
+    geoMapAnswered=false;
+    geoMapWrongQueue=[];
+    geoMapAttempts=0;
+    renderMapChallenge();
+  }
+
+  function geoMapSvg(){
+    return `
+    <svg viewBox="0 0 1000 610" role="img" aria-label="Illustrated geography map with a gulf, peninsula, isthmus, strait, island, lake, archipelago and lake system">
+      <defs>
+        <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="0" dy="5" stdDeviation="6" flood-opacity=".13"/>
+        </filter>
+      </defs>
+
+      <!-- WATER -->
+      <rect width="1000" height="610" fill="#dff4ff"/>
+      <path d="M0 485 C160 448 260 520 395 480 C560 432 690 515 1000 460 L1000 610 L0 610 Z" fill="#c8edff"/>
+
+      <!-- MAIN CONTINENT -->
+      <path d="M45 80
+               C125 38 235 50 305 90
+               C355 118 377 160 360 205
+               C343 247 294 250 283 298
+               C272 348 318 385 277 430
+               C235 476 132 476 72 435
+               C26 403 20 333 42 280
+               C64 228 25 180 45 80 Z"
+            fill="#f3d6a0" stroke="#b88a4a" stroke-width="4" filter="url(#softShadow)"/>
+
+      <!-- GULF indentation / bay of water inside main land -->
+      <path d="M250 205
+               C310 188 345 210 337 248
+               C330 279 300 302 263 294
+               C230 287 216 257 225 231
+               C231 217 239 210 250 205 Z"
+            fill="#dff4ff" stroke="#75bfe7" stroke-width="3"/>
+
+      <!-- PENINSULA protrusion -->
+      <path d="M276 323
+               C342 305 380 330 388 369
+               C397 414 371 460 337 481
+               C311 498 286 479 290 447
+               L305 399
+               C312 374 295 349 276 323 Z"
+            fill="#f3d6a0" stroke="#b88a4a" stroke-width="4"/>
+
+      <!-- SECOND CONTINENT / right landmass -->
+      <path d="M610 78
+               C713 37 845 58 923 123
+               C977 168 972 255 944 304
+               C912 361 948 412 913 455
+               C866 512 730 511 659 465
+               C620 440 610 401 620 361
+               C632 313 590 281 582 230
+               C572 167 568 103 610 78 Z"
+            fill="#f3d6a0" stroke="#b88a4a" stroke-width="4" filter="url(#softShadow)"/>
+
+      <!-- ISLAND -->
+      <path d="M484 130 C521 105 565 118 575 151 C586 187 551 211 515 205 C477 199 459 158 484 130 Z"
+            fill="#f3d6a0" stroke="#b88a4a" stroke-width="4"/>
+
+      <!-- ARCHIPELAGO -->
+      <g fill="#f3d6a0" stroke="#b88a4a" stroke-width="3">
+        <ellipse cx="460" cy="420" rx="25" ry="16"/>
+        <ellipse cx="510" cy="445" rx="21" ry="14"/>
+        <ellipse cx="555" cy="409" rx="18" ry="13"/>
+        <ellipse cx="600" cy="440" rx="24" ry="15"/>
+      </g>
+
+      <!-- LAKE -->
+      <ellipse cx="770" cy="210" rx="62" ry="42" fill="#7dc8f0" stroke="#398ebd" stroke-width="4"/>
+
+      <!-- LAKE SYSTEM -->
+      <g fill="#7dc8f0" stroke="#398ebd" stroke-width="3">
+        <ellipse cx="790" cy="350" rx="39" ry="23"/>
+        <ellipse cx="842" cy="372" rx="32" ry="20"/>
+        <ellipse cx="746" cy="395" rx="31" ry="19"/>
+      </g>
+
+      <!-- ISTHMUS: narrow land bridge -->
+      <path d="M370 270 C405 260 431 268 454 290
+               L492 324 C504 335 498 355 482 361
+               C465 367 451 354 438 340
+               L407 310 C393 296 382 292 366 294 Z"
+            fill="#f3d6a0" stroke="#b88a4a" stroke-width="4"/>
+
+      <!-- third land around strait -->
+      <path d="M510 257 C548 239 585 245 612 269 L625 320
+               C603 341 574 346 548 331 C522 317 503 291 510 257 Z"
+            fill="#f3d6a0" stroke="#b88a4a" stroke-width="4"/>
+
+      <!-- STRAIT water channel emphasized -->
+      <path d="M485 246 C505 237 524 235 541 240
+               C524 259 519 284 530 308
+               C516 313 502 309 493 296
+               C483 281 478 263 485 246 Z"
+            fill="#75c8f2" stroke="#2e8ebd" stroke-width="3"/>
+
+      <!-- labels A-H kept neutral: students identify shape, not text -->
+      <g font-family="Arial,sans-serif" font-size="20" font-weight="900" fill="#0f172a">
+        <g><circle cx="285" cy="245" r="18" fill="#fff" opacity=".88"/><text x="285" y="252" text-anchor="middle">A</text></g>
+        <g><circle cx="339" cy="401" r="18" fill="#fff" opacity=".88"/><text x="339" y="408" text-anchor="middle">B</text></g>
+        <g><circle cx="421" cy="302" r="18" fill="#fff" opacity=".88"/><text x="421" y="309" text-anchor="middle">C</text></g>
+        <g><circle cx="505" cy="273" r="18" fill="#fff" opacity=".88"/><text x="505" y="280" text-anchor="middle">D</text></g>
+        <g><circle cx="524" cy="158" r="18" fill="#fff" opacity=".88"/><text x="524" y="165" text-anchor="middle">E</text></g>
+        <g><circle cx="770" cy="210" r="18" fill="#fff" opacity=".88"/><text x="770" y="217" text-anchor="middle">F</text></g>
+        <g><circle cx="535" cy="430" r="18" fill="#fff" opacity=".88"/><text x="535" y="437" text-anchor="middle">G</text></g>
+        <g><circle cx="797" cy="380" r="18" fill="#fff" opacity=".88"/><text x="797" y="387" text-anchor="middle">H</text></g>
+      </g>
+
+      <!-- CLICKABLE HOTSPOTS -->
+      <path class="geo-map-hotspot" data-map-key="gulf"
+            d="M215 185 L365 185 L365 320 L205 320 Z"/>
+      <path class="geo-map-hotspot" data-map-key="peninsula"
+            d="M270 305 L405 305 L405 505 L270 505 Z"/>
+      <path class="geo-map-hotspot" data-map-key="isthmus"
+            d="M355 250 L490 250 L500 375 L350 375 Z"/>
+      <path class="geo-map-hotspot" data-map-key="strait"
+            d="M470 220 L545 220 L545 325 L470 325 Z"/>
+      <path class="geo-map-hotspot" data-map-key="island"
+            d="M455 100 L595 100 L595 220 L455 220 Z"/>
+      <path class="geo-map-hotspot" data-map-key="lake"
+            d="M695 150 L845 150 L845 270 L695 270 Z"/>
+      <path class="geo-map-hotspot" data-map-key="archipelago"
+            d="M425 380 L635 380 L635 480 L425 480 Z"/>
+      <path class="geo-map-hotspot" data-map-key="lake-system"
+            d="M700 320 L890 320 L890 430 L700 430 Z"/>
+    </svg>`;
+  }
+
+  function renderMapChallenge(){
+    if(geoMapIndex>=geoMapQueue.length){
+      if(geoMapWrongQueue.length){
+        const extra=geoMapWrongQueue.splice(0);
+        geoMapQueue.push(...extra);
+      }else{
+        finishMapChallenge();
+        return;
+      }
+    }
+
+    const q=geoMapQueue[geoMapIndex];
+    geoMapAnswered=false;
+
+    $("geoActivityArea").innerHTML=`
+      <div class="geo-map-shell">
+        <div class="geo-map-head">
+          <h2>🗺️ Map Challenge</h2>
+          <p>Look at the illustrated map and click the geographic feature requested.</p>
+        </div>
+
+        <div class="geo-progress"><div style="width:${Math.min(100,(geoMapCorrect/mapQuestionsForLesson().length)*100)}%"></div></div>
+        <div class="geo-map-counter">${Math.min(geoMapCorrect+1,mapQuestionsForLesson().length)} of ${mapQuestionsForLesson().length} features completed</div>
+        <div class="geo-map-question">${escapeHtml(q.prompt)}</div>
+
+        <div class="geo-map-frame" id="geoInteractiveMap">
+          ${geoMapSvg()}
+        </div>
+
+        <div class="geo-map-legend">
+          <span><i class="geo-map-dot" style="background:#f3d6a0"></i>Land</span>
+          <span><i class="geo-map-dot" style="background:#7dc8f0"></i>Water</span>
+          <span>Tap/click directly on the map</span>
+        </div>
+
+        <div class="geo-map-feedback" id="geoMapFeedback"></div>
+        <div class="geo-map-controls">
+          <button class="geo-btn" type="button" id="geoMapHear">🔊 Hear the term</button>
+          <button class="geo-btn primary" type="button" id="geoMapNext" style="display:none">Next →</button>
+        </div>
+      </div>`;
+
+    const map=$("geoInteractiveMap");
+    const feedback=$("geoMapFeedback");
+    const next=$("geoMapNext");
+
+    map.querySelectorAll("[data-map-key]").forEach(zone=>{
+      zone.addEventListener("click",()=>{
+        if(geoMapAnswered)return;
+        geoMapAttempts++;
+        const selected=zone.dataset.mapKey;
+        const ok=selected===q.key;
+
+        if(ok){
+          geoMapAnswered=true;
+          geoMapCorrect++;
+          zone.classList.add("correct");
+          feedback.textContent=`✅ Correct! This is the ${q.term}.`;
+          feedback.style.color="#15803d";
+          next.style.display="inline-block";
+        }else{
+          zone.classList.add("wrong");
+          feedback.textContent="❌ Not this one. Look at the shape and try again.";
+          feedback.style.color="#b91c1c";
+          setTimeout(()=>zone.classList.remove("wrong"),650);
+
+          // Ask the missed feature again after 2–3 other questions.
+          const alreadyQueued=geoMapWrongQueue.some(x=>x.key===q.key);
+          if(!alreadyQueued) geoMapWrongQueue.push(q);
+        }
+      });
+    });
+
+    $("geoMapHear").onclick=()=>speakEnglish(q.term);
+    next.onclick=()=>{
+      geoMapIndex++;
+      renderMapChallenge();
+    };
+  }
+
+  function finishMapChallenge(){
+    const total=mapQuestionsForLesson().length;
+    const pct=100;
+    $("geoActivityArea").innerHTML=`
+      <div class="geo-map-finish">
+        <div class="trophy">🏆</div>
+        <h2>Map Challenge completed!</h2>
+        <p>You identified all <strong>${total}</strong> geographic features on the map.</p>
+        <p>${geoMapAttempts} total selection${geoMapAttempts===1?"":"s"}.</p>
+        <button class="geo-btn primary" id="geoMapAgain" type="button">Practice again</button>
+      </div>`;
+
+    window.trackStudentActivity?.("activity_completed",{
+      label:`Geography · ${currentGeoLesson.title} · Map Challenge`,
+      subject:"geography",
+      activity:"Map Challenge",
+      completed:true,
+      score:pct
+    });
+
+    window.markSubjectActivityCompleted?.(
+      "geography",
+      currentGeoLessonKey,
+      "map",
+      `Geography · ${currentGeoLesson.title} · Map Challenge`,
+      pct
+    );
+
+    $("geoMapAgain").onclick=startMapChallenge;
+  }
+
 
   // Teacher lesson builder
   function addBuilderPair(term="",definition=""){
