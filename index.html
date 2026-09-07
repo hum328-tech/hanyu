@@ -584,6 +584,21 @@
   .geo-map-frame{border-radius:16px}
 }
 
+
+.geo-map-home-card{
+  margin:18px 0 22px;padding:20px;border:2px solid #60a5fa;border-radius:22px;
+  background:linear-gradient(135deg,#eff6ff,#ecfeff);display:grid;
+  grid-template-columns:auto 1fr auto;gap:16px;align-items:center;
+  box-shadow:0 12px 30px rgba(37,99,235,.10)
+}
+.geo-map-home-icon{font-size:52px}
+.geo-map-home-copy h2{margin:2px 0 6px;font-size:24px}
+.geo-map-home-copy p{margin:0;color:#64748b;line-height:1.5}
+@media(max-width:760px){
+  .geo-map-home-card{grid-template-columns:1fr;text-align:center}
+  .geo-map-home-icon{font-size:46px}
+}
+
 </style>
 </head>
 <body>
@@ -1245,6 +1260,17 @@
             <button class="geo-btn primary" id="geoNewLessonBtn" type="button" style="display:none">＋ New lesson</button>
           </div>
           <div id="geoLessonGrid" class="geo-lesson-grid"></div>
+
+          <div class="geo-map-home-card" id="geoMapHomeCard">
+            <div class="geo-map-home-icon">🗺️</div>
+            <div class="geo-map-home-copy">
+              <div class="geo-kicker">NEW ACTIVITY</div>
+              <h2>Identify Geographic Features on the Map</h2>
+              <p>Find the gulf, peninsula, isthmus, strait, island, lake, archipelago and lake system by clicking directly on the map.</p>
+            </div>
+            <button class="geo-btn primary" id="geoOpenMapChallenge" type="button">Start Map Challenge →</button>
+          </div>
+
           <div id="geoBuilder" class="geo-panel geo-builder">
             <h2>Create a new Geography lesson</h2>
             <p>Add the lesson name, then write each term and its definition. It will be available to Geography students.</p>
@@ -1272,7 +1298,7 @@
             <button class="geo-btn" data-geo-mode="cards">🃏 Flashcards</button>
             <button class="geo-btn" data-geo-mode="choice">✅ Multiple Choice</button>
             <button class="geo-btn" data-geo-mode="write">✍️ Write</button>
-            <button class="geo-btn" data-geo-mode="map">🗺️ Map Challenge</button>
+            <button class="geo-btn" data-geo-mode="map">🗺️ MAP CHALLENGE</button>
           </div>
           <div id="geoActivityArea" class="geo-panel"></div>
         </section>
@@ -4169,6 +4195,17 @@ renderRadicals();
     window.trackStudentActivity?.("geography_lesson_opened",{label:lesson.title,subject:"geography"});
     window.scrollTo({top:0,behavior:"smooth"});
   }
+
+  $("geoOpenMapChallenge")?.addEventListener("click",()=>{
+    const lesson=geoLessons[0]||DEFAULT_GEO_LESSON;
+    openGeoLesson(lesson,1);
+    geoMode="map";
+    geoIndex=0;
+    document.querySelectorAll("[data-geo-mode]").forEach(b=>b.classList.toggle("active",b.dataset.geoMode==="map"));
+    startMapChallenge();
+    window.scrollTo({top:0,behavior:"smooth"});
+  });
+
   $("geoBackBtn")?.addEventListener("click",()=>{$("geoLessonView").style.display="none";$("geoHomeView").style.display="block";currentGeoLesson=null;});
   $("geoModeTabs")?.addEventListener("click",e=>{const b=e.target.closest("[data-geo-mode]");if(!b)return;geoMode=b.dataset.geoMode;geoIndex=0;document.querySelectorAll("[data-geo-mode]").forEach(x=>x.classList.toggle("active",x===b));renderGeoMode();});
 
