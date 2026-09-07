@@ -522,9 +522,6 @@
 .completion-chip.done::before{content:"";width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block}
 
 
-/* =========================================================
-   MULTI-MATERIA + GEOGRAFÍA
-   ========================================================= */
 .subject-field{display:none}
 .subject-field.visible{display:block}
 .subject-select,.geo-input,.geo-textarea{width:100%;box-sizing:border-box;padding:12px 14px;border:1px solid #cfd8e6;border-radius:14px;background:#fff;font:inherit;outline:none}
@@ -533,6 +530,21 @@
 #geoScreen,#spanishScreen{display:none}.geo-shell{max-width:1050px;margin:0 auto;padding:24px 16px 60px}.geo-hero{padding:28px;border-radius:24px;background:linear-gradient(135deg,#e0f2fe,#ecfeff);border:1px solid #bae6fd;margin-bottom:18px}.geo-kicker{font-size:13px;font-weight:1000;letter-spacing:.08em;color:#0369a1}.geo-hero h1{font-size:clamp(30px,5vw,52px);margin:5px 0 8px}.geo-hero p{margin:0;color:#475569;font-size:17px}.geo-toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}.geo-btn{border:0;border-radius:14px;padding:12px 16px;font:inherit;font-weight:900;cursor:pointer;background:#fff;border:1px solid #dbe3ef;color:#0f172a}.geo-btn.active,.geo-btn.primary{background:#0f766e;color:#fff;border-color:#0f766e}.geo-btn:disabled{opacity:.45;cursor:not-allowed}.geo-panel{background:#fff;border:1px solid #e2e8f0;border-radius:22px;padding:22px;box-shadow:0 8px 30px rgba(15,23,42,.06);margin-bottom:18px}.geo-lesson-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}.geo-lesson-card{text-align:left;padding:20px;border-radius:20px;background:#fff;border:1px solid #dbe3ef;cursor:pointer;min-height:140px}.geo-lesson-card:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(15,23,42,.08)}.geo-lesson-card small{font-weight:900;color:#0f766e}.geo-lesson-card h3{font-size:21px;margin:8px 0}.geo-chip{display:inline-flex;padding:6px 10px;border-radius:999px;background:#ecfdf5;color:#047857;font-size:12px;font-weight:900}.geo-study-list{display:grid;gap:10px}.geo-study-item{display:grid;grid-template-columns:minmax(130px,.7fr) 1.8fr auto;align-items:center;gap:14px;padding:14px;border:1px solid #e2e8f0;border-radius:16px}.geo-term{font-size:20px;font-weight:1000}.geo-definition{color:#475569;line-height:1.45}.geo-audio{width:44px;height:44px;border-radius:50%;border:0;background:#e0f2fe;cursor:pointer;font-size:20px}.geo-card-wrap{perspective:1000px;max-width:760px;margin:12px auto}.geo-card{height:360px;position:relative;transform-style:preserve-3d;transition:.45s;cursor:pointer}.geo-card.flipped{transform:rotateY(180deg)}.geo-face{position:absolute;inset:0;backface-visibility:hidden;border:1px solid #dbe3ef;border-radius:26px;background:#fff;display:flex;align-items:center;justify-content:center;text-align:center;padding:34px;box-shadow:0 14px 36px rgba(15,23,42,.10)}.geo-face.back{transform:rotateY(180deg);background:#f0fdfa}.geo-face .big{font-size:clamp(32px,6vw,58px);font-weight:1000}.geo-face .def{font-size:clamp(20px,3vw,30px);line-height:1.35}.geo-counter{text-align:center;font-weight:900;color:#64748b;margin:10px}.geo-nav{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}.geo-question{font-size:clamp(24px,4vw,36px);font-weight:1000;margin:10px 0 18px}.geo-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}.geo-option{padding:16px;border:1px solid #dbe3ef;border-radius:15px;background:#fff;font:inherit;font-weight:800;text-align:left;cursor:pointer}.geo-option.correct{background:#dcfce7;border-color:#22c55e}.geo-option.wrong{background:#fee2e2;border-color:#ef4444}.geo-feedback{min-height:28px;font-weight:900;margin-top:12px}.geo-write-row{display:flex;gap:10px;align-items:center}.geo-write-row .geo-input{font-size:18px}.geo-progress{height:10px;background:#e2e8f0;border-radius:999px;overflow:hidden;margin:10px 0 18px}.geo-progress>div{height:100%;background:#0f766e;width:0}.geo-builder{display:none}.geo-builder.show{display:block}.geo-builder-pairs{display:grid;gap:10px;margin:14px 0}.geo-pair{display:grid;grid-template-columns:1fr 1.5fr auto;gap:8px}.geo-remove{border:0;background:#fee2e2;border-radius:12px;padding:0 13px;cursor:pointer}.geo-empty{text-align:center;padding:50px 20px;color:#64748b}.subject-placeholder{max-width:760px;margin:40px auto;padding:40px 22px;text-align:center;background:#fff;border:1px solid #e2e8f0;border-radius:24px}
 @media(max-width:720px){.geo-study-item{grid-template-columns:1fr auto}.geo-definition{grid-column:1/-1}.geo-options{grid-template-columns:1fr}.geo-card{height:320px}.geo-pair{grid-template-columns:1fr}.geo-write-row{flex-direction:column;align-items:stretch}.subject-switch-wrap{width:100%}.subject-switch{width:100%}}
 
+
+
+.teacher-subject-switch{display:none;align-items:center;gap:7px;flex-wrap:wrap;padding:5px;border:1px solid #dbe7ff;background:#f8fbff;border-radius:14px}
+.teacher-subject-switch.show{display:flex}
+.teacher-subject-btn{border:0;background:transparent;color:#667085;padding:8px 11px;border-radius:10px;font:inherit;font-weight:900;cursor:pointer;white-space:nowrap}
+.teacher-subject-btn.active{background:#2563eb;color:#fff}
+.teacher-panel-subjects{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 14px}
+.teacher-panel-subject-btn{border:1px solid #dbe3ef;background:#fff;border-radius:12px;padding:9px 12px;font-weight:900;cursor:pointer;color:#667085}
+.teacher-panel-subject-btn.active{background:#172033;color:#fff;border-color:#172033}
+.history-shell{max-width:1000px;margin:0 auto;padding:30px 16px 60px}
+.history-hero{background:linear-gradient(135deg,#fff7ed,#fffbeb);border:1px solid #fed7aa;border-radius:24px;padding:30px}
+.history-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:18px}
+.history-card{display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid #e5e7eb;border-radius:20px;padding:22px;box-shadow:0 8px 26px rgba(15,23,42,.06)}
+.history-card h3{font-size:24px;margin:8px 0}.history-card span{display:inline-block;margin-top:10px;background:#fff7ed;color:#c2410c;padding:6px 10px;border-radius:999px;font-weight:900}
+
 </style>
 </head>
 <body>
@@ -540,7 +552,7 @@
 <div id="authGate">
   <div class="auth-box">
     <div class="auth-symbol">汉</div>
-    <h1>Aula interactiva</h1>
+    <h1>Chino interactivo</h1>
     <p class="auth-intro">Inicia sesión o crea una cuenta para guardar tu progreso. Tu usuario se tomará automáticamente de tu correo.</p>
 
     <div class="auth-tabs">
@@ -563,22 +575,23 @@
       <input id="loginConfirm" type="password" autocomplete="new-password" placeholder="Repite tu contraseña">
     </div>
 
-    <div class="auth-field subject-field" id="subjectField">
-      <label for="registerSubject">¿A qué clase perteneces?</label>
-      <select id="registerSubject" class="subject-select">
-        <option value="">Selecciona una clase</option>
-        <option value="chinese">Chino</option>
-        <option value="spanish">Español</option>
-        <option value="geography">Geografía</option>
-      </select>
-    </div>
-
     <button type="button" id="authPrimary">Iniciar sesión</button>
     <button type="button" id="forgotPassword" class="auth-forgot">Olvidé mi contraseña</button>
 
     <div id="authStatus"></div>
     <div class="auth-help">Tu nombre de usuario será todo lo que aparezca antes de la @ en tu correo. La contraseña corresponde únicamente a esta plataforma.</div>
   </div>
+
+    <div class="auth-field subject-field" id="subjectField">
+      <label for="registerSubject">¿A qué clase perteneces?</label>
+      <select id="registerSubject" class="subject-select">
+        <option value="">Selecciona una clase</option>
+        <option value="chinese">Chino</option>
+        <option value="geography">Geografía</option>
+        <option value="history">Historia</option>
+      </select>
+    </div>
+
 </div>
 
 
@@ -597,15 +610,12 @@
     </div>
     <div id="teacherPanelMessage" class="feedback"></div>
 
-    <div class="teacher-search-wrap" style="align-items:center;gap:10px;flex-wrap:wrap">
-      <label for="teacherClassSelect" style="font-weight:900">Clase:</label>
-      <select id="teacherClassSelect" class="teacher-search" style="max-width:220px">
-        <option value="chinese">Chino</option>
-        <option value="spanish">Español</option>
-        <option value="geography">Geografía</option>
-      </select>
-      <span style="font-size:13px;color:var(--muted)">La vista y los alumnos se filtrarán por esta materia.</span>
+    <div class="teacher-panel-subjects" id="teacherPanelSubjects">
+      <button type="button" class="teacher-panel-subject-btn active" data-teacher-panel-subject="chinese">汉 Chino</button>
+      <button type="button" class="teacher-panel-subject-btn" data-teacher-panel-subject="geography">🌎 Geografía</button>
+      <button type="button" class="teacher-panel-subject-btn" data-teacher-panel-subject="history">🏛️ Historia</button>
     </div>
+
 
     <div class="teacher-search-wrap">
       <input id="teacherUserSearch" class="teacher-search" type="search"
@@ -642,6 +652,13 @@
         <small id="brandSubtitle" style="color:var(--muted)">Curso inicial</small>
       </div>
     </div>
+    
+<div class="teacher-subject-switch" id="teacherSubjectSwitch">
+  <button type="button" class="teacher-subject-btn active" data-teacher-subject="chinese">汉 Chino</button>
+  <button type="button" class="teacher-subject-btn" data-teacher-subject="geography">🌎 Geo</button>
+  <button type="button" class="teacher-subject-btn" data-teacher-subject="history">🏛️ Historia</button>
+</div>
+
     <div class="user-session"><div><div class="stars">⭐ 0</div><div id="sessionEmail"></div></div><button id="teacherPanelBtn" class="teacher-btn" type="button">Panel docente</button><button id="signOutButton" type="button" style="display:none">Salir</button></div>
   </header>
 
@@ -1173,8 +1190,7 @@
         </div>
       </section>
     </section>
-
-    <section id="geoScreen" class="screen">
+<section id="geoScreen" class="screen">
       <div class="geo-shell">
         <section id="geoHomeView">
           <div class="geo-hero">
@@ -1219,11 +1235,17 @@
       </div>
     </section>
 
-    <section id="spanishScreen" class="screen">
-      <div class="subject-placeholder">
-        <div style="font-size:56px">📚</div>
-        <h1>Español</h1>
-        <p>Tu cuenta está registrada para Español. El contenido de esta materia se añadirá aquí sin mostrar las lecciones de Chino o Geografía.</p>
+    <section id="historyScreen" class="screen">
+      <div class="history-shell">
+        <div class="history-hero">
+          <div style="font-size:13px;font-weight:1000;letter-spacing:.08em;color:#c2410c">VISTA DOCENTE · HISTORIA</div>
+          <h1 style="font-size:clamp(32px,5vw,52px);margin:6px 0 8px">Historia</h1>
+          <p style="color:#64748b;font-size:17px;margin:0">Este acceso aparece únicamente en tu cuenta docente.</p>
+        </div>
+        <div class="history-grid">
+          <a class="history-card" href="./historia/8/"><div style="font-size:42px">🏛️</div><h3>Historia 8.º</h3><p>Roma, Edad Media, Renacimiento y mundo moderno.</p><span>Abrir plataforma →</span></a>
+          <a class="history-card" href="./historia/9/"><div style="font-size:42px">🇲🇽</div><h3>Historia 9.º</h3><p>Historia de México.</p><span>Abrir plataforma →</span></a>
+        </div>
       </div>
     </section>
 
@@ -1285,10 +1307,49 @@
   const teacherCloseBtn = document.getElementById("teacherCloseBtn");
   const teacherUsersBody = document.getElementById("teacherUsersBody");
   const teacherPanelMessage = document.getElementById("teacherPanelMessage");
-  const teacherClassSelect = document.getElementById("teacherClassSelect");
   const teacherSummary = document.getElementById("teacherSummary");
 
   let mode = "login";
+
+  let teacherViewingSubject="chinese";
+
+  function setBrand(subject){
+    const badge=document.getElementById("brandBadge"), title=document.getElementById("brandTitle"), sub=document.getElementById("brandSubtitle");
+    if(subject==="geography"){
+      if(badge)badge.textContent="🌎"; if(title)title.textContent="Geography Lab"; if(sub)sub.textContent="Flashcards & practice";
+    }else if(subject==="history"){
+      if(badge)badge.textContent="🏛️"; if(title)title.textContent="Historia"; if(sub)sub.textContent="Vista docente";
+    }else{
+      if(badge)badge.textContent="汉"; if(title)title.textContent="Aula interactiva"; if(sub)sub.textContent="Curso inicial";
+    }
+  }
+
+  window.routeSubjectUI=function(subject,forceTeacher){
+    subject=subject||"chinese";
+    if(window.currentUserIsTeacher&&forceTeacher)teacherViewingSubject=subject;
+    ["homeScreen","introScreen","lessonScreen","geoScreen","historyScreen"].forEach(id=>document.getElementById(id)?.classList.remove("active"));
+    const geo=document.getElementById("geoScreen"), hist=document.getElementById("historyScreen");
+    if(subject==="geography"){
+      if(geo){geo.style.display="block";geo.classList.add("active");}
+      if(hist)hist.style.display="none";
+      window.loadGeoLessons?.();
+    }else if(subject==="history"){
+      if(geo)geo.style.display="none";
+      if(hist){hist.style.display="block";hist.classList.add("active");}
+    }else{
+      if(geo)geo.style.display="none"; if(hist)hist.style.display="none";
+      document.getElementById("homeScreen")?.classList.add("active");
+    }
+    setBrand(subject);
+    document.querySelectorAll("[data-teacher-subject]").forEach(b=>b.classList.toggle("active",b.dataset.teacherSubject===subject));
+  };
+
+  document.getElementById("teacherSubjectSwitch")?.addEventListener("click",e=>{
+    const b=e.target.closest("[data-teacher-subject]");
+    if(!b||!window.currentUserIsTeacher)return;
+    window.routeSubjectUI(b.dataset.teacherSubject,true);
+  });
+
 
   function showStatus(text, ok){
     status.textContent = text || "";
@@ -1370,18 +1431,17 @@
 
     try{
       if(mode === "register"){
-        const selectedSubject = registerSubject.value;
-        sessionStorage.setItem("pendingRegistrationSubject", selectedSubject);
-        const cred = await auth.createUserWithEmailAndPassword(email, password);
+        const selectedSubject=registerSubject.value;
+        sessionStorage.setItem("pendingRegistrationSubject",selectedSubject);
+        const cred=await auth.createUserWithEmailAndPassword(email,password);
         await db.collection("users").doc(cred.user.uid).set({
           subject:selectedSubject,
           updatedAt:firebase.firestore.FieldValue.serverTimestamp()
         },{merge:true});
-        window.currentSubject = selectedSubject;
-        if(window.routeSubjectUI) window.routeSubjectUI(selectedSubject);
+        window.currentSubject=selectedSubject;
         sessionStorage.removeItem("pendingRegistrationSubject");
       }else{
-        await auth.signInWithEmailAndPassword(email, password);
+        await auth.signInWithEmailAndPassword(email,password);
       }
     }catch(err){
       console.error(err);
@@ -1503,6 +1563,35 @@
     }
   };
 
+
+  window.markSubjectActivityCompleted=async function(subject,lessonKey,activityKey,label,score){
+    const user=auth.currentUser;if(!user)return false;
+    subject=String(subject||"chinese").toLowerCase();
+    lessonKey=String(lessonKey||"lesson1").replace(/[^a-zA-Z0-9_-]/g,"_");
+    activityKey=String(activityKey||"activity").replace(/[^a-zA-Z0-9_-]/g,"_");
+    const base="progress.subjects."+subject+".lessons."+lessonKey+".activities."+activityKey;
+    const ref=db.collection("users").doc(user.uid);
+    const update={
+      [base+".completed"]:true,
+      [base+".completedAt"]:firebase.firestore.FieldValue.serverTimestamp(),
+      ["progress.subjects."+subject+".currentLesson"]:lessonKey,
+      subject,
+      lastActivity:{type:"activity_completed",detail:{subject,lesson:lessonKey,activity:activityKey,label:label||activityKey,completed:true,score:score??null},at:firebase.firestore.FieldValue.serverTimestamp()},
+      updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+    };
+    if(score!==undefined&&score!==null){
+      update[base+".score"]=Number(score);
+      update["progress.subjects."+subject+".lastScore"]=Number(score);
+    }
+    try{await ref.update(update);return true;}
+    catch(e){
+      try{
+        await ref.set({email:user.email||"",username:usernameFromEmail(user.email),subject,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+        await ref.update(update);return true;
+      }catch(e2){console.error("Subject completion tracking:",e2);return false;}
+    }
+  };
+
   async function countLoginOnce(user){
     const sessionKey = "hanyu_login_counted_" + user.uid;
     if(sessionStorage.getItem(sessionKey)) return;
@@ -1516,117 +1605,104 @@
     }catch(e){ console.error("Login count:",e); }
   }
 
+  let teacherPanelSubject="chinese";
+  function normalizedSubject(d){
+    const s=String(d.subject||"chinese").toLowerCase();
+    return s==="geo"?"geography":s==="historia"?"history":s==="chino"?"chinese":s;
+  }
   async function loadTeacherPanel(){
-    const selectedClass = (teacherClassSelect && teacherClassSelect.value) || window.teacherSelectedSubject || "chinese";
-    window.teacherSelectedSubject = selectedClass;
-    teacherPanelMessage.textContent = "Cargando alumnos de " + ({chinese:"Chino",spanish:"Español",geography:"Geografía"}[selectedClass] || selectedClass) + "…";
+    teacherPanelMessage.textContent = "Cargando alumnas…";
     teacherUsersBody.innerHTML = "";
     try{
       const snap = await db.collection("users").get();
       const rows = [];
       snap.forEach(function(ds){
         const d = ds.data() || {};
-        if(ds.id === TEACHER_UID) return;
-        const userSubject = d.subject || "chinese";
-        if(userSubject !== selectedClass) return;
-
+        
         const p = d.progress || {};
-        const act = d.lastActivity || {};
-        const det = act.detail || {};
-        const activity = [act.type,det.label||det.topic||det.section||det.exercise].filter(Boolean).join(" · ") || "—";
-        let currentText="—", progressText="—", status="En curso", completions="—", scores="—";
+        let l1=p.lesson1||{},l2=p.lesson2||{};
+        let l1p=Number(l1.progress||(l1.completed?100:0)),l2p=Number(l2.progress||(l2.completed?100:0));
+        let overall=Math.round((l1p+l2p)/2),currentLesson=p.currentLesson||1;
+        const act=d.lastActivity||{},det=act.detail||{};
+        const activity=[act.type,det.label||det.topic||det.section||det.exercise].filter(Boolean).join(" · ")||"—";
+        let scores=[l1.score!=null?"L1: "+l1.score:null,l2.score!=null?"L2: "+l2.score:null].filter(Boolean).join(" · ")||"—";
+        let status=l2.completed?"L2 terminada":(l1.completed?"L2 en progreso":"L1 en progreso"),completions="";
 
-        function chip(done,label){
-          return `<span class="completion-chip ${done ? "done" : "pending"}" title="${done ? "TERMINADO" : "Pendiente"}">${done ? "✓ TERMINADO · " : "○ "}${label}</span>`;
-        }
-        function activityWasCompleted(lessonObj, lessonNumber, key){
-          const nested = !!(lessonObj.activities && lessonObj.activities[key] && lessonObj.activities[key].completed);
-          const legacyKey = "progress.lesson" + lessonNumber + ".activities." + key + ".completed";
-          return nested || d[legacyKey] === true;
-        }
-        function chineseCompletionGroup(lessonObj, lessonNumber){
-          return `<div class="completion-group"><div class="completion-title">Lección ${lessonNumber}</div><div class="completion-chips">
-            ${chip(activityWasCompleted(lessonObj,lessonNumber,"pronunciacion"),"Pron.")}
-            ${chip(activityWasCompleted(lessonObj,lessonNumber,"tarjetas"),"Tarjetas")}
-            ${chip(activityWasCompleted(lessonObj,lessonNumber,"opcion_multiple"),"Opción múltiple")}
-            ${chip(activityWasCompleted(lessonObj,lessonNumber,"escritura"),"Escritura")}
-            ${chip(activityWasCompleted(lessonObj,lessonNumber,"ejercicios"),"Ejercicios")}
-            ${chip(activityWasCompleted(lessonObj,lessonNumber,"prueba"),"Prueba")}
+        const chip=(done,label)=>`<span class="completion-chip ${done?"done":"pending"}" title="${done?"TERMINADO":"Pendiente"}">${done?"✓ TERMINADO · ":"○ "}${label}</span>`;
+        const chineseDone=(obj,n,key)=>!!(obj.activities&&obj.activities[key]&&obj.activities[key].completed)||d["progress.lesson"+n+".activities."+key+".completed"]===true;
+
+        if(teacherPanelSubject==="chinese"){
+          const group=(obj,n)=>`<div class="completion-group"><div class="completion-title">Lección ${n}</div><div class="completion-chips">
+            ${chip(chineseDone(obj,n,"pronunciacion"),"Pron.")}${chip(chineseDone(obj,n,"tarjetas"),"Tarjetas")}${chip(chineseDone(obj,n,"opcion_multiple"),"Opción múltiple")}
+            ${chip(chineseDone(obj,n,"escritura"),"Escritura")}${chip(chineseDone(obj,n,"ejercicios"),"Ejercicios")}${chip(chineseDone(obj,n,"prueba"),"Prueba")}
           </div></div>`;
-        }
-
-        if(selectedClass === "geography"){
-          const gp = p.geography || {};
-          const lessons = gp.lessons || {};
-          const lessonEntries = Object.entries(lessons);
-          const completedCount = lessonEntries.reduce((sum,[,lo])=> sum + Object.values((lo&&lo.activities)||{}).filter(a=>a&&a.completed).length,0);
-          const totalPossible = Math.max(lessonEntries.length*3, 3);
-          const pct = Math.min(100, Math.round(completedCount/totalPossible*100));
-          currentText = gp.currentLessonTitle || det.lessonTitle || "Geografía";
-          progressText = `<span class="teacher-progress">${pct}%</span><br>${completedCount} actividad(es) terminada(s)`;
-          status = completedCount ? "Geografía en progreso" : "Sin actividades terminadas";
-          if(lessonEntries.length){
-            completions = lessonEntries.map(([key,lo],idx)=>{
-              const a=(lo&&lo.activities)||{};
-              const title=(lo&&lo.title)||`Lección ${idx+1}`;
-              return `<div class="completion-group"><div class="completion-title">${escapeQuotes(title)}</div><div class="completion-chips">
-                ${chip(!!a.flashcards?.completed,"Tarjetas")}
-                ${chip(!!a.multiple_choice?.completed,"Opción múltiple")}
-                ${chip(!!a.write?.completed,"Escritura")}
-              </div></div>`;
-            }).join("");
-          } else {
-            completions = `<div class="completion-group"><div class="completion-title">Geografía</div><div class="completion-chips">${chip(false,"Tarjetas")}${chip(false,"Opción múltiple")}${chip(false,"Escritura")}</div></div>`;
-          }
-          const geoScores=[];
-          lessonEntries.forEach(([,lo])=>{
-            const a=(lo&&lo.activities)||{};
-            if(a.multiple_choice && a.multiple_choice.score!=null) geoScores.push(`OM: ${a.multiple_choice.score}%`);
-            if(a.write && a.write.score!=null) geoScores.push(`Escritura: ${a.write.score}%`);
-          });
-          scores=geoScores.join(" · ")||"—";
-        }else if(selectedClass === "chinese"){
-          const l1 = p.lesson1 || {}, l2 = p.lesson2 || {};
-          const l1p = Number(l1.progress || (l1.completed ? 100 : 0));
-          const l2p = Number(l2.progress || (l2.completed ? 100 : 0));
-          const overall = Math.round((l1p+l2p)/2);
-          const currentLesson = p.currentLesson || 1;
-          currentText = "Lección " + currentLesson;
-          progressText = `<span class="teacher-progress">${overall}%</span><br>L1 ${l1p}% · L2 ${l2p}%`;
-          status = l2.completed ? "L2 terminada" : (l1.completed ? "L2 en progreso" : "L1 en progreso");
-          completions = chineseCompletionGroup(l1,1)+chineseCompletionGroup(l2,2);
-          scores=[l1.score!=null?"L1: "+l1.score:null,l2.score!=null?"L2: "+l2.score:null].filter(Boolean).join(" · ")||"—";
+          completions=group(l1,1)+group(l2,2);
+        }else if(teacherPanelSubject==="geography"){
+          const gs=((p.subjects||{}).geography)||{},lessons=gs.lessons||{};
+          const keys=Object.keys(lessons).length?Object.keys(lessons):["lesson1"];
+          let doneCount=0;
+          completions=keys.map((lk,i)=>{
+            const acts=(lessons[lk]||{}).activities||{};
+            const latest=(det.subject==="geography"&&det.completed===true)?det:{};
+            const fallback=(key,label)=>latest.activity===key||String(latest.activity||"").toLowerCase()===label.toLowerCase();
+            const cards=!!(acts.cards&&acts.cards.completed)||fallback("cards","Flashcards");
+            const choice=!!(acts.choice&&acts.choice.completed)||fallback("choice","Multiple Choice");
+            const write=!!(acts.write&&acts.write.completed)||fallback("write","Write");
+            doneCount+=[cards,choice,write].filter(Boolean).length;
+            return `<div class="completion-group"><div class="completion-title">Lección ${i+1}</div><div class="completion-chips">${chip(cards,"Tarjetas")}${chip(choice,"Opción múltiple")}${chip(write,"Escritura")}</div></div>`;
+          }).join("");
+          overall=Math.round(doneCount/Math.max(3,keys.length*3)*100);
+          currentLesson=String(gs.currentLesson||"lesson1").replace("lesson","");
+          scores=gs.lastScore!==undefined?gs.lastScore+"%":"—";
+          status=overall>=100?"Geografía terminada":"Geografía en progreso";
         }else{
-          currentText="Español";
-          progressText="—";
-          status="Registrado en Español";
-          completions="Aún sin actividades configuradas";
+          const hs=((p.subjects||{}).history)||{},lessons=hs.lessons||{};
+          const anyDone=Object.values(lessons).some(x=>x&&x.completed);
+          overall=anyDone?100:0;currentLesson=hs.currentLesson||"—";
+          completions=`<div class="completion-group"><div class="completion-title">Historia</div><div class="completion-chips">${chip(anyDone,"Actividad")}</div></div>`;
+          scores=hs.lastScore!==undefined?hs.lastScore+"%":"—";status=anyDone?"Historia terminada":"Historia";
         }
 
         const searchable = ((d.username || usernameFromEmail(d.email) || "") + " " + (d.email || "")).toLowerCase();
-        rows.push(`<tr data-user-search="${escapeQuotes(searchable)}">
-          <td><strong>${d.username || usernameFromEmail(d.email) || "—"}</strong><br><small>${d.email || ""}</small><br><span class="teacher-status">${status}</span></td>
-          <td>${d.loginCount || 0}</td>
-          <td>${formatFirestoreDate(d.lastLoginAt)}</td>
-          <td>${currentText}</td>
-          <td>${progressText}</td>
-          <td>${activity}<br><small>${formatFirestoreDate(act.at)}</small></td>
-          <td class="teacher-completions">${completions}</td>
-          <td>${scores}</td>
-        </tr>`);
+
+        rows.push(`
+          <tr data-user-search="${escapeQuotes(searchable)}">
+            <td><strong>${d.username || usernameFromEmail(d.email) || "—"}</strong><br><small>${d.email || ""}</small><br><span class="teacher-status">${status}</span></td>
+            <td>${d.loginCount || 0}</td>
+            <td>${formatFirestoreDate(d.lastLoginAt)}</td>
+            <td>Lección ${currentLesson}</td>
+            <td><span class="teacher-progress">${overall}%</span>${teacherPanelSubject==="chinese"?`<br>L1 ${l1p}% · L2 ${l2p}%`:""}</td>
+            <td>${activity}<br><small>${formatFirestoreDate(act.at)}</small></td>
+            <td class="teacher-completions">${completions}</td>
+            <td>${scores}</td>
+          </tr>
+        `);
       });
-      teacherUsersBody.innerHTML = rows.join("") || '<tr><td colspan="8"><strong>No hay alumnos registrados en esta clase todavía.</strong></td></tr>';
-      teacherSummary.textContent = rows.length + " alumno(s) · " + ({chinese:"Chino",spanish:"Español",geography:"Geografía"}[selectedClass] || selectedClass);
+      teacherUsersBody.innerHTML = rows.join("") || '<tr><td colspan="8"><strong>No hay alumnas registradas todavía.</strong><br><small>Cuando una alumna cree su cuenta aparecerá aquí automáticamente.</small></td></tr>';
+      teacherSummary.textContent=rows.length+" alumna(s) · "+(teacherPanelSubject==="chinese"?"Chino":teacherPanelSubject==="geography"?"Geografía":"Historia");
       teacherPanelMessage.textContent = "";
       applyTeacherUserSearch();
     }catch(e){
       console.error("Teacher panel:",e);
-      const code=e&&e.code?e.code:"sin-codigo", detail=e&&e.message?e.message:String(e);
-      teacherPanelMessage.innerHTML="<strong>No se pudo leer el grupo.</strong><br>Error Firebase: <code>"+code+"</code><br><small>"+detail+"</small>";
-      teacherPanelMessage.style.color="#dc2626";
+      const code = e && e.code ? e.code : "sin-codigo";
+      const detail = e && e.message ? e.message : String(e);
+      teacherPanelMessage.innerHTML =
+        "<strong>No se pudo leer el grupo.</strong><br>" +
+        "Error Firebase: <code>" + code + "</code><br>" +
+        "<small>" + detail + "</small>";
+      teacherPanelMessage.style.color = "#dc2626";
     }
   }
 
+
+
+  document.getElementById("teacherPanelSubjects")?.addEventListener("click",e=>{
+    const b=e.target.closest("[data-teacher-panel-subject]");if(!b)return;
+    teacherPanelSubject=b.dataset.teacherPanelSubject;
+    document.querySelectorAll("[data-teacher-panel-subject]").forEach(x=>x.classList.toggle("active",x===b));
+    const s=document.getElementById("teacherUserSearch");if(s)s.value="";
+    loadTeacherPanel();
+  });
 
   function applyTeacherUserSearch(){
     const input = document.getElementById("teacherUserSearch");
@@ -1654,21 +1730,13 @@
     teacherUserSearch.addEventListener("input",applyTeacherUserSearch);
   }
 
-  if(teacherClassSelect){
-    teacherClassSelect.addEventListener("change", function(){
-      if(!window.currentUserIsTeacher) return;
-      window.teacherSelectedSubject = teacherClassSelect.value;
-      if(window.routeSubjectUI) window.routeSubjectUI(teacherClassSelect.value);
-      loadTeacherPanel();
-    });
-  }
-
   teacherPanelBtn.addEventListener("click",function(){
     const search = document.getElementById("teacherUserSearch");
     if(search) search.value = "";
     teacherPanel.classList.add("open");
     if(window.currentUserIsTeacher){
-      if(teacherClassSelect){ teacherClassSelect.value = window.teacherSelectedSubject || window.currentSubject || "chinese"; }
+      teacherPanelSubject=teacherViewingSubject||"chinese";
+      document.querySelectorAll("[data-teacher-panel-subject]").forEach(b=>b.classList.toggle("active",b.dataset.teacherPanelSubject===teacherPanelSubject));
       loadTeacherPanel();
     }else{
       const u = auth.currentUser;
@@ -1697,6 +1765,7 @@
       signOutButton.style.display = "none";
       teacherPanelBtn.style.display = "none";
       if(teacherFloating) teacherFloating.style.display = "none";
+      document.getElementById("teacherSubjectSwitch")?.classList.remove("show");
       return;
     }
 
@@ -1704,26 +1773,19 @@
     try{
       const ref = db.collection("users").doc(user.uid);
       const snap = await ref.get();
+      const pendingSubject=sessionStorage.getItem("pendingRegistrationSubject");
+      const existingData=snap.exists?(snap.data()||{}):{};
+      const selectedSubject=pendingSubject||existingData.subject||"chinese";
       if(!snap.exists){
         await ref.set({
-          email: user.email || "",
-          username: usernameFromEmail(user.email),
-          subject: sessionStorage.getItem("pendingRegistrationSubject") || "chinese",
-          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-          updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-          progress: {
-            currentLesson: 1,
-            lesson1: {completed:false, score:null},
-            lesson2: {completed:false, score:null}
-          }
+          email:user.email||"",username:usernameFromEmail(user.email),subject:selectedSubject,
+          createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp(),
+          progress:{currentLesson:1,lesson1:{completed:false,score:null},lesson2:{completed:false,score:null},subjects:{}}
         });
       }else{
-        await ref.set({
-          email: user.email || "",
-          username: usernameFromEmail(user.email),
-          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        }, {merge:true});
+        await ref.set({email:user.email||"",username:usernameFromEmail(user.email),subject:existingData.subject||selectedSubject,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
       }
+      window.currentSubject=existingData.subject||selectedSubject;
       window.currentFirebaseUser = user;
       await countLoginOnce(user);
     }catch(err){
@@ -1732,25 +1794,12 @@
       window.currentFirebaseUser = user;
     }
 
-    try{
-      const profileSnap = await db.collection("users").doc(user.uid).get();
-      const pendingSubject = sessionStorage.getItem("pendingRegistrationSubject");
-      const profileData = profileSnap.exists ? profileSnap.data() : {};
-      window.currentSubject = pendingSubject || profileData.subject || "chinese"; // Materia fija elegida al registrarse
-    }catch(e){ window.currentSubject = sessionStorage.getItem("pendingRegistrationSubject") || "chinese"; }
-    if(window.routeSubjectUI) window.routeSubjectUI(window.currentSubject);
-
     sessionEmail.textContent = usernameFromEmail(user.email);
     sessionEmail.title = user.email || "";
     signOutButton.style.display = "inline-block";
     try{
       const isTeacher = await currentUserIsTeacher(user);
       window.currentUserIsTeacher = isTeacher;
-      if(isTeacher){
-        window.teacherSelectedSubject = window.teacherSelectedSubject || "chinese";
-        if(teacherClassSelect) teacherClassSelect.value = window.teacherSelectedSubject;
-        if(window.routeSubjectUI) window.routeSubjectUI(window.teacherSelectedSubject);
-      }else if(window.routeSubjectUI) window.routeSubjectUI(window.currentSubject || "chinese");
       if(teacherPanelBtn){
         teacherPanelBtn.style.display = isTeacher ? "inline-block" : "none";
         teacherPanelBtn.textContent = "Panel docente";
@@ -1758,6 +1807,9 @@
       if(teacherFloating){
         teacherFloating.style.display = isTeacher ? "block" : "none";
       }
+      document.getElementById("teacherSubjectSwitch")?.classList.toggle("show",isTeacher);
+      if(isTeacher)window.routeSubjectUI(teacherViewingSubject||"chinese",true);
+      else window.routeSubjectUI(window.currentSubject||"chinese",false);
       console.log("Teacher access:", {uid:user.uid,email:user.email,isTeacher:isTeacher,expectedUid:TEACHER_UID});
     }catch(e){
       teacherPanelBtn.style.display = "none";
@@ -3783,7 +3835,7 @@ renderRadicals();
   }
 
   function hideCourseScreens(){
-    ["homeScreen","introScreen","lessonScreen"].forEach(id=>{
+    ["homeScreen","introScreen","lessonScreen","geoScreen","historyScreen"].forEach(id=>{
       const el = document.getElementById(id);
       if(el) el.classList.remove("active");
     });
@@ -4030,32 +4082,9 @@ renderRadicals();
       {term:"State",definition:"A political division of a country with its own regional government."}
     ]
   };
-  let geoLessons=[DEFAULT_GEO_LESSON], currentGeoLesson=null, geoMode="study", geoIndex=0, geoQueue=[], geoCorrect=0, geoAnswered=false;
+  let geoLessons=[DEFAULT_GEO_LESSON], currentGeoLesson=null, currentGeoLessonKey="lesson1", geoMode="study", geoIndex=0, geoQueue=[], geoCorrect=0, geoAnswered=false;
 
   const $=id=>document.getElementById(id);
-  function hideChinese(){ ["homeScreen","lessonScreen","introScreen"].forEach(id=>$(id)?.classList.remove("active")); }
-  function setBrand(subject){
-    const badge=$("brandBadge"), title=$("brandTitle"), sub=$("brandSubtitle");
-    if(subject==="geography"){ if(badge)badge.textContent="🌎"; if(title)title.textContent="Geography Lab"; if(sub)sub.textContent="Flashcards & practice"; }
-    else if(subject==="spanish"){ if(badge)badge.textContent="Ñ"; if(title)title.textContent="Español"; if(sub)sub.textContent="Curso"; }
-    else { if(badge)badge.textContent="汉"; if(title)title.textContent="Aula interactiva"; if(sub)sub.textContent="Curso inicial"; }
-  }
-  window.routeSubjectUI=function(subject){
-    subject=subject||"chinese"; window.currentSubject=subject; setBrand(subject);
-    const geo=$("geoScreen"), spa=$("spanishScreen");
-    if(geo) geo.style.display="none"; if(spa) spa.style.display="none";
-    if(subject==="geography"){
-      hideChinese(); if(geo){geo.style.display="block";geo.classList.add("active");}
-      loadGeoLessons();
-    }else if(subject==="spanish"){
-      hideChinese(); if(spa){spa.style.display="block";spa.classList.add("active");}
-    }else{
-      if(geo)geo.classList.remove("active"); if(spa)spa.classList.remove("active");
-      const h=$("homeScreen"); if(h && !$("lessonScreen")?.classList.contains("active") && !$("introScreen")?.classList.contains("active")) h.classList.add("active");
-    }
-  };
-
-
   function speakEnglish(text){
     if(!("speechSynthesis" in window)) return;
     speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang="en-US"; u.rate=.82; speechSynthesis.speak(u);
@@ -4086,7 +4115,7 @@ renderRadicals();
     });
   }
   function openGeoLesson(lesson,num){
-    currentGeoLesson=lesson; geoIndex=0; geoMode="study";
+    currentGeoLesson=lesson; currentGeoLessonKey="lesson"+num; geoIndex=0; geoMode="study";
     $("geoHomeView").style.display="none"; $("geoLessonView").style.display="block";
     $("geoLessonKicker").textContent=`LESSON ${num}`; $("geoLessonTitle").textContent=lesson.title; $("geoLessonObjective").textContent=lesson.objective||"Learn the terms and explain them in English.";
     document.querySelectorAll("[data-geo-mode]").forEach(b=>b.classList.toggle("active",b.dataset.geoMode==="study"));
@@ -4133,47 +4162,18 @@ renderRadicals();
     const check=()=>{if(geoAnswered)return;const val=$("geoWriteInput").value; if(!val.trim())return;geoAnswered=true;const ok=norm(val)===norm(q.term);if(ok)geoCorrect++;$("geoFeedback").textContent=ok?"✅ Correct!":`❌ Correct answer: ${q.term}`;$("geoFeedback").style.color=ok?"#15803d":"#b91c1c";$("geoCheckWrite").disabled=true;$("geoWriteInput").disabled=true;$("geoWriteNext").style.display="inline-block";};
     $("geoCheckWrite").onclick=check; $("geoWriteInput").onkeydown=e=>{if(e.key==="Enter")check()}; $("geoWriteNext").onclick=()=>{geoIndex++;renderWrite()};
   }
-  function geoActivityKey(name){
-    if(name==="Flashcards") return "flashcards";
-    if(name==="Multiple Choice") return "multiple_choice";
-    if(name==="Write") return "write";
-    return String(name||"activity").toLowerCase().replace(/[^a-z0-9]+/g,"_");
-  }
-  function geoLessonKey(){
-    return String((currentGeoLesson&&currentGeoLesson.id)||"lesson").replace(/[^a-zA-Z0-9_-]/g,"_");
-  }
-  async function markGeoCompleted(name,score){
-    const user=window.firebaseAuth?.currentUser; if(!user||window.currentUserIsTeacher)return;
-    const key=geoActivityKey(name), lessonKey=geoLessonKey();
-    const base=`progress.geography.lessons.${lessonKey}`;
-    const payload={
-      subject:"geography",
-      [`${base}.title`]:currentGeoLesson?.title||"Geography",
-      [`${base}.activities.${key}.completed`]:true,
-      [`${base}.activities.${key}.completedAt`]:firebase.firestore.FieldValue.serverTimestamp(),
-      "progress.geography.currentLessonTitle":currentGeoLesson?.title||"Geography",
-      lastActivity:{type:"activity_completed",detail:{subject:"geography",lessonTitle:currentGeoLesson?.title||"Geography",activity:key,label:`Geography · ${currentGeoLesson?.title||"Geography"} · ${name}`},at:firebase.firestore.FieldValue.serverTimestamp()},
-      updatedAt:firebase.firestore.FieldValue.serverTimestamp()
-    };
-    if(score!==undefined && score!==null) payload[`${base}.activities.${key}.score`]=Number(score);
-    try{ await window.firebaseDb.collection("users").doc(user.uid).update(payload); }
-    catch(e){
-      try{ await window.firebaseDb.collection("users").doc(user.uid).set(payload,{merge:true}); }
-      catch(e2){ console.error("Geography completion tracking:",e2); }
-    }
-  }
-
   function finishGeoActivity(name){
     $("geoActivityArea").innerHTML=`<div class="geo-empty"><div style="font-size:64px">🏆</div><h2>${name} completed!</h2><p>You reviewed all ${currentGeoLesson.items.length} terms.</p><button class="geo-btn primary" id="geoAgain">Practice again</button></div>`;
     window.trackStudentActivity?.("activity_completed",{label:`Geography · ${currentGeoLesson.title} · ${name}`,subject:"geography",activity:name,completed:true});
-    markGeoCompleted(name);
+    window.markSubjectActivityCompleted?.("geography",currentGeoLessonKey,"cards",`Geography · ${currentGeoLesson.title} · ${name}`);
     $("geoAgain").onclick=()=>{geoIndex=0;renderGeoMode()};
   }
   function finishGeoQuiz(name,correct,total){
     const pct=Math.round(correct/total*100);
     $("geoActivityArea").innerHTML=`<div class="geo-empty"><div style="font-size:64px">${pct>=80?"🏆":"📘"}</div><h2>${name} completed</h2><div style="font-size:44px;font-weight:1000">${pct}%</div><p>${correct} / ${total} correct</p><button class="geo-btn primary" id="geoAgain">Try again</button></div>`;
-    window.trackStudentActivity?.("activity_completed",{label:`Geography · ${currentGeoLesson.title} · ${name}`,subject:"geography",activity:name,completed:true,score:pct},{geographyLastScore:pct});
-    markGeoCompleted(name,pct);
+    window.trackStudentActivity?.("activity_completed",{label:`Geography · ${currentGeoLesson.title} · ${name}`,subject:"geography",activity:name,completed:true,score:pct});
+    const completionKey=name==="Multiple Choice"?"choice":"write";
+    window.markSubjectActivityCompleted?.("geography",currentGeoLessonKey,completionKey,`Geography · ${currentGeoLesson.title} · ${name}`,pct);
     $("geoAgain").onclick=()=>{geoMode==="choice"?startChoice():startWrite()};
   }
 
@@ -4194,11 +4194,7 @@ renderRadicals();
       $("geoBuilderStatus").textContent="✅ Lesson saved.";$("geoBuilder").classList.remove("show");await loadGeoLessons();
     }catch(e){console.error(e);$("geoBuilderStatus").textContent="Could not save the lesson. Check Firestore permissions for geographyLessons.";}
   });
-
-  // Re-assert subject after the old navigation restore code runs.
-  window.addEventListener("load",()=>setTimeout(()=>{if(window.currentSubject)window.routeSubjectUI(window.currentSubject);},700));
 })();
 </script>
-
 </body>
 </html>
