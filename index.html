@@ -616,6 +616,56 @@
 }
 .audio-quiz-box .quiz-option{font-size:18px;min-height:58px}
 
+
+/* ===== TAREAS · CHINO ===== */
+.tasks-top-btn{
+  border:1px solid var(--line);background:#fff;color:var(--text);
+  border-radius:12px;padding:9px 12px;font-weight:900;cursor:pointer;
+}
+.tasks-screen-wrap{max-width:980px;margin:0 auto;padding:24px}
+.tasks-hero{
+  background:linear-gradient(135deg,#eef6ff,#fff);border:1px solid #dbeafe;
+  border-radius:24px;padding:24px;margin-bottom:18px
+}
+.tasks-hero h1{margin:4px 0 8px;font-size:clamp(30px,5vw,46px)}
+.tasks-hero p{margin:0;color:var(--muted)}
+.assignment-card{
+  border:1px solid var(--line);border-radius:22px;background:#fff;padding:20px;
+  box-shadow:var(--shadow);display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;
+  margin-bottom:14px
+}
+.assignment-card.done{border-color:#86efac;background:#f0fdf4}
+.assignment-date{font-size:13px;font-weight:900;color:#64748b;margin-bottom:7px}
+.assignment-card h3{font-size:22px;margin:0 0 7px}
+.assignment-card p{margin:0;color:#475569;line-height:1.5}
+.assignment-status{
+  display:inline-flex;margin-top:10px;padding:6px 10px;border-radius:999px;
+  font-size:12px;font-weight:1000;background:#f1f5f9;color:#475569
+}
+.assignment-status.done{background:#dcfce7;color:#166534}
+.teacher-view-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.teacher-view-btn{
+  border:1px solid #dbe3ef;background:#fff;color:#334155;border-radius:12px;
+  padding:9px 12px;font-weight:900;cursor:pointer
+}
+.teacher-view-btn.active{background:#0f172a;color:#fff;border-color:#0f172a}
+.teacher-assignments-view{display:none;margin-top:12px}
+.teacher-task-summary-card{
+  border:1px solid #dbe3ef;border-radius:18px;padding:16px;background:#f8fafc;margin-bottom:12px
+}
+.teacher-task-summary-card h3{margin:0 0 6px}
+.teacher-task-meta{font-size:13px;color:#64748b;margin-bottom:8px}
+.teacher-task-progress{font-weight:1000}
+.task-done-badge,.task-pending-badge{
+  display:inline-block;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:1000
+}
+.task-done-badge{background:#dcfce7;color:#166534}
+.task-pending-badge{background:#f1f5f9;color:#64748b}
+@media(max-width:720px){
+  .assignment-card{grid-template-columns:1fr}
+  .tasks-screen-wrap{padding:16px}
+}
+
 </style>
 </head>
 <body>
@@ -691,14 +741,20 @@
     </div>
 
 
+    <div class="teacher-view-tabs" id="teacherViewTabs">
+      <button class="teacher-view-btn active" type="button" data-teacher-view="students">👥 Alumnos</button>
+      <button class="teacher-view-btn" type="button" data-teacher-view="assignments">📋 Tareas</button>
+    </div>
 
-    <div class="teacher-search-wrap">
+
+
+    <div class="teacher-search-wrap" id="teacherStudentsSearch">
       <input id="teacherUserSearch" class="teacher-search" type="search"
              placeholder="🔎 Buscar por usuario o correo..." autocomplete="off">
       <span id="teacherSearchCount" class="teacher-search-count"></span>
     </div>
 
-    <div class="teacher-table-wrap">
+    <div class="teacher-table-wrap" id="teacherStudentsTable">
       <table class="teacher-table">
         <thead>
           <tr>
@@ -715,6 +771,24 @@
         <tbody id="teacherUsersBody"></tbody>
       </table>
     </div>
+
+    <div class="teacher-assignments-view" id="teacherAssignmentsView">
+      <div id="teacherAssignmentsSummary"></div>
+      <div class="teacher-table-wrap">
+        <table class="teacher-table">
+          <thead>
+            <tr>
+              <th>Alumno</th>
+              <th>Tarea</th>
+              <th>Estado</th>
+              <th>Fecha de entrega</th>
+            </tr>
+          </thead>
+          <tbody id="teacherAssignmentsBody"></tbody>
+        </table>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -734,7 +808,7 @@
   <button type="button" class="teacher-subject-btn" data-teacher-subject="history">🏛️ Historia</button>
 </div>
 
-    <div class="user-session"><div><div class="stars">⭐ 0</div><div id="sessionEmail"></div></div><button id="teacherPanelBtn" class="teacher-btn" type="button">Panel docente</button><button id="signOutButton" type="button" style="display:none">Salir</button></div>
+    <div class="user-session"><div><div class="stars">⭐ 0</div><div id="sessionEmail"></div></div><button id="tasksButton" class="tasks-top-btn" type="button">📋 Tareas</button><button id="teacherPanelBtn" class="teacher-btn" type="button">Panel docente</button><button id="signOutButton" type="button" style="display:none">Salir</button></div>
   </header>
 
   <main>
@@ -746,6 +820,18 @@
       <div class="lesson-grid" id="lessonGrid"></div>
     </section>
 
+
+    <section id="tasksScreen" class="screen">
+      <div class="tasks-screen-wrap">
+        <button class="back-btn" type="button" onclick="closeTasks()">← Lecciones</button>
+        <div class="tasks-hero">
+          <div style="font-size:13px;font-weight:1000;color:var(--primary);letter-spacing:.06em">TAREAS · CHINO</div>
+          <h1>Mis tareas</h1>
+          <p>Aquí aparecen las actividades asignadas por el profesor y su estado.</p>
+        </div>
+        <div id="studentAssignmentsList"></div>
+      </div>
+    </section>
 
     <section id="introScreen" class="screen">
       <div class="lesson-head">
@@ -1464,7 +1550,7 @@
   window.routeSubjectUI=function(subject,forceTeacher){
     subject=subject||"chinese";
     if(window.currentUserIsTeacher&&forceTeacher)teacherViewingSubject=subject;
-    ["homeScreen","introScreen","lessonScreen","geoScreen","historyScreen"].forEach(id=>document.getElementById(id)?.classList.remove("active"));
+    ["homeScreen","introScreen","lessonScreen","tasksScreen","geoScreen","historyScreen"].forEach(id=>document.getElementById(id)?.classList.remove("active"));
     const geo=document.getElementById("geoScreen"), hist=document.getElementById("historyScreen");
     if(subject==="geography"){
       if(geo){geo.style.display="block";geo.classList.add("active");}
@@ -1478,6 +1564,8 @@
       document.getElementById("homeScreen")?.classList.add("active");
     }
     setBrand(subject);
+    const tasksBtn=document.getElementById("tasksButton");
+    if(tasksBtn) tasksBtn.style.display = subject==="chinese" ? "inline-block" : "none";
     document.querySelectorAll("[data-teacher-subject]").forEach(b=>b.classList.toggle("active",b.dataset.teacherSubject===subject));
   };
 
@@ -1701,6 +1789,32 @@
   };
 
 
+  window.markAssignmentCompleted = async function(taskId, taskLabel){
+    const user = auth.currentUser;
+    if(!user || !taskId) return false;
+    const ref = db.collection("users").doc(user.uid);
+    const base = "progress.assignments." + taskId;
+    try{
+      await ref.update({
+        [base + ".completed"]: true,
+        [base + ".completedAt"]: firebase.firestore.FieldValue.serverTimestamp(),
+        [base + ".label"]: taskLabel || taskId,
+        lastActivity:{
+          type:"assignment_completed",
+          detail:{taskId:taskId,label:taskLabel || taskId,completed:true},
+          at:firebase.firestore.FieldValue.serverTimestamp()
+        },
+        updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+      });
+      return true;
+    }catch(e){
+      console.error("Assignment completion:",e);
+      return false;
+    }
+  };
+
+
+
   window.markSubjectActivityCompleted=async function(subject,lessonKey,activityKey,label,score){
     const user=auth.currentUser;if(!user)return false;
     subject=String(subject||"chinese").toLowerCase();
@@ -1865,6 +1979,90 @@
     }
   }
 
+
+  let teacherPanelView="students";
+
+  function formatTaskCompletedAt(v){
+    return formatFirestoreDate(v);
+  }
+
+  async function loadTeacherAssignments(){
+    const summary=document.getElementById("teacherAssignmentsSummary");
+    const body=document.getElementById("teacherAssignmentsBody");
+    if(!summary||!body)return;
+
+    summary.innerHTML='<div class="teacher-task-summary-card">Cargando tarea…</div>';
+    body.innerHTML="";
+
+    try{
+      const snap=await db.collection("users").get();
+      const students=[];
+      snap.forEach(ds=>{
+        const d=ds.data()||{};
+        if(normalizedSubject(d)!=="chinese")return;
+        if(ds.id===TEACHER_UID)return;
+
+        const task=((d.progress||{}).assignments||{}).task1||{};
+        students.push({
+          username:d.username||usernameFromEmail(d.email)||"—",
+          email:d.email||"",
+          done:task.completed===true,
+          completedAt:task.completedAt||null
+        });
+      });
+
+      students.sort((a,b)=>Number(b.done)-Number(a.done)||a.username.localeCompare(b.username));
+      const completed=students.filter(x=>x.done).length;
+
+      summary.innerHTML=`
+        <div class="teacher-task-summary-card">
+          <div class="teacher-task-meta">TAREA 1 · Asignada 9 sep 2026</div>
+          <h3>🎧 Acabar audio de profesiones · Lección 2</h3>
+          <div class="teacher-task-progress">${completed} de ${students.length} alumno(s) la han terminado.</div>
+        </div>`;
+
+      body.innerHTML=students.map(s=>`
+        <tr>
+          <td><strong>${s.username}</strong><br><small>${s.email}</small></td>
+          <td>Tarea 1 · Audio de profesiones</td>
+          <td>${s.done?'<span class="task-done-badge">✓ Terminada</span>':'<span class="task-pending-badge">Pendiente</span>'}</td>
+          <td>${s.done?formatTaskCompletedAt(s.completedAt):"—"}</td>
+        </tr>`).join("") || '<tr><td colspan="4">No hay alumnos de Chino.</td></tr>';
+
+    }catch(e){
+      console.error(e);
+      summary.innerHTML='<div class="teacher-task-summary-card">No se pudo cargar el seguimiento de tareas.</div>';
+    }
+  }
+
+  function setTeacherPanelView(view){
+    teacherPanelView=view==="assignments"?"assignments":"students";
+    document.querySelectorAll("[data-teacher-view]").forEach(b=>b.classList.toggle("active",b.dataset.teacherView===teacherPanelView));
+
+    const search=document.getElementById("teacherStudentsSearch");
+    const table=document.getElementById("teacherStudentsTable");
+    const assignments=document.getElementById("teacherAssignmentsView");
+
+    if(search)search.style.display=teacherPanelView==="students"?"flex":"none";
+    if(table)table.style.display=teacherPanelView==="students"?"block":"none";
+    if(assignments)assignments.style.display=teacherPanelView==="assignments"?"block":"none";
+
+    if(teacherPanelView==="assignments"){
+      teacherPanelSubject="chinese";
+      document.querySelectorAll("[data-teacher-panel-subject]").forEach(b=>b.classList.toggle("active",b.dataset.teacherPanelSubject==="chinese"));
+      loadTeacherAssignments();
+    }else{
+      loadTeacherPanel();
+    }
+  }
+
+  document.getElementById("teacherViewTabs")?.addEventListener("click",e=>{
+    const b=e.target.closest("[data-teacher-view]");
+    if(!b)return;
+    setTeacherPanelView(b.dataset.teacherView);
+  });
+
+
   const teacherUserSearch = document.getElementById("teacherUserSearch");
   if(teacherUserSearch){
     teacherUserSearch.addEventListener("input",applyTeacherUserSearch);
@@ -1874,6 +2072,7 @@
     const search = document.getElementById("teacherUserSearch");
     if(search) search.value = "";
     teacherPanel.classList.add("open");
+    setTeacherPanelView("students");
     if(window.currentUserIsTeacher){
       teacherPanelSubject=(teacherViewingSubject==="geography") ? "geography" : "chinese";
       document.querySelectorAll("[data-teacher-panel-subject]").forEach(b=>b.classList.toggle("active",b.dataset.teacherPanelSubject===teacherPanelSubject));
@@ -1894,7 +2093,7 @@
     teacherPanel.classList.add("open");
     loadTeacherPanel();
   });
-  document.getElementById("teacherRefreshBtn").addEventListener("click",function(){ loadTeacherPanel(); });
+  document.getElementById("teacherRefreshBtn").addEventListener("click",function(){ teacherPanelView==="assignments"?loadTeacherAssignments():loadTeacherPanel(); });
   teacherCloseBtn.addEventListener("click",function(){ teacherPanel.classList.remove("open"); });
 
   auth.onAuthStateChanged(async function(user){
@@ -1903,6 +2102,7 @@
       appShell.classList.add("auth-locked");
       sessionEmail.textContent = "";
       signOutButton.style.display = "none";
+      document.getElementById("tasksButton")?.style && (document.getElementById("tasksButton").style.display="none");
       teacherPanelBtn.style.display = "none";
       if(teacherFloating) teacherFloating.style.display = "none";
       document.getElementById("teacherSubjectSwitch")?.classList.remove("show");
@@ -2436,6 +2636,102 @@ function goHome(){
   document.getElementById("homeScreen").classList.add("active");
   window.scrollTo({top:0,behavior:"smooth"});
 }
+
+
+/* =========================================================
+   TAREAS DE CHINO
+   Tarea 1: terminar Audio → Profesiones → Lección 2
+   ========================================================= */
+const CHINESE_ASSIGNMENTS = [
+  {
+    id:"task1",
+    number:1,
+    assignedDate:"9 de septiembre de 2026",
+    title:"Acabar audio de profesiones",
+    description:"Completa el ejercicio 🎧 Audio usando únicamente el vocabulario de Profesiones de la Lección 2.",
+    lesson:2,
+    category:"profesiones"
+  }
+];
+
+async function renderStudentAssignments(){
+  const box=document.getElementById("studentAssignmentsList");
+  if(!box)return;
+
+  let saved={};
+  try{
+    const user=window.firebaseAuth?.currentUser;
+    if(user && window.firebaseDb){
+      const snap=await window.firebaseDb.collection("users").doc(user.uid).get();
+      saved=(((snap.data()||{}).progress||{}).assignments)||{};
+    }
+  }catch(e){console.warn("Tasks status:",e);}
+
+  box.innerHTML=CHINESE_ASSIGNMENTS.map(task=>{
+    const done=saved[task.id]?.completed===true;
+    return `
+      <article class="assignment-card ${done?"done":""}">
+        <div>
+          <div class="assignment-date">TAREA ${task.number} · ${task.assignedDate}</div>
+          <h3>${done?"✅ ":"🎧 "}${task.title}</h3>
+          <p>${task.description}</p>
+          <span class="assignment-status ${done?"done":""}">${done?"✓ Terminada":"Pendiente"}</span>
+        </div>
+        <button class="primary-btn" type="button" onclick="openChineseAssignment('${task.id}')">
+          ${done?"Practicar otra vez":"Abrir tarea "+task.number}
+        </button>
+      </article>`;
+  }).join("");
+}
+
+function openTasks(){
+  ["homeScreen","introScreen","lessonScreen","tasksScreen"].forEach(id=>document.getElementById(id)?.classList.remove("active"));
+  document.getElementById("tasksScreen")?.classList.add("active");
+  renderStudentAssignments();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function closeTasks(){
+  document.getElementById("tasksScreen")?.classList.remove("active");
+  document.getElementById("homeScreen")?.classList.add("active");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+document.getElementById("tasksButton")?.addEventListener("click",openTasks);
+
+function openChineseAssignment(taskId){
+  const task=CHINESE_ASSIGNMENTS.find(t=>t.id===taskId);
+  if(!task)return;
+
+  openLesson(task.lesson);
+
+  // Ir a Vocabulario
+  document.querySelectorAll("[data-main]").forEach(b=>b.classList.remove("active"));
+  document.querySelectorAll(".tab-content").forEach(p=>p.classList.remove("active"));
+  document.querySelector('[data-main="vocabulario"]')?.classList.add("active");
+  document.getElementById("vocabulario")?.classList.add("active");
+
+  // Abrir actividad Audio
+  document.querySelector('[data-sub="audioMultiple"]')?.click();
+
+  // Elegir automáticamente "Profesiones"
+  setTimeout(()=>{
+    const category=document.getElementById("audioQuizCategory");
+    if(category){
+      category.value=task.category;
+      audioQuizActivated=true;
+      startAudioQuizSession();
+    }
+  },80);
+
+  if(window.trackStudentActivity){
+    window.trackStudentActivity("assignment_opened",{
+      taskId:task.id,
+      lesson:task.lesson,
+      category:task.category,
+      label:`Tarea ${task.number} · ${task.title}`
+    });
+  }
+}
+
 
 
 const categoryLabels1 = {
@@ -3377,6 +3673,11 @@ function finishAudioQuizSession(){
       "audio_multiple",
       "Audio · opción múltiple terminado"
     );
+  }
+
+  // TAREA 1: solo cuenta cuando terminan Audio de PROFESIONES en Lección 2.
+  if(currentLesson===2 && (audioQuizCategory?.value||"")==="profesiones"){
+    window.markAssignmentCompleted?.("task1","Tarea 1 · Acabar audio de profesiones");
   }
 }
 
