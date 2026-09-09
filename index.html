@@ -3154,6 +3154,7 @@ let audioQuizItem = null;
 let audioQuizAnswered = false;
 let audioQuizAttempts = 0;
 let audioQuizErrors = 0;
+let audioQuizActivated = false;
 
 function audioQuizKey(v){
   return `${v.hanzi}||${v.pinyin}||${v.es}`;
@@ -3293,8 +3294,10 @@ function nextAudioQuiz(){
     `).join("");
   }
 
-  // Reproduce automáticamente la palabra nueva.
-  setTimeout(playCurrentAudioQuiz,280);
+  // Solo reproduce automáticamente si el alumno abrió esta actividad.
+  if(audioQuizActivated){
+    setTimeout(playCurrentAudioQuiz,280);
+  }
 }
 
 function answerAudioQuiz(btn){
@@ -3377,10 +3380,33 @@ function finishAudioQuizSession(){
   }
 }
 
+
+document.querySelectorAll('.subtabs [data-sub]').forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    if(btn.dataset.sub!=="audioMultiple"){
+      audioQuizActivated = false;
+      if("speechSynthesis" in window) speechSynthesis.cancel();
+    }
+  });
+});
+
+document.querySelectorAll('[data-sub="audioMultiple"]').forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    audioQuizActivated = true;
+
+    if(!audioQuizPool.length || !audioQuizItem){
+      initAudioQuizControls();
+      startAudioQuizSession();
+    }else{
+      setTimeout(playCurrentAudioQuiz,220);
+    }
+  });
+});
+
 if(audioQuizPlay) audioQuizPlay.onclick = playCurrentAudioQuiz;
 if(audioQuizNextBtn) audioQuizNextBtn.onclick = nextAudioQuiz;
-if(audioQuizRestart) audioQuizRestart.onclick = startAudioQuizSession;
-if(audioQuizAgain) audioQuizAgain.onclick = startAudioQuizSession;
+if(audioQuizRestart) audioQuizRestart.onclick = ()=>{ audioQuizActivated=true; startAudioQuizSession(); };
+if(audioQuizAgain) audioQuizAgain.onclick = ()=>{ audioQuizActivated=true; startAudioQuizSession(); };
 
 
 
@@ -3751,7 +3777,6 @@ function refreshLessonData(){
   initQuizControls();
   startQuizSession();
   initAudioQuizControls();
-  startAudioQuizSession();
   const grammar = document.getElementById("gramatica");
   const exercises = document.getElementById("ejercicios");
   const tests = document.getElementById("pruebas");
