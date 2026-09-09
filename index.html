@@ -599,6 +599,23 @@
   .geo-map-home-icon{font-size:46px}
 }
 
+
+/* ===== CHINO · OPCIÓN MÚLTIPLE SOLO AUDIO ===== */
+.audio-only-prompt{
+  text-align:center;padding:26px 18px;margin:0 auto 18px;
+  border:1px solid var(--line);border-radius:22px;
+  background:linear-gradient(180deg,#f8fbff,#fff)
+}
+.audio-only-icon{font-size:64px;line-height:1}
+.audio-only-title{font-size:25px;font-weight:1000;margin-top:8px}
+.audio-only-note{color:var(--muted);margin:5px 0 16px}
+.audio-play-main{
+  border:0;background:var(--primary);color:#fff;border-radius:16px;
+  padding:15px 22px;font:inherit;font-weight:1000;cursor:pointer;
+  box-shadow:0 8px 20px rgba(37,99,235,.16)
+}
+.audio-quiz-box .quiz-option{font-size:18px;min-height:58px}
+
 </style>
 </head>
 <body>
@@ -897,6 +914,7 @@
             <button class="tab-btn" data-sub="pronunciacion">Pronunciación</button>
             <button class="tab-btn" data-sub="tarjetas">Tarjetas</button>
             <button class="tab-btn" data-sub="opcionMultiple">Opción múltiple</button>
+            <button class="tab-btn" data-sub="audioMultiple">🎧 Audio</button>
             <button class="tab-btn" data-sub="escritura">Escritura</button>
           </nav>
 
@@ -1044,6 +1062,55 @@
                 <h3>¡Actividad terminada!</h3>
                 <p id="quizFinishText">Completaste todas las palabras.</p>
                 <button class="primary-btn" onclick="startQuizSession()">Practicar otra vez</button>
+              </div>
+            </div>
+          </div>
+
+
+          <div id="audioMultiple" class="subtab-content">
+            <h3 class="section-title">🎧 Escucha y elige el significado</h3>
+            <p class="section-subtitle">
+              Escucha la palabra en chino y selecciona su significado en español. No se muestra el hanzi ni el pinyin durante la pregunta.
+            </p>
+
+            <div class="quiz-controls">
+              <label><strong>Vocabulario a practicar:</strong>
+                <select id="audioQuizCategory" class="select-control"></select>
+              </label>
+              <button class="secondary-btn" type="button" id="audioQuizRestart">↻ Reiniciar actividad</button>
+            </div>
+
+            <div class="quiz-box audio-quiz-box">
+              <div class="study-progress" id="audioQuizProgressBox">
+                <div class="study-progress-top">
+                  <span id="audioQuizProgressText">0 de 0 palabras correctas</span>
+                  <span id="audioQuizRemainingText">Faltan 0</span>
+                </div>
+                <div class="study-progress-bar"><div id="audioQuizProgressBar"></div></div>
+                <div class="study-note">Si te equivocas, esa palabra volverá a aparecer después de 2–3 preguntas.</div>
+              </div>
+
+              <div id="audioQuizPlayArea">
+                <div class="audio-only-prompt">
+                  <div class="audio-only-icon">🎧</div>
+                  <div class="audio-only-title">Escucha la palabra</div>
+                  <div class="audio-only-note">Elige abajo lo que significa en español.</div>
+                  <button class="audio-play-main" type="button" id="audioQuizPlay">🔊 Escuchar otra vez</button>
+                </div>
+
+                <div class="quiz-options" id="audioQuizOptions"></div>
+                <div class="feedback" id="audioQuizFeedback"></div>
+
+                <div class="action-row" style="margin-top:12px">
+                  <button class="primary-btn" id="audioQuizNextBtn" type="button" style="display:none">Siguiente →</button>
+                </div>
+              </div>
+
+              <div id="audioQuizFinish" class="study-finish" style="display:none">
+                <div class="big-check">🏆</div>
+                <h3>¡Audio terminado!</h3>
+                <p id="audioQuizFinishText">Completaste todas las palabras.</p>
+                <button class="primary-btn" id="audioQuizAgain" type="button">Practicar otra vez</button>
               </div>
             </div>
           </div>
@@ -1705,6 +1772,7 @@
         if(teacherPanelSubject==="chinese"){
           const group=(obj,n)=>`<div class="completion-group"><div class="completion-title">Lección ${n}</div><div class="completion-chips">
             ${chip(chineseDone(obj,n,"pronunciacion"),"Pron.")}${chip(chineseDone(obj,n,"tarjetas"),"Tarjetas")}${chip(chineseDone(obj,n,"opcion_multiple"),"Opción múltiple")}
+            ${chip(chineseDone(obj,n,"audio_multiple"),"Audio")}
             ${chip(chineseDone(obj,n,"escritura"),"Escritura")}${chip(chineseDone(obj,n,"ejercicios"),"Ejercicios")}${chip(chineseDone(obj,n,"prueba"),"Prueba")}
           </div></div>`;
           completions=group(l1,1)+group(l2,2);
@@ -3064,6 +3132,258 @@ function speakQuiz(){
 }
 
 
+
+/* =========================================================
+   OPCIÓN MÚLTIPLE SOLO AUDIO
+   - Audio en chino
+   - Opciones en español
+   - Selección de categoría
+   - Los errores vuelven 2–3 preguntas después
+   ========================================================= */
+
+const audioQuizCategory = document.getElementById("audioQuizCategory");
+const audioQuizRestart = document.getElementById("audioQuizRestart");
+const audioQuizPlay = document.getElementById("audioQuizPlay");
+const audioQuizNextBtn = document.getElementById("audioQuizNextBtn");
+const audioQuizAgain = document.getElementById("audioQuizAgain");
+
+let audioQuizPool = [];
+let audioQuizQueue = [];
+let audioQuizMastered = new Set();
+let audioQuizItem = null;
+let audioQuizAnswered = false;
+let audioQuizAttempts = 0;
+let audioQuizErrors = 0;
+
+function audioQuizKey(v){
+  return `${v.hanzi}||${v.pinyin}||${v.es}`;
+}
+
+function initAudioQuizControls(){
+  if(!audioQuizCategory) return;
+
+  const previous = audioQuizCategory.value || "todos";
+  audioQuizCategory.innerHTML = `
+    <option value="todos">Todo el vocabulario</option>
+    ${Object.entries(currentCategoryLabels()).map(([k,v])=>`<option value="${k}">${v}</option>`).join("")}
+  `;
+
+  if([...audioQuizCategory.options].some(o=>o.value===previous)){
+    audioQuizCategory.value = previous;
+  }else{
+    audioQuizCategory.value = "todos";
+  }
+
+  audioQuizCategory.onchange = startAudioQuizSession;
+}
+
+function getAudioQuizPool(){
+  const cat = audioQuizCategory?.value || "todos";
+  return cat==="todos"
+    ? currentVocab()
+    : currentVocab().filter(v=>v.cat===cat);
+}
+
+function startAudioQuizSession(){
+  if(!audioQuizCategory) return;
+
+  const pool = getAudioQuizPool();
+  const feedback = document.getElementById("audioQuizFeedback");
+
+  if(pool.length < 4){
+    if(feedback){
+      feedback.textContent = "Esta categoría necesita al menos cuatro palabras para crear cuatro opciones.";
+      feedback.style.color = "var(--danger)";
+    }
+    return;
+  }
+
+  audioQuizPool = [...pool];
+  audioQuizQueue = shuffle([...pool]);
+  audioQuizMastered = new Set();
+  audioQuizItem = null;
+  audioQuizAnswered = false;
+  audioQuizAttempts = 0;
+  audioQuizErrors = 0;
+
+  const finish = document.getElementById("audioQuizFinish");
+  const playArea = document.getElementById("audioQuizPlayArea");
+  if(finish) finish.style.display = "none";
+  if(playArea) playArea.style.display = "block";
+
+  updateAudioQuizProgress();
+  nextAudioQuiz();
+}
+
+function updateAudioQuizProgress(){
+  const total = audioQuizPool.length;
+  const done = audioQuizMastered.size;
+  const pct = total ? Math.round(done/total*100) : 0;
+
+  const text = document.getElementById("audioQuizProgressText");
+  const remaining = document.getElementById("audioQuizRemainingText");
+  const bar = document.getElementById("audioQuizProgressBar");
+
+  if(text) text.textContent = `${done} de ${total} palabras correctas`;
+  if(remaining) remaining.textContent = `Faltan ${Math.max(0,total-done)}`;
+  if(bar) bar.style.width = `${pct}%`;
+}
+
+function scheduleAudioQuizReview(item){
+  // Se vuelve a insertar pasando dos o tres preguntas.
+  const delay = 2 + Math.floor(Math.random()*2);
+  const position = Math.min(delay, audioQuizQueue.length);
+  audioQuizQueue.splice(position,0,item);
+}
+
+function playCurrentAudioQuiz(){
+  if(!audioQuizItem) return;
+  speak(audioQuizItem.hanzi);
+}
+
+function nextAudioQuiz(){
+  if(!audioQuizPool.length){
+    startAudioQuizSession();
+    return;
+  }
+
+  if(audioQuizMastered.size >= audioQuizPool.length){
+    finishAudioQuizSession();
+    return;
+  }
+
+  while(audioQuizQueue.length && audioQuizMastered.has(audioQuizKey(audioQuizQueue[0]))){
+    audioQuizQueue.shift();
+  }
+
+  if(!audioQuizQueue.length){
+    audioQuizQueue = shuffle(
+      audioQuizPool.filter(v=>!audioQuizMastered.has(audioQuizKey(v)))
+    );
+  }
+
+  audioQuizItem = audioQuizQueue.shift();
+  if(!audioQuizItem){
+    finishAudioQuizSession();
+    return;
+  }
+
+  audioQuizAnswered = false;
+
+  const feedback = document.getElementById("audioQuizFeedback");
+  const optionsBox = document.getElementById("audioQuizOptions");
+  const nextBtn = document.getElementById("audioQuizNextBtn");
+
+  if(feedback) feedback.textContent = "";
+  if(nextBtn) nextBtn.style.display = "none";
+
+  const others = shuffle(
+    audioQuizPool.filter(v=>audioQuizKey(v)!==audioQuizKey(audioQuizItem))
+  ).slice(0,3);
+
+  const options = shuffle([audioQuizItem,...others]);
+
+  if(optionsBox){
+    optionsBox.innerHTML = options.map(v=>`
+      <button class="quiz-option"
+              data-key="${escapeQuotes(audioQuizKey(v))}"
+              onclick="answerAudioQuiz(this)">
+        ${v.es}
+      </button>
+    `).join("");
+  }
+
+  // Reproduce automáticamente la palabra nueva.
+  setTimeout(playCurrentAudioQuiz,280);
+}
+
+function answerAudioQuiz(btn){
+  if(audioQuizAnswered || !audioQuizItem) return;
+
+  audioQuizAnswered = true;
+  audioQuizAttempts++;
+
+  const correct = btn.dataset.key === audioQuizKey(audioQuizItem);
+
+  document.querySelectorAll("#audioQuizOptions .quiz-option").forEach(b=>{
+    if(b.dataset.key === audioQuizKey(audioQuizItem)){
+      b.classList.add("correct");
+    }
+  });
+
+  const feedback = document.getElementById("audioQuizFeedback");
+
+  if(correct){
+    audioQuizMastered.add(audioQuizKey(audioQuizItem));
+    if(feedback){
+      feedback.textContent = "✅ Correcto";
+      feedback.style.color = "var(--ok)";
+    }
+  }else{
+    audioQuizErrors++;
+    btn.classList.add("wrong");
+    scheduleAudioQuizReview(audioQuizItem);
+
+    if(feedback){
+      feedback.textContent = `❌ No es correcto. Significa “${audioQuizItem.es}”. La volverás a escuchar en 2–3 preguntas.`;
+      feedback.style.color = "var(--danger)";
+    }
+  }
+
+  updateAudioQuizProgress();
+
+  const nextBtn = document.getElementById("audioQuizNextBtn");
+  if(nextBtn){
+    nextBtn.style.display = "inline-block";
+    nextBtn.textContent =
+      audioQuizMastered.size >= audioQuizPool.length
+        ? "Ver resultado →"
+        : "Siguiente →";
+  }
+}
+
+function finishAudioQuizSession(){
+  updateAudioQuizProgress();
+
+  const finish = document.getElementById("audioQuizFinish");
+  const playArea = document.getElementById("audioQuizPlayArea");
+  const text = document.getElementById("audioQuizFinishText");
+
+  if(playArea) playArea.style.display = "none";
+  if(finish) finish.style.display = "block";
+
+  if(text){
+    text.textContent =
+      `Completaste ${audioQuizPool.length} palabras. Tuviste ${audioQuizErrors} error${audioQuizErrors===1?"":"es"} y ${audioQuizAttempts} intentos en total.`;
+  }
+
+  if(window.trackStudentActivity){
+    window.trackStudentActivity("audio_multiple_choice_completed",{
+      lesson:currentLesson,
+      total:audioQuizPool.length,
+      attempts:audioQuizAttempts,
+      errors:audioQuizErrors,
+      category:audioQuizCategory?.value || "todos",
+      label:"Audio · opción múltiple completada"
+    });
+  }
+
+  if(window.markActivityCompleted){
+    window.markActivityCompleted(
+      currentLesson,
+      "audio_multiple",
+      "Audio · opción múltiple terminado"
+    );
+  }
+}
+
+if(audioQuizPlay) audioQuizPlay.onclick = playCurrentAudioQuiz;
+if(audioQuizNextBtn) audioQuizNextBtn.onclick = nextAudioQuiz;
+if(audioQuizRestart) audioQuizRestart.onclick = startAudioQuizSession;
+if(audioQuizAgain) audioQuizAgain.onclick = startAudioQuizSession;
+
+
+
 let writingChars = [];
 let writingCompleted = new Set();
 let writingCompletionSent = false;
@@ -3430,6 +3750,8 @@ function refreshLessonData(){
   startFlashSession();
   initQuizControls();
   startQuizSession();
+  initAudioQuizControls();
+  startAudioQuizSession();
   const grammar = document.getElementById("gramatica");
   const exercises = document.getElementById("ejercicios");
   const tests = document.getElementById("pruebas");
