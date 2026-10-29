@@ -1223,7 +1223,12 @@
           <h3 class="section-title">Gramática de la lección 1</h3>
           <p class="section-subtitle">Aprende los patrones paso a paso. Escucha los ejemplos y observa cómo cambian las oraciones.</p>
 
-          <div class="grammar-grid">
+          <div style="padding:18px;margin:16px 0 22px;background:#eff6ff;border:2px solid #60a5fa;border-radius:20px">
+      <h4 style="margin:0 0 8px;font-size:23px">🧩 Práctica interactiva: orden de la oración</h4>
+      <p style="margin:0 0 14px">Aprende dónde colocar el sujeto, 也, 都, 不, 在 y el verbo. Construye 15 oraciones seleccionando los caracteres en el orden correcto.</p>
+      <button type="button" class="primary-btn" onclick="document.querySelector('.main-tabs .tab-btn[data-main=ejercicios]').click();openExerciseTopic2('order')">Comenzar ejercicio de ordenar oraciones →</button>
+    </div>
+    <div class="grammar-grid">
             <article class="grammar-card">
               <div class="grammar-step">1</div>
               <h4>País → persona → idioma</h4>
@@ -1320,7 +1325,8 @@
             <h3 class="section-title">Ejercicios de gramática</h3>
             <p class="section-subtitle">Elige un tema. Cada bloque practica una sola estructura para evitar respuestas ambiguas.</p>
 
-            <div class="agenda-index">
+            <button type="button" class="primary-btn" style="display:block;width:100%;margin:12px 0 20px;font-size:17px" onclick="openExerciseTopic2('order')">🧩 ORDENAR ORACIONES · 15 ejercicios</button>
+      <div class="agenda-index">
               <div class="agenda-title">Lección 1 · Gramática</div>
               <div class="agenda-subtitle">Ejercicios por tema</div>
 
@@ -1343,7 +1349,7 @@
                 <span>6.</span><span>Orden de la oración</span><small>5 ejercicios</small>
               </button>
               <button class="agenda-link" onclick="openExerciseTopic('mixed')">
-                <span>7.</span><span>Repaso mixto</span><small>8 ejercicios</small>
+                <span>8.</span><span>Repaso mixto</span><small>8 ejercicios</small>
               </button>
             </div>
           </div>
@@ -4244,8 +4250,11 @@ const lesson2ExercisesHTML = `
         <button class="agenda-link" onclick="openExerciseTopic2('where')">
           <span>6.</span><span>哪儿 / 什么地方 · Dónde</span><small>5 ejercicios</small>
         </button>
+        <button class="agenda-link" onclick="openExerciseTopic2('order')">
+          <span>7.</span><span>Orden de oraciones · Construye frases</span><small>15 ejercicios</small>
+        </button>
         <button class="agenda-link" onclick="openExerciseTopic2('mixed')">
-          <span>7.</span><span>Repaso mixto</span><small>8 ejercicios</small>
+          <span>8.</span><span>Repaso mixto</span><small>8 ejercicios</small>
         </button>
       </div>
     </div>
@@ -4363,6 +4372,26 @@ const exerciseTopics2 = {
       {type:"Elige",q:"¿Cuál pregunta por origen/procedencia?",kind:"choice",options:["你是哪儿的人？","你在公司吗？","你是老师吗？","你叫什么名字？"],answer:"你是哪儿的人？",hint:"哪儿的人 pregunta de dónde es alguien."}
     ]
   },
+  order:{
+    title:"Orden de oraciones · Construye frases",
+    items:[
+      {type:"Ordena las palabras",q:"Yo también soy estudiante.",kind:"order",words:["我", "也", "是", "学生"],answer:"我也是学生",hint:"Sujeto + 也 + 是 + sustantivo."},
+      {type:"Ordena las palabras",q:"Todos somos estudiantes.",kind:"order",words:["我们", "都", "是", "学生"],answer:"我们都是学生",hint:"Sujeto plural + 都 + 是 + sustantivo."},
+      {type:"Ordena las palabras",q:"Yo tampoco soy profesor.",kind:"order",words:["我", "也", "不是", "老师"],answer:"我也不是老师",hint:"也 se coloca antes de 不是."},
+      {type:"Ordena las palabras",q:"Ninguno de ellos es chino.",kind:"order",words:["他们", "都", "不是", "中国人"],answer:"他们都不是中国人",hint:"都 va antes de 不是."},
+      {type:"Ordena las palabras",q:"Ellos también son estudiantes.",kind:"order",words:["他们", "也", "是", "学生"],answer:"他们也是学生",hint:"也 se coloca después del sujeto."},
+      {type:"Ordena las palabras",q:"Ellos también son todos estudiantes.",kind:"order",words:["他们", "也", "都", "是", "学生"],answer:"他们也都是学生",hint:"El orden es sujeto + 也 + 都 + verbo."},
+      {type:"Ordena las palabras",q:"Ellos tampoco son estudiantes.",kind:"order",words:["他们", "也", "都", "不是", "学生"],answer:"他们也都不是学生",hint:"Primero 也, después 都, luego 不是."},
+      {type:"Ordena las palabras",q:"Este es mi libro.",kind:"order",words:["这", "是", "我的", "书"],answer:"这是我的书",hint:"Demostrativo + 是 + posesión + objeto."},
+      {type:"Ordena las palabras",q:"Ese es su profesor.",kind:"order",words:["那", "是", "他的", "老师"],answer:"那是他的老师",hint:"那 señala algo o alguien alejado."},
+      {type:"Ordena las palabras",q:"Ella estudia chino aquí.",kind:"order",words:["她", "在", "这里", "学习", "汉语"],answer:"她在这里学习汉语",hint:"Sujeto + 在 + lugar + verbo + objeto."},
+      {type:"Ordena las palabras",q:"Él trabaja allí.",kind:"order",words:["他", "在", "那里", "工作"],answer:"他在那里工作",hint:"El lugar se coloca antes de 工作."},
+      {type:"Ordena las palabras",q:"Este no es mi libro.",kind:"order",words:["这", "不是", "我的", "书"],answer:"这不是我的书",hint:"不是 niega la identificación."},
+      {type:"Ordena las palabras",q:"¿Dónde estudias chino?",kind:"order",words:["你", "在", "哪儿", "学习", "汉语"],answer:"你在哪儿学习汉语",hint:"在 + 哪儿 va antes del verbo de acción."},
+      {type:"Ordena las palabras",q:"El libro de Ana está aquí.",kind:"order",words:["安娜的书", "在", "这里"],answer:"安娜的书在这里",hint:"El poseedor aparece antes de 的."},
+      {type:"Ordena las palabras",q:"Ellos también estudian chino aquí.",kind:"order",words:["他们", "也", "都", "在", "这里", "学习", "汉语"],answer:"他们也都在这里学习汉语",hint:"Sujeto + 也 + 都 + 在 + lugar + verbo + objeto."}
+    ]
+  },
   mixed:{
     title:"Repaso mixto",
     items:[
@@ -4406,7 +4435,32 @@ function renderExercise2(){
   exerciseNextBtn2.style.display="none";
   exerciseCheckBtn2.style.display="inline-block";
   exerciseProgressBar2.style.width=`${(exerciseIndex2/grammarExercises2.length)*100}%`;
-  exerciseAnswerArea2.innerHTML=`<div class="exercise-options">${ex.options.map(o=>`<button class="exercise-option" onclick="selectExerciseOption2(this,'${escapeQuotes(o)}')">${o}</button>`).join("")}</div>`;
+  if(ex.kind==="order"){
+    exerciseOrderWords2=[];
+    exerciseAnswerArea2.innerHTML='<p style="text-align:center;color:var(--muted)">Toca las palabras en el orden correcto. Puedes quitar una palabra tocándola nuevamente.</p><div id="orderBuild2" class="sentence-build" aria-live="polite"></div><div id="orderBank2" class="word-bank"></div><button type="button" class="secondary-btn" style="display:block;margin:14px auto" onclick="exerciseOrderWords2=[];drawOrder2()">↻ Reiniciar oración</button>';
+    exerciseShuffled2=ex.words.map((w,i)=>({w,i})).sort(()=>Math.random()-.5);
+    drawOrder2();
+  }else{
+    exerciseAnswerArea2.innerHTML=`<div class="exercise-options">${ex.options.map(o=>`<button class="exercise-option" onclick="selectExerciseOption2(this,'${escapeQuotes(o)}')">${o}</button>`).join("")}</div>`;
+  }
+}
+let exerciseOrderWords2=[],exerciseShuffled2=[];
+function drawOrder2(){
+  const ex=grammarExercises2[exerciseIndex2];
+  const build=document.getElementById("orderBuild2"),bank=document.getElementById("orderBank2");
+  if(!build||!bank)return;
+  build.innerHTML="";
+  exerciseOrderWords2.forEach((id,pos)=>{
+    const b=document.createElement("button");b.type="button";b.className="word-chip";
+    b.textContent=ex.words[id];b.onclick=()=>{exerciseOrderWords2.splice(pos,1);drawOrder2()};build.appendChild(b);
+  });
+  bank.innerHTML="";
+  exerciseShuffled2.forEach(({w,i})=>{
+    if(exerciseOrderWords2.includes(i))return;
+    const b=document.createElement("button");b.type="button";b.className="word-chip";
+    b.textContent=w;b.onclick=()=>{exerciseOrderWords2.push(i);drawOrder2()};bank.appendChild(b);
+  });
+  exerciseSelected2=exerciseOrderWords2.length===ex.words.length?exerciseOrderWords2.map(i=>ex.words[i]).join(""):null;
 }
 function selectExerciseOption2(btn,val){
   document.querySelectorAll("#exerciseAnswerArea2 .exercise-option").forEach(b=>b.classList.remove("selected"));
@@ -4416,7 +4470,7 @@ function selectExerciseOption2(btn,val){
 function checkExercise2(){
   const ex=grammarExercises2[exerciseIndex2];
   if(!exerciseSelected2){
-    exerciseFeedback2.textContent="Selecciona una respuesta.";
+    exerciseFeedback2.textContent=ex.kind==="order"?"Ordena todas las palabras antes de comprobar.":"Selecciona una respuesta.";
     exerciseFeedback2.style.color="var(--danger)";
     return;
   }
