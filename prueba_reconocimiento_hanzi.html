@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>汉字识别测试 | Reconocimiento de Hanzi</title>
+<style>
+:root{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;color:#17243b;background:#f2f5fa}*{box-sizing:border-box}body{margin:0}.wrap{max-width:780px;margin:auto;padding:20px 14px 70px}header{background:#142d50;color:white;padding:28px 24px;border-radius:18px;margin-bottom:20px}h1{font-size:1.65rem;margin:0 0 8px}header p{margin:5px 0;color:#e0eaf5}.panel,.question{background:white;border:1px solid #dfe5ee;border-radius:15px;padding:20px;margin:15px 0;box-shadow:0 3px 12px #142d5009}label{display:block;font-weight:650;margin-bottom:8px}input[type=text]{width:100%;padding:12px;border:1px solid #b8c6d8;border-radius:9px;font-size:1rem}.progress{height:9px;background:#dce4ee;border-radius:20px;overflow:hidden}.bar{height:100%;width:0;background:#2774c9;transition:width .2s}.small{font-size:.9rem;color:#52647b}.hanzi{font-size:clamp(1.65rem,5vw,2.15rem);line-height:1.5;margin:12px 0}.pinyin{font-size:1.05rem;color:#475e7a}.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}.opt{display:flex;align-items:center;justify-content:center;gap:15px;border:2px solid #d9e2ee;border-radius:10px;padding:12px;cursor:pointer;background:white;min-height:72px}.opt input{accent-color:#236dc0}.opt .glyph{font-size:2rem}.opt:has(input:checked){border-color:#236dc0;background:#eaf3ff}.opt.correct{border-color:#16844a!important;background:#e8f8ee!important}.opt.wrong{border-color:#c72c39!important;background:#ffebed!important}button{border:0;background:#185aa3;color:white;padding:14px 22px;border-radius:11px;font-size:1rem;font-weight:700;cursor:pointer}button:disabled{background:#8a9bae;cursor:not-allowed}.actions{display:flex;gap:10px;flex-wrap:wrap}.hidden{display:none}#result{border:2px solid #236dc0}#result h2{font-size:2rem;margin:8px 0}footer{text-align:center;color:#607188;font-size:.8rem;margin-top:20px}@media(max-width:400px){.opt{gap:7px;padding:9px}.opt .glyph{font-size:1.75rem}}
+@media print{body{background:white}.wrap{max-width:none}header{color:black;background:white;border:1px solid #aaa}header p{color:black}.actions,.progress{display:none}.question{break-inside:avoid;box-shadow:none}}
+</style>
+</head>
+<body><main class="wrap">
+<header><h1>汉字识别测试</h1><p>Prueba de reconocimiento de Hanzi · Estilo Kanken</p><p>Países, nacionalidades, idiomas y gramática básica</p></header>
+<section class="panel" id="intro"><label for="student">Nombre completo del alumno</label><input id="student" type="text" autocomplete="name" placeholder="Escribe tu nombre"><p class="small">Lee cada oración. Selecciona el hanzi que corresponde a la palabra escrita en pinyin. Algunas opciones son muy parecidas. 20 preguntas · 5 puntos cada una.</p><div class="actions"><button id="start">Comenzar examen</button></div></section>
+<section id="exam" class="hidden"><div class="panel"><div id="progressText" class="small">Respondidas: 0 de 20</div><div class="progress"><div class="bar" id="bar"></div></div></div><div id="questions"></div><div class="panel actions"><button id="finish" disabled>Finalizar y calificar</button></div></section>
+<section id="result" class="panel hidden" aria-live="polite"></section><footer>Evaluación de chino mandarín · 20 reactivos</footer></main>
+<script>
+'use strict';
+const data=[
+{sentence:'___ 是墨西哥人。',pinyin:'wǒ',options:['找','我','钱','饿'],answer:1},
+{sentence:'他是 ___ 国人。',pinyin:'zhōng',options:['申','甲','中','由'],answer:2},
+{sentence:'我 ___ 说汉语。',pinyin:'huì',options:['全','合','今','会'],answer:3},
+{sentence:'你是 ___ 本人吗？',pinyin:'rì',options:['目','日','白','旦'],answer:1},
+{sentence:'我是 ___ 国人。',pinyin:'fǎ',options:['河','治','法','活'],answer:2},
+{sentence:'他会说 ___ 语。',pinyin:'yīng',options:['英','苦','若','苹'],answer:0},
+{sentence:'你会说 ___ 语吗？',pinyin:'dé',options:['得','德','微','徵'],answer:1},
+{sentence:'我是 ___ 国人。',pinyin:'hán',options:['朝','乾','韩','翰'],answer:2},
+{sentence:'他是 ___ 国人。',pinyin:'é',options:['饿','鹅','蛾','俄'],answer:3},
+{sentence:'我会说 ___ 班牙语。',pinyin:'xī',options:['洒','西','晒','要'],answer:1},
+{sentence:'你是 ___ 大利人吗？',pinyin:'yì',options:['音','意','竟','章'],answer:1},
+{sentence:'我是 ___ 西哥人。',pinyin:'mò',options:['黑','默','墨','黛'],answer:2},
+{sentence:'他是中 ___ 人。',pinyin:'guó',options:['园','国','图','因'],answer:1},
+{sentence:'我会 ___ 汉语。',pinyin:'shuō',options:['话','请','说','语'],answer:2},
+{sentence:'你会说中 ___ 吗？',pinyin:'wén',options:['齐','交','纹','文'],answer:3},
+{sentence:'他是日 ___ 人。',pinyin:'běn',options:['木','本','术','末'],answer:1},
+{sentence:'我是墨西 ___ 人。',pinyin:'gē',options:['可','呵','哥','歌'],answer:2},
+{sentence:'你会说汉 ___ 吗？',pinyin:'yǔ',options:['语','话','读','课'],answer:0},
+{sentence:'他是法国 ___。',pinyin:'rén',options:['入','八','人','个'],answer:2},
+{sentence:'我会说 ___ 语。',pinyin:'hàn',options:['汉','汗','江','汪'],answer:0}
+];
+const responses=Array(data.length).fill(null);
+const $=id=>document.getElementById(id);
+function progress(){const n=responses.filter(x=>x!==null).length;$('progressText').textContent=`Respondidas: ${n} de ${data.length}`;$('bar').style.width=`${n/data.length*100}%`;$('finish').disabled=n!==data.length;}
+function build(){const host=$('questions');data.forEach((q,i)=>{const sec=document.createElement('section');sec.className='question';const title=document.createElement('strong');title.textContent=`Pregunta ${i+1} · 5 puntos`;sec.append(title);const line=document.createElement('div');line.className='hanzi';line.lang='zh-Hans';line.textContent=q.sentence;sec.append(line);const pin=document.createElement('p');pin.className='pinyin';pin.textContent=`Pinyin: ${q.pinyin}`;sec.append(pin);const opts=document.createElement('div');opts.className='opts';q.options.forEach((option,j)=>{const label=document.createElement('label');label.className='opt';const radio=document.createElement('input');radio.type='radio';radio.name=`q${i}`;radio.value=j;radio.addEventListener('change',()=>{responses[i]=j;progress();});const letter=document.createElement('span');letter.textContent='ABCD'[j];const glyph=document.createElement('span');glyph.className='glyph';glyph.lang='zh-Hans';glyph.textContent=option;label.append(radio,letter,glyph);opts.append(label);});sec.append(opts);host.append(sec);});}
+$('start').addEventListener('click',()=>{if(!$('student').value.trim()){alert('Escribe tu nombre para comenzar.');$('student').focus();return;}$('student').readOnly=true;$('start').disabled=true;$('exam').classList.remove('hidden');$('exam').scrollIntoView({behavior:'smooth'});});
+$('finish').addEventListener('click',()=>{if(responses.some(x=>x===null))return;if(!confirm('¿Deseas finalizar y enviar tus respuestas para calificación?'))return;let correct=0;data.forEach((q,i)=>{if(responses[i]===q.answer)correct++;const opts=$('questions').children[i].querySelectorAll('.opt');opts[q.answer].classList.add('correct');if(responses[i]!==q.answer)opts[responses[i]].classList.add('wrong');opts.forEach(x=>x.querySelector('input').disabled=true);});$('finish').disabled=true;const grade=correct*5;const result=$('result');result.replaceChildren();const h=document.createElement('h2');h.textContent=`${grade} / 100`;const name=document.createElement('p');name.textContent=`Alumno: ${$('student').value.trim()}`;const detail=document.createElement('p');detail.textContent=`Aciertos: ${correct} de 20 · Errores: ${20-correct}`;const note=document.createElement('p');note.className='small';note.textContent='Las respuestas correctas aparecen en verde y las incorrectas en rojo. Esta versión califica localmente en el navegador; no envía resultados a un servidor.';const print=document.createElement('button');print.textContent='Imprimir / Guardar resultado';print.addEventListener('click',()=>window.print());result.append(h,name,detail,note,print);result.classList.remove('hidden');result.scrollIntoView({behavior:'smooth'});});
+build();progress();
+</script></body></html>
